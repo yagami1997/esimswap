@@ -1641,10 +1641,19 @@ class EsimSwapApp {
       
       // 重新绑定点击事件
       newUploadArea.addEventListener('click', (e) => {
-        console.log('重新绑定的上传区域被点击', e.target);
+        console.log('重新绑定的上传区域被点击', e.target, e.currentTarget);
         e.preventDefault();
         e.stopPropagation();
         fileInput.click();
+      });
+      
+      // 添加鼠标事件调试
+      newUploadArea.addEventListener('mousedown', (e) => {
+        console.log('鼠标按下', e.target);
+      });
+      
+      newUploadArea.addEventListener('mouseup', (e) => {
+        console.log('鼠标抬起', e.target);
       });
       
       // 重新设置拖拽事件
@@ -1675,7 +1684,13 @@ class EsimSwapApp {
         }
       });
       
-      console.log('上传区域事件已重新绑定');
+      // 强制设置样式确保可点击
+      newUploadArea.style.pointerEvents = 'auto';
+      newUploadArea.style.cursor = 'pointer';
+      newUploadArea.style.position = 'relative';
+      newUploadArea.style.zIndex = '1';
+      
+      console.log('上传区域事件已重新绑定，样式已设置');
     }
   }
 
