@@ -241,8 +241,7 @@ class EsimSwapApp {
       content.classList.remove('active');
     });
     
-    const targetId = mode === 'qr' ? 'displayQR' : 
-                     mode === 'lpa' ? 'displayLPA' : 'displaySeparated';
+    const targetId = mode === 'lpa' ? 'displayLPA' : 'displaySeparated';
     document.getElementById(targetId).classList.add('active');
   }
 
@@ -525,17 +524,6 @@ class EsimSwapApp {
    */
   updateDisplayModes(data) {
     console.log('更新显示模式，数据:', data);
-    
-    // 更新二维码显示
-    const qrCodeDisplay = document.getElementById('qrCodeDisplay');
-    if (qrCodeDisplay) {
-      qrCodeDisplay.innerHTML = '';
-      const qrCanvas = data.qrCode.canvas.cloneNode(true);
-      qrCodeDisplay.appendChild(qrCanvas);
-      console.log('二维码显示已更新');
-    } else {
-      console.error('找不到 qrCodeDisplay 元素');
-    }
 
     // 更新 LPA 地址显示
     const lpaAddressDisplay = document.getElementById('lpaAddressDisplay');
