@@ -1,4 +1,4 @@
-# CloudFlare Pages 安全头部配置
+# CloudFlare Pages Security Headers Configuration
 
 /*
   X-Frame-Options: DENY
@@ -6,7 +6,7 @@
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
 
-# 静态资源缓存
+# Static Resource Caching
 /*.css
   Cache-Control: public, max-age=86400
   
