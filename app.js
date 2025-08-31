@@ -218,7 +218,7 @@ class EsimSwapApp {
         text = this.currentParsed?.activationCode || '';
         break;
       case 'password':
-        text = this.currentParsed?.activationPassword || '';
+        text = this.currentParsed?.activationPassword || this.currentParsed?.password || '';
         break;
     }
 
@@ -474,6 +474,8 @@ class EsimSwapApp {
    * 更新显示模式内容
    */
   updateDisplayModes(data) {
+    console.log('更新显示模式，数据:', data);
+    
     // 更新二维码显示
     const qrCodeDisplay = document.getElementById('qrCodeDisplay');
     qrCodeDisplay.innerHTML = '';
@@ -490,11 +492,13 @@ class EsimSwapApp {
     const passwordDisplay = document.getElementById('passwordDisplay');
     const passwordDisplayItem = document.getElementById('passwordDisplayItem');
 
+    console.log('eSIM数据:', data.esimData);
+    
     smdpDisplay.textContent = data.esimData.smdpAddress || '-';
     activationDisplay.textContent = data.esimData.activationCode || '-';
     
-    if (data.esimData.password) {
-      passwordDisplay.textContent = data.esimData.password;
+    if (data.esimData.activationPassword || data.esimData.password) {
+      passwordDisplay.textContent = data.esimData.activationPassword || data.esimData.password;
       passwordDisplayItem.style.display = 'block';
     } else {
       passwordDisplayItem.style.display = 'none';
