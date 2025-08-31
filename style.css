@@ -494,12 +494,16 @@ body {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   z-index: 1000;
-  transform: translateX(100%);
+  transform: translateX(calc(100% + 2rem));
   transition: transform 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .notification.show {
   transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
 }
 
 .notification.success {

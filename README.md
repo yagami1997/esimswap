@@ -51,6 +51,12 @@ LPA:1$t-mobile.idemia.io$GLOP2-4JTL9-2X5OP-CA7HA
 
 Your iPhone simply **refuses to recognize it** as a valid eSIM profile, leaving users stranded.
 
+### Real-World Inspiration
+
+This project was born from frustration with carrier incompatibilities. When 1Psim QR codes failed to work with XESIM, 5ber, and even iPhone 16 (Australian version), we discovered that 9eSIM had developed effective error correction capabilities. 
+
+We studied their approach and created this open-source solution to make eSIM format correction accessible to everyone facing similar issues.
+
 ---
 
 ## ✨ Our Solution
