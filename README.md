@@ -74,12 +74,12 @@ eSIM technology has revolutionized mobile connectivity, but users frequently enc
 
 When carriers provide eSIM QR codes in formats like:
 ```
-1$t-mobile.idemia.io$GLOP2-4JTL9-2X5OP-CA7HA
+1$t-mobile.idemia.io$ABC12-DEF34-GHI56-JKL78
 ```
 
 Instead of the standard LPA format:
 ```
-LPA:1$t-mobile.idemia.io$GLOP2-4JTL9-2X5OP-CA7HA
+LPA:1$t-mobile.idemia.io$ABC12-DEF34-GHI56-JKL78
 ```
 
 Your iPhone simply **refuses to recognize it** as a valid eSIM profile, leaving users stranded.
