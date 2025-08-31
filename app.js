@@ -20,32 +20,50 @@ class EsimSwapApp {
    * 加载外部库
    */
   async loadExternalLibraries() {
-    console.log('开始加载外部库...');
-    
-    // 直接尝试加载，简化逻辑
+    // 检查是否已经加载
+    if (window.QRious && window.jsQR) {
+      this.showNotification('应用已就绪！', 'success');
+      return;
+    }
+
     try {
-      // 加载 QRious
-      console.log('正在加载 QRious...');
-      await this.loadScript('https://unpkg.com/qrious@4.0.2/dist/qrious.min.js');
-      console.log('QRious 加载成功');
+      // 使用更简单的方式加载库
+      if (!window.QRious) {
+        const qrScript = document.createElement('script');
+        qrScript.src = 'https://unpkg.com/qrious@4.0.2/dist/qrious.min.js';
+        qrScript.crossOrigin = 'anonymous';
+        document.head.appendChild(qrScript);
+        
+        await new Promise((resolve, reject) => {
+          qrScript.onload = resolve;
+          qrScript.onerror = reject;
+        });
+      }
+
+      if (!window.jsQR) {
+        const jsqrScript = document.createElement('script');
+        jsqrScript.src = 'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js';
+        jsqrScript.crossOrigin = 'anonymous';
+        document.head.appendChild(jsqrScript);
+        
+        await new Promise((resolve, reject) => {
+          jsqrScript.onload = resolve;
+          jsqrScript.onerror = reject;
+        });
+      }
+
+      // 等待一小段时间确保库完全加载
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      // 加载 jsQR
-      console.log('正在加载 jsQR...');
-      await this.loadScript('https://unpkg.com/jsqr@1.4.0/dist/jsQR.js');
-      console.log('jsQR 加载成功');
-      
-      // 验证库是否可用
-      if (typeof QRious !== 'undefined' && typeof jsQR !== 'undefined') {
-        console.log('所有库加载完成并可用');
+      if (window.QRious && window.jsQR) {
         this.showNotification('应用已就绪！', 'success');
       } else {
-        console.warn('库加载了但不可用');
-        this.showNotification('库文件状态异常', 'warning');
+        this.showNotification('使用内置功能', 'warning');
       }
       
     } catch (error) {
       console.error('库加载失败:', error);
-      this.showNotification('库文件加载失败，使用内置功能', 'warning');
+      this.showNotification('使用内置功能', 'warning');
     }
   }
 
@@ -84,9 +102,19 @@ class EsimSwapApp {
    * 绑定事件监听器
    */
   bindEvents() {
-    // 模式切换
+    // 输入模式切换
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode));
+    });
+
+    // 显示模式切换
+    document.querySelectorAll('.display-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => this.switchDisplayMode(e.target.dataset.mode));
+    });
+
+    // 复制按钮
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => this.copyToClipboard(e.target.dataset.copy));
     });
 
     // 生成二维码
@@ -151,6 +179,67 @@ class EsimSwapApp {
     // 切换输入区域
     document.getElementById('combinedInput').style.display = mode === 'combined' ? 'block' : 'none';
     document.getElementById('separatedInput').style.display = mode === 'separated' ? 'block' : 'none';
+  }
+
+  /**
+   * 切换显示模式
+   */
+  switchDisplayMode(mode) {
+    // 更新标签状态
+    document.querySelectorAll('.display-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    document.querySelector(`.display-tab[data-mode="${mode}"]`).classList.add('active');
+
+    // 切换显示内容
+    document.querySelectorAll('.display-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    
+    const targetId = mode === 'qr' ? 'displayQR' : 
+                     mode === 'lpa' ? 'displayLPA' : 'displaySeparated';
+    document.getElementById(targetId).classList.add('active');
+  }
+
+  /**
+   * 复制到剪贴板
+   */
+  async copyToClipboard(type) {
+    let text = '';
+    
+    switch(type) {
+      case 'lpa':
+        text = this.currentLPA || '';
+        break;
+      case 'smdp':
+        text = this.currentParsed?.smdpAddress || '';
+        break;
+      case 'activation':
+        text = this.currentParsed?.activationCode || '';
+        break;
+      case 'password':
+        text = this.currentParsed?.activationPassword || '';
+        break;
+    }
+
+    if (!text) {
+      this.showNotification('没有可复制的内容', 'warning');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      this.showNotification('已复制到剪贴板', 'success');
+    } catch (error) {
+      // 降级方案
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      this.showNotification('已复制到剪贴板', 'success');
+    }
   }
 
   /**
@@ -363,17 +452,53 @@ class EsimSwapApp {
     // 清空容器
     qrContainer.innerHTML = '';
     
-    // 添加二维码
+    // 添加二维码到主容器
     qrContainer.appendChild(data.qrCode.canvas);
     
     // 显示 LPA 字符串
     lpaString.textContent = data.esimData.lpaString;
     
-    // 存储数据供下载使用
+    // 更新三种显示方式的内容
+    this.updateDisplayModes(data);
+    
+    // 存储数据供下载和复制使用
     this.currentQRData = data;
+    this.currentLPA = data.esimData.lpaString;
+    this.currentParsed = data.esimData;
     
     qrDisplay.style.display = 'block';
     qrDisplay.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /**
+   * 更新显示模式内容
+   */
+  updateDisplayModes(data) {
+    // 更新二维码显示
+    const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+    qrCodeDisplay.innerHTML = '';
+    const qrCanvas = data.qrCode.canvas.cloneNode(true);
+    qrCodeDisplay.appendChild(qrCanvas);
+
+    // 更新 LPA 地址显示
+    const lpaAddressDisplay = document.getElementById('lpaAddressDisplay');
+    lpaAddressDisplay.textContent = data.esimData.lpaString;
+
+    // 更新分离信息显示
+    const smdpDisplay = document.getElementById('smdpDisplay');
+    const activationDisplay = document.getElementById('activationDisplay');
+    const passwordDisplay = document.getElementById('passwordDisplay');
+    const passwordDisplayItem = document.getElementById('passwordDisplayItem');
+
+    smdpDisplay.textContent = data.esimData.smdpAddress || '-';
+    activationDisplay.textContent = data.esimData.activationCode || '-';
+    
+    if (data.esimData.password) {
+      passwordDisplay.textContent = data.esimData.password;
+      passwordDisplayItem.style.display = 'block';
+    } else {
+      passwordDisplayItem.style.display = 'none';
+    }
   }
 
   /**
