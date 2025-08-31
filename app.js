@@ -1379,8 +1379,8 @@ class EsimSwapApp {
       color: var(--text-secondary);
     `;
     
-    const errorMessage = dialog.querySelector('.error-message');
-    errorMessage.style.cssText = `
+    const errorMessageElement = dialog.querySelector('.error-message');
+    errorMessageElement.style.cssText = `
       background: #ffebee;
       border: 1px solid #f44336;
       border-radius: 6px;
