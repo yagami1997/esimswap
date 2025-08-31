@@ -601,6 +601,17 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Ensure proper positioning
+    dialog.style.position = 'fixed';
+    dialog.style.top = '0';
+    dialog.style.left = '0';
+    dialog.style.right = '0';
+    dialog.style.bottom = '0';
+    dialog.style.zIndex = '10000';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
@@ -671,6 +682,17 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Ensure proper positioning
+    dialog.style.position = 'fixed';
+    dialog.style.top = '0';
+    dialog.style.left = '0';
+    dialog.style.right = '0';
+    dialog.style.bottom = '0';
+    dialog.style.zIndex = '10000';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
@@ -921,6 +943,17 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Ensure proper positioning
+    dialog.style.position = 'fixed';
+    dialog.style.top = '0';
+    dialog.style.left = '0';
+    dialog.style.right = '0';
+    dialog.style.bottom = '0';
+    dialog.style.zIndex = '10000';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
@@ -1001,6 +1034,17 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Ensure proper positioning
+    dialog.style.position = 'fixed';
+    dialog.style.top = '0';
+    dialog.style.left = '0';
+    dialog.style.right = '0';
+    dialog.style.bottom = '0';
+    dialog.style.zIndex = '10000';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
@@ -1092,6 +1136,17 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Ensure proper positioning
+    dialog.style.position = 'fixed';
+    dialog.style.top = '0';
+    dialog.style.left = '0';
+    dialog.style.right = '0';
+    dialog.style.bottom = '0';
+    dialog.style.zIndex = '10000';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
@@ -1193,6 +1248,17 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Ensure proper positioning
+    dialog.style.position = 'fixed';
+    dialog.style.top = '0';
+    dialog.style.left = '0';
+    dialog.style.right = '0';
+    dialog.style.bottom = '0';
+    dialog.style.zIndex = '10000';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
