@@ -1629,32 +1629,41 @@ class EsimSwapApp {
    * 重新绑定上传区域事件
    */
   rebindUploadEvents() {
+    console.log('rebindUploadEvents 被调用');
+    
+    // 检查是否有重复的 fileInput 元素
+    const allFileInputs = document.querySelectorAll('#fileInput');
+    console.log('找到的 fileInput 元素数量:', allFileInputs.length);
+    
+    // 移除所有旧的 fileInput 元素
+    allFileInputs.forEach((input, index) => {
+      console.log(`移除第 ${index + 1} 个 fileInput`);
+      input.remove();
+    });
+    
     const uploadArea = document.getElementById('uploadArea');
     
     if (uploadArea) {
-      console.log('开始重新创建上传区域...', uploadArea);
-      console.log('当前上传区域内容:', uploadArea.innerHTML);
+      console.log('开始重新创建上传区域...');
+      
+      // 使用唯一的ID和时间戳
+      const timestamp = Date.now();
+      const newFileInputId = `fileInput_${timestamp}`;
       
       // 重新创建上传区域的HTML内容
       uploadArea.innerHTML = `
         <div class="upload-icon">📷</div>
         <p class="upload-text">
           拖拽二维码图片到此处<br>
-          或 <button class="upload-btn" onclick="handleUploadClick()">点击选择文件</button>
+          或 <button class="upload-btn" onclick="handleUploadClickNew('${newFileInputId}')">点击选择文件</button>
         </p>
-        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
+        <input type="file" id="${newFileInputId}" accept="image/*" style="display: none;" onchange="handleFileChangeNew(event, '${newFileInputId}')">
       `;
-      
-      console.log('重新创建后的内容:', uploadArea.innerHTML);
       
       // 重新设置拖拽事件
       this.setupDragAndDrop();
       
-      // 验证按钮是否存在
-      const uploadBtn = uploadArea.querySelector('.upload-btn');
-      console.log('重新创建的按钮:', uploadBtn);
-      
-      console.log('上传区域已重新创建');
+      console.log(`上传区域已重新创建，新的 fileInput ID: ${newFileInputId}`);
     } else {
       console.error('找不到uploadArea元素');
     }
@@ -1871,6 +1880,26 @@ function handleUploadClick() {
 // 全局函数 - 处理文件选择
 function handleFileChange(event) {
   console.log('全局函数：文件被选择', event.target.files);
+  if (window.esimApp && event.target.files[0]) {
+    window.esimApp.processFile(event.target.files[0]);
+  }
+}
+
+// 新的全局函数 - 处理重新创建的上传区域点击
+function handleUploadClickNew(fileInputId) {
+  console.log('新全局函数：上传区域被点击，fileInputId:', fileInputId);
+  const fileInput = document.getElementById(fileInputId);
+  if (fileInput) {
+    console.log('新全局函数：触发文件选择');
+    fileInput.click();
+  } else {
+    console.error('新全局函数：找不到fileInput，ID:', fileInputId);
+  }
+}
+
+// 新的全局函数 - 处理重新创建的文件选择
+function handleFileChangeNew(event, fileInputId) {
+  console.log('新全局函数：文件被选择', event.target.files, 'fileInputId:', fileInputId);
   if (window.esimApp && event.target.files[0]) {
     window.esimApp.processFile(event.target.files[0]);
   }
