@@ -9,7 +9,7 @@
 
 **Bidirectional eSIM configuration analysis - Solve irregular eSIM installation errors**
 
-[🚀 Live Demo](https://esim.kyowarp.com) | [📖 Documentation](#documentation) | [🛠️ Deployment](#deployment)
+[🚀 Live Demo](https://esim.kyowarp.com)
 
 </div>
 
@@ -299,6 +299,10 @@ This project is licensed under the **GPL-3.0 License** - see the [LICENSE](LICEN
 
 **Made with ❤️ for the eSIM community**
 
+© 2025 eSIM Configuration Intelligent Parser | Licensed under **GPLv3**
+
 [⭐ Star this project](https://github.com/yagami1997/esimswap) | [🐛 Report Issues](https://github.com/yagami1997/esimswap/issues) | [💡 Request Features](https://github.com/yagami1997/esimswap/issues/new)
+
+**This project is free and open source software under the GNU General Public License v3.0**
 
 </div>
