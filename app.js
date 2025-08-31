@@ -377,6 +377,7 @@ class EsimSwapApp {
     try {
       // 清理输入
       const cleanInput = input.trim().replace(/\s+/g, '').replace(/[\r\n\t]/g, '');
+      console.log('解析输入:', input, '清理后:', cleanInput);
       
       if (!cleanInput) {
         return { success: false, error: '输入不能为空' };
@@ -410,11 +411,13 @@ class EsimSwapApp {
           smdpAddress = parts[1];
           activationCode = parts[2];
           password = parts[3] || '';
+          console.log('解析为格式1:', { smdpAddress, activationCode, password });
         } else {
           // 格式：smdp$activation$password
           smdpAddress = parts[0];
           activationCode = parts[1];
           password = parts[2] || '';
+          console.log('解析为格式2:', { smdpAddress, activationCode, password });
         }
       }
       // 尝试其他分隔符
@@ -441,13 +444,19 @@ class EsimSwapApp {
       }
 
       // 验证结果
+      console.log('验证前的数据:', { smdpAddress, activationCode, password });
+      
       if (!this.isValidSmdpAddress(smdpAddress)) {
+        console.log('SM-DP+ 地址验证失败:', smdpAddress);
         return { success: false, error: 'SM-DP+ 地址格式无效' };
       }
       
       if (!this.isValidActivationCode(activationCode)) {
+        console.log('激活码验证失败:', activationCode);
         return { success: false, error: '激活码格式无效' };
       }
+      
+      console.log('验证通过，返回数据:', { smdpAddress, activationCode, password });
 
       return {
         success: true,
