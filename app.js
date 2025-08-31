@@ -496,7 +496,6 @@ class EsimSwapApp {
   displayQRCode(data) {
     const qrDisplay = document.getElementById('qrDisplay');
     const qrContainer = document.getElementById('qrContainer');
-    const lpaString = document.getElementById('lpaString');
 
     // 清空容器
     qrContainer.innerHTML = '';
@@ -504,10 +503,7 @@ class EsimSwapApp {
     // 添加二维码到主容器
     qrContainer.appendChild(data.qrCode.canvas);
     
-    // 显示 LPA 字符串
-    lpaString.textContent = data.esimData.lpaString;
-    
-    // 更新三种显示方式的内容
+    // 更新两种显示方式的内容
     this.updateDisplayModes(data);
     
     // 存储数据供下载和复制使用
