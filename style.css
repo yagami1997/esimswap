@@ -363,6 +363,11 @@ body {
   color: white;
 }
 
+.notification.info {
+  background: var(--primary-purple);
+  color: white;
+}
+
 /* 加载状态 */
 .loading {
   display: inline-flex;
