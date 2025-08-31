@@ -645,8 +645,16 @@ class EsimSwapApp {
         <div class="dialog-body">
           <p><strong>检测到的二维码内容：</strong></p>
           <div class="detected-content">${qrData}</div>
-          <p><strong>问题：</strong>LPA信息不完整或错误，iPhone无法直接识别此二维码。</p>
-          <p><strong>解决方案：</strong>需要手动提取原始信息并重新生成正确的二维码吗？</p>
+          <div class="problem-explanation">
+            <p><strong>⚠️ 问题：</strong>此二维码格式不符合标准，iPhone无法直接识别。</p>
+            <p><strong>💡 常见原因：</strong></p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+              <li>缺少 "LPA:" 前缀</li>
+              <li>缺少版本号信息</li>
+              <li>运营商使用了非标准格式</li>
+            </ul>
+          </div>
+          <p><strong>🔧 解决方案：</strong>是否要提取原始信息并重新生成标准格式的二维码？</p>
         </div>
         <div class="dialog-actions">
           <button class="btn btn-secondary" onclick="this.closest('.extraction-dialog').remove()">
@@ -1040,30 +1048,136 @@ class EsimSwapApp {
    * 显示备用输入提示
    */
   showFallbackInput(detectedText = '') {
-    // 滚动到输入区域
-    const inputArea = document.querySelector('.card');
-    if (inputArea) {
-      inputArea.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // 如果检测到了文本，填入输入框
+    // 如果有检测到的文本，显示提取对话框
     if (detectedText) {
-      const combinedInput = document.getElementById('combinedText');
-      if (combinedInput) {
-        combinedInput.value = detectedText;
+      this.showExtractionDialog(detectedText);
+    } else {
+      // 如果没有检测到文本，显示手动输入提示对话框
+      this.showManualInputDialog();
+    }
+  }
+
+  /**
+   * 显示手动输入提示对话框
+   */
+  showManualInputDialog() {
+    const dialog = document.createElement('div');
+    dialog.className = 'manual-input-dialog';
+    dialog.innerHTML = `
+      <div class="dialog-overlay"></div>
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3>📝 需要手动输入</h3>
+        </div>
+        <div class="dialog-body">
+          <p><strong>❌ 无法识别二维码内容</strong></p>
+          <p>可能的原因：</p>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+            <li>图片不够清晰</li>
+            <li>不是 eSIM 二维码</li>
+            <li>二维码损坏</li>
+          </ul>
+          <p><strong>💡 建议：</strong>请在上方输入框中手动输入 LPA 字符串</p>
+          <div style="background: #f0f0f0; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.9rem;">
+            <strong>格式示例：</strong><br>
+            LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD<br>
+            或：1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-primary" onclick="this.closest('.manual-input-dialog').remove(); window.esimApp.focusInputArea();">
+            <span>✏️</span> 去输入框填写
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // 添加样式
+    dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // 添加内部样式
+    const overlay = dialog.querySelector('.dialog-overlay');
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    `;
+    
+    const content = dialog.querySelector('.dialog-content');
+    content.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1001;
+    `;
+    
+    const header = dialog.querySelector('.dialog-header');
+    header.style.cssText = `
+      padding: 1.5rem 1.5rem 0;
+      color: var(--text-primary);
+    `;
+    
+    const body = dialog.querySelector('.dialog-body');
+    body.style.cssText = `
+      padding: 1rem 1.5rem;
+      color: var(--text-secondary);
+    `;
+    
+    const actions = dialog.querySelector('.dialog-actions');
+    actions.style.cssText = `
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // 点击遮罩关闭
+    overlay.addEventListener('click', () => {
+      dialog.remove();
+    });
+  }
+
+  /**
+   * 聚焦到输入区域
+   */
+  focusInputArea() {
+    const combinedInput = document.getElementById('combinedText');
+    if (combinedInput) {
+      // 滚动到输入区域
+      combinedInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // 聚焦输入框
+      setTimeout(() => {
         combinedInput.focus();
         // 高亮显示输入框
         combinedInput.style.borderColor = '#8b45ff';
+        combinedInput.style.boxShadow = '0 0 0 3px rgba(139, 69, 255, 0.1)';
+        
+        // 3秒后恢复样式
         setTimeout(() => {
           combinedInput.style.borderColor = '';
+          combinedInput.style.boxShadow = '';
         }, 3000);
-      }
+      }, 500);
     }
-
-    // 显示提示信息
-    setTimeout(() => {
-      this.showNotification('💡 提示：您可以在上方输入框中手动输入 LPA 字符串', 'info');
-    }, 1000);
   }
 
   /**
@@ -1116,13 +1230,8 @@ class EsimSwapApp {
       // 解析 LPA 内容
       const parseResult = this.parseLpaString(code.data);
       if (!parseResult.success) {
-        // 检测是否可能是不完整的 eSIM 信息
-        if (this.isPotentialESIMData(code.data)) {
-          this.showExtractionDialog(code.data);
-        } else {
-          this.showNotification('二维码内容不是有效的 eSIM 配置信息', 'error');
-          this.showFallbackInput();
-        }
+        // 无论什么情况都显示对话框，让用户选择
+        this.showExtractionDialog(code.data);
         return;
       }
 
