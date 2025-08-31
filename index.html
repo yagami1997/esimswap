@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSIM 配置解析器 | 京都风格</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+    <meta name="description" content="Standards-compliant eSIM profile and QR code converter with accurate configuration output">
+    <meta name="keywords" content="eSIM, QR code, LPA, SM-DP+, activation code, converter">
+    <meta name="author" content="yagami1997">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="eSIM 配置解析器">
+    <meta property="og:description" content="Standards-compliant eSIM profile and QR code converter with accurate configuration output">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://esim.kyowarp.com">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="eSIM 配置解析器">
+    <meta name="twitter:description" content="Standards-compliant eSIM profile and QR code converter">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <h1>eSIM 配置解析器</h1>
+            <p class="subtitle">双向解析 eSIM 配置文件 · 京都风格设计</p>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <div class="main-grid">
+            <!-- 生成二维码区域 -->
+            <div class="card">
+                <h2>📱 生成 eSIM 二维码</h2>
+                
+                <!-- 输入模式选择 -->
+                <div class="input-group">
+                    <label>输入方式</label>
+                    <div class="input-mode-selector">
+                        <button class="mode-btn active" data-mode="combined">组合输入</button>
+                        <button class="mode-btn" data-mode="separated">分离输入</button>
+                    </div>
+                </div>
+
+                <!-- 组合输入模式 -->
+                <div id="combinedInput" class="input-mode">
+                    <div class="input-group">
+                        <label for="combinedText">eSIM 配置信息</label>
+                        <textarea 
+                            id="combinedText" 
+                            class="textarea-field" 
+                            placeholder="输入格式示例：&#10;1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD&#10;或：t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD"
+                        ></textarea>
+                        <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
+                            支持多种格式，自动识别 SM-DP+ 地址和激活码
+                        </small>
+                    </div>
+                </div>
+
+                <!-- 分离输入模式 -->
+                <div id="separatedInput" class="input-mode" style="display: none;">
+                    <div class="input-group">
+                        <label for="smdpAddress">SM-DP+ 地址</label>
+                        <input 
+                            type="text" 
+                            id="smdpAddress" 
+                            class="input-field" 
+                            placeholder="例：t-mobile.idemia.io"
+                        >
+                    </div>
+                    <div class="input-group">
+                        <label for="activationCode">激活码</label>
+                        <input 
+                            type="text" 
+                            id="activationCode" 
+                            class="input-field" 
+                            placeholder="例：1BCH0-T6TKQ-PWCXS-FM6OD"
+                        >
+                    </div>
+                    <div class="input-group">
+                        <label for="activationPassword">激活密码（可选）</label>
+                        <input 
+                            type="text" 
+                            id="activationPassword" 
+                            class="input-field" 
+                            placeholder="部分运营商需要"
+                        >
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="btn btn-primary">
+                    <span>🎯</span>
+                    生成二维码
+                </button>
+            </div>
+
+            <!-- 二维码解析区域 -->
+            <div class="card">
+                <h2>🔍 解析二维码</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📷</div>
+                    <p class="upload-text">
+                        拖拽二维码图片到此处<br>
+                        或点击选择文件
+                    </p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- 解析结果 -->
+                <div id="parseResult" class="parse-result" style="display: none;">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">📋 解析结果</h3>
+                    <div class="result-item">
+                        <span class="result-label">SM-DP+ 地址：</span>
+                        <span class="result-value" id="parsedSmdp">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">激活码：</span>
+                        <span class="result-value" id="parsedActivation">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">激活密码：</span>
+                        <span class="result-value" id="parsedPassword">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">原始数据：</span>
+                        <span class="result-value" id="parsedRaw">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 二维码显示区域 -->
+        <div id="qrDisplay" class="qr-display" style="display: none;">
+            <h2>✨ 生成的 eSIM 二维码</h2>
+            <div id="qrContainer" class="qr-container">
+                <!-- 二维码将在这里显示 -->
+            </div>
+            <div class="qr-info">
+                <p><strong>LPA 字符串：</strong></p>
+                <div id="lpaString" class="lpa-string">-</div>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button id="downloadBtn" class="btn btn-secondary">
+                        <span>💾</span>
+                        下载二维码
+                    </button>
+                    <button id="copyBtn" class="btn btn-secondary">
+                        <span>📋</span>
+                        复制 LPA 字符串
+                    </button>
+                    <button id="clearBtn" class="btn btn-danger">
+                        <span>🗑️</span>
+                        清除
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用说明 -->
+        <div class="card" style="margin-top: 2rem;">
+            <h2>📖 使用说明</h2>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">支持的输入格式：</h3>
+                <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                    <li><code>LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code></li>
+                    <li><code>1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code></li>
+                    <li><code>t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code></li>
+                </ul>
+                
+                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">功能特点：</h3>
+                <ul style="margin-left: 2rem;">
+                    <li>🎯 智能格式识别和容错处理</li>
+                    <li>📱 生成 iPhone 兼容的 eSIM 二维码</li>
+                    <li>🔍 从图片中解析 eSIM 配置信息</li>
+                    <li>💾 支持二维码下载和数据复制</li>
+                    <li>🌸 优雅的京都风格界面设计</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <footer style="text-align: center; margin-top: 3rem; padding: 2rem; color: var(--text-secondary);">
+            <p>© 2024 eSIM Swap | Powered by CloudFlare Pages + Worker</p>
+            <p>
+                <a href="https://github.com/yagami1997/esimswap" target="_blank" style="color: var(--primary-purple);">
+                    GitHub Repository
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- 通知组件 -->
+    <div id="notification" class="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <!-- 主应用脚本 -->
+    <script src="app.js"></script>
+</body>
+</html>
