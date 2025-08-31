@@ -1563,10 +1563,8 @@ class EsimSwapApp {
       
       // 重新绑定上传区域事件（确保事件不会丢失）
       console.log('正确解析后重新绑定事件');
-      // 延迟执行，确保所有DOM操作完成
-      setTimeout(() => {
-        this.rebindUploadEvents();
-      }, 100);
+      // 立即执行，不延迟
+      this.rebindUploadEvents();
 
     } catch (error) {
       console.error('解析二维码失败:', error);
@@ -1655,7 +1653,9 @@ class EsimSwapApp {
         <div class="upload-icon">📷</div>
         <p class="upload-text">
           拖拽二维码图片到此处<br>
-          或 <button class="upload-btn" onclick="handleUploadClickNew('${newFileInputId}')">点击选择文件</button>
+          或 <button class="upload-btn" onclick="handleUploadClickNew('${newFileInputId}')">
+            <span>📁</span> 选择文件
+          </button>
         </p>
         <input type="file" id="${newFileInputId}" accept="image/*" style="display: none;" onchange="handleFileChangeNew(event, '${newFileInputId}')">
       `;
