@@ -1635,76 +1635,39 @@ class EsimSwapApp {
     const fileInput = document.getElementById('fileInput');
     
     if (uploadArea && fileInput) {
-      // 移除旧的事件监听器（如果存在）
-      const newUploadArea = uploadArea.cloneNode(true);
-      uploadArea.parentNode.replaceChild(newUploadArea, uploadArea);
-      
-      // 获取新的 fileInput 引用
-      const newFileInput = newUploadArea.querySelector('#fileInput');
-      
-      // 重新绑定点击事件
-      newUploadArea.addEventListener('click', (e) => {
-        console.log('重新绑定的上传区域被点击', e.target, e.currentTarget);
-        console.log('新的fileInput:', newFileInput);
-        e.preventDefault();
-        e.stopPropagation();
-        if (newFileInput) {
-          newFileInput.click();
-        } else {
-          console.error('找不到新的fileInput元素');
-        }
-      });
-      
-      // 添加鼠标事件调试
-      newUploadArea.addEventListener('mousedown', (e) => {
-        console.log('鼠标按下', e.target);
-      });
-      
-      newUploadArea.addEventListener('mouseup', (e) => {
-        console.log('鼠标抬起', e.target);
-      });
-      
-      // 重新设置拖拽事件
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        newUploadArea.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('重新绑定的拖拽事件:', eventName);
-        });
-      });
-
-      ['dragenter', 'dragover'].forEach(eventName => {
-        newUploadArea.addEventListener(eventName, () => {
-          newUploadArea.classList.add('dragover');
-        });
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        newUploadArea.addEventListener(eventName, () => {
-          newUploadArea.classList.remove('dragover');
-        });
-      });
-
-      newUploadArea.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-          this.processFile(files[0]);
-        }
-      });
-      
-      // 重新绑定文件输入框的change事件
-      if (newFileInput) {
-        newFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
-        console.log('文件输入框change事件已重新绑定');
-      }
+      console.log('开始重新绑定上传事件...');
       
       // 强制设置样式确保可点击
-      newUploadArea.style.pointerEvents = 'auto';
-      newUploadArea.style.cursor = 'pointer';
-      newUploadArea.style.position = 'relative';
-      newUploadArea.style.zIndex = '1';
+      uploadArea.style.pointerEvents = 'auto';
+      uploadArea.style.cursor = 'pointer';
+      uploadArea.style.position = 'relative';
+      uploadArea.style.zIndex = '999';
+      uploadArea.style.background = 'rgba(107, 70, 193, 0.02)';
       
-      console.log('上传区域事件已重新绑定，样式已设置');
+      // 添加一个新的点击处理器，使用更高的优先级
+      const clickHandler = (e) => {
+        console.log('新的点击处理器被触发', e.target, e.currentTarget);
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // 直接触发文件选择
+        const currentFileInput = document.getElementById('fileInput');
+        if (currentFileInput) {
+          console.log('触发文件选择，fileInput:', currentFileInput);
+          currentFileInput.click();
+        } else {
+          console.error('找不到fileInput元素');
+        }
+      };
+      
+      // 移除可能存在的旧事件监听器
+      uploadArea.removeEventListener('click', clickHandler);
+      
+      // 添加新的事件监听器，使用capture模式获得更高优先级
+      uploadArea.addEventListener('click', clickHandler, true);
+      
+      console.log('上传区域点击事件已重新绑定（高优先级）');
     }
   }
 
