@@ -141,6 +141,62 @@
             <div class="qr-info">
                 <p><strong>LPA 字符串：</strong></p>
                 <div id="lpaString" class="lpa-string">-</div>
+                
+                <!-- 三种显示方式 -->
+                <div class="display-modes" style="margin-top: 1.5rem;">
+                    <div class="display-mode-tabs">
+                        <button class="display-tab active" data-mode="qr">二维码</button>
+                        <button class="display-tab" data-mode="lpa">LPA地址</button>
+                        <button class="display-tab" data-mode="separated">分离信息</button>
+                    </div>
+                    
+                    <!-- 二维码显示 -->
+                    <div id="displayQR" class="display-content active">
+                        <div class="display-item">
+                            <div class="display-label">📱 扫描二维码</div>
+                            <div id="qrCodeDisplay" class="qr-code-display">
+                                <!-- 二维码图片将显示在这里 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- LPA地址显示 -->
+                    <div id="displayLPA" class="display-content">
+                        <div class="display-item">
+                            <div class="display-label">🔗 LPA 地址</div>
+                            <div id="lpaAddressDisplay" class="info-display">-</div>
+                            <button class="copy-btn" data-copy="lpa">
+                                <span>📋</span> 复制
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 分离信息显示 -->
+                    <div id="displaySeparated" class="display-content">
+                        <div class="display-item">
+                            <div class="display-label">📋 SM-DP+ 地址</div>
+                            <div id="smdpDisplay" class="info-display">-</div>
+                            <button class="copy-btn" data-copy="smdp">
+                                <span>📋</span> 复制
+                            </button>
+                        </div>
+                        <div class="display-item">
+                            <div class="display-label">🔑 激活码</div>
+                            <div id="activationDisplay" class="info-display">-</div>
+                            <button class="copy-btn" data-copy="activation">
+                                <span>📋</span> 复制
+                            </button>
+                        </div>
+                        <div class="display-item" id="passwordDisplayItem" style="display: none;">
+                            <div class="display-label">🔐 激活密码</div>
+                            <div id="passwordDisplay" class="info-display">-</div>
+                            <button class="copy-btn" data-copy="password">
+                                <span>📋</span> 复制
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                     <button id="downloadBtn" class="btn btn-secondary">
                         <span>💾</span>

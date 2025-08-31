@@ -410,6 +410,125 @@ body {
   }
 }
 
+/* 显示模式切换 */
+.display-modes {
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+.display-mode-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+}
+
+.display-tab {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.display-tab:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.display-tab.active {
+  background: var(--primary-purple);
+  color: white;
+  box-shadow: 0 2px 4px rgba(139, 69, 255, 0.2);
+}
+
+.display-content {
+  display: none;
+}
+
+.display-content.active {
+  display: block;
+}
+
+.display-item {
+  margin-bottom: 1.5rem;
+}
+
+.display-item:last-child {
+  margin-bottom: 0;
+}
+
+.display-label {
+  font-weight: 600;
+  color: var(--primary-purple);
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.info-display {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  word-break: break-all;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.qr-code-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.qr-code-display canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+}
+
+.copy-btn {
+  background: var(--primary-purple);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.copy-btn:hover {
+  background: var(--primary-purple-dark);
+  transform: translateY(-1px);
+}
+
+.copy-btn:active {
+  transform: translateY(0);
+}
+
 @media (max-width: 480px) {
   .header h1 {
     font-size: 1.75rem;
@@ -422,5 +541,15 @@ body {
   .btn {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
+  }
+  
+  .display-mode-tabs {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .display-tab {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
   }
 }
