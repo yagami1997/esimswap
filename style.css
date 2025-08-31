@@ -384,16 +384,20 @@ body {
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
   background: rgba(0, 0, 0, 0.7);
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   z-index: 10000 !important;
   backdrop-filter: blur(5px);
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .dialog-content {
-  background: white;
+  background: white !important;
   border-radius: 12px;
   padding: 1.5rem;
   max-width: 460px;
@@ -406,6 +410,8 @@ body {
   font-size: 14px;
   line-height: 1.5;
   position: relative !important;
+  margin: auto !important;
+  transform: none !important;
 }
 
 .dialog-body h3 {
