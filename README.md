@@ -15,6 +15,17 @@
 
 ---
 
+## 📋 Update Log
+
+### Beta 1.0.0 - Initial Release (August 30, 2025 22:58 PST)
+- 🎨 **Design & Creation**: Built with Japanese elegant design philosophy, featuring a refined purple color scheme and minimalist interface
+- 🔄 **Bidirectional Processing**: Implemented intelligent eSIM QR code generation and parsing capabilities
+- 🛠️ **Smart Error Handling**: Added automatic detection and repair of non-standard carrier formats
+- 📱 **Cross-Device Compatibility**: Ensured full compatibility with iPhone, Android, and other eSIM-capable devices
+- ☁️ **CloudFlare Deployment**: Launched on CloudFlare Pages for global accessibility and optimal performance
+
+---
+
 ## 🎯 Why This Application?
 
 ### The Problem
