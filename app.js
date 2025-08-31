@@ -1566,6 +1566,9 @@ class EsimSwapApp {
 
       this.displayParseResult(parseResult.data, code.data);
       this.showNotification('二维码解析成功！', 'success');
+      
+      // 重新绑定上传区域事件（确保事件不会丢失）
+      this.rebindUploadEvents();
 
     } catch (error) {
       console.error('解析二维码失败:', error);
@@ -1622,6 +1625,58 @@ class EsimSwapApp {
         rawData: lpaString
       }
     };
+  }
+
+  /**
+   * 重新绑定上传区域事件
+   */
+  rebindUploadEvents() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (uploadArea && fileInput) {
+      // 移除旧的事件监听器（如果存在）
+      const newUploadArea = uploadArea.cloneNode(true);
+      uploadArea.parentNode.replaceChild(newUploadArea, uploadArea);
+      
+      // 重新绑定点击事件
+      newUploadArea.addEventListener('click', (e) => {
+        console.log('重新绑定的上传区域被点击', e.target);
+        e.preventDefault();
+        e.stopPropagation();
+        fileInput.click();
+      });
+      
+      // 重新设置拖拽事件
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        newUploadArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('重新绑定的拖拽事件:', eventName);
+        });
+      });
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        newUploadArea.addEventListener(eventName, () => {
+          newUploadArea.classList.add('dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        newUploadArea.addEventListener(eventName, () => {
+          newUploadArea.classList.remove('dragover');
+        });
+      });
+
+      newUploadArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          this.processFile(files[0]);
+        }
+      });
+      
+      console.log('上传区域事件已重新绑定');
+    }
   }
 
   /**
