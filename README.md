@@ -51,7 +51,7 @@ LPA:1$<SM-DP+ Address>$<Activation Code>$<Confirmation Code>
 
 ### Industry Compliance
 
-Major device manufacturers including **Apple**, **Samsung**, **Google**, and **Huawei** all implement GSMA SGP.22 standards in their devices. This ensures that properly formatted eSIM profiles work seamlessly across:
+Major device manufacturers including **Apple**, **Samsung**, **Google**, and all implement GSMA SGP.22 standards in their devices. This ensures that properly formatted eSIM profiles work seamlessly across:
 - 📱 **iPhone** (iOS 12.1+)
 - 🤖 **Android devices** with eSIM support
 - ⌚ **Smartwatches** and IoT devices
