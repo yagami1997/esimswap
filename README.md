@@ -26,6 +26,39 @@
 
 ---
 
+## 📚 eSIM Technology Overview
+
+### What is eSIM?
+
+**eSIM (Embedded SIM)** is a digital SIM technology that allows devices to connect to cellular networks without requiring a physical SIM card. Unlike traditional SIM cards, eSIM profiles are downloaded and installed digitally onto a secure chip embedded in your device.
+
+### GSMA Standards & Configuration Profiles
+
+The **GSMA (Global System for Mobile Communications Association)** has established the **SGP.22 specification** as the global standard for eSIM remote provisioning. This ensures compatibility across all major device manufacturers and carriers worldwide.
+
+**eSIM Configuration Profiles typically contain:**
+- 📡 **SM-DP+ Server Address**: The secure server that manages profile downloads
+- 🔑 **Activation Code**: Unique identifier for your specific eSIM profile  
+- 🔐 **Confirmation Code**: Optional security parameter for enhanced authentication
+- 📋 **Carrier Information**: Network settings, APN configurations, and service parameters
+
+### QR Code Structure
+
+Standard eSIM QR codes follow the **LPA (Local Profile Assistant)** format:
+```
+LPA:1$<SM-DP+ Address>$<Activation Code>$<Confirmation Code>
+```
+
+### Industry Compliance
+
+Major device manufacturers including **Apple**, **Samsung**, **Google**, and **Huawei** all implement GSMA SGP.22 standards in their devices. This ensures that properly formatted eSIM profiles work seamlessly across:
+- 📱 **iPhone** (iOS 12.1+)
+- 🤖 **Android devices** with eSIM support
+- ⌚ **Smartwatches** and IoT devices
+- 💻 **Laptops** with cellular connectivity
+
+---
+
 ## 🎯 Why This Application?
 
 ### The Problem
