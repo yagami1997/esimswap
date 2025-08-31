@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eSIM 配置解析器 | 京都风格</title>
+    <title>eSIM Configuration Intelligent Parser | eSIM設定インテリジェントパーサー</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
-    <meta name="description" content="Standards-compliant eSIM profile and QR code converter with accurate configuration output">
-    <meta name="keywords" content="eSIM, QR code, LPA, SM-DP+, activation code, converter">
+    <meta name="description" content="Intelligent eSIM configuration parser supporting bidirectional conversion. Solve irregular eSIM installation errors.">
+    <meta name="keywords" content="eSIM, QR code, LPA, SM-DP+, activation code, parser, intelligent, configuration">
     <meta name="author" content="yagami1997">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="eSIM 配置解析器">
-    <meta property="og:description" content="Standards-compliant eSIM profile and QR code converter with accurate configuration output">
+    <meta property="og:title" content="eSIM Configuration Intelligent Parser">
+    <meta property="og:description" content="Intelligent eSIM configuration parser supporting bidirectional conversion">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://esim.kyowarp.com">
     
@@ -25,8 +25,19 @@
     <div class="container">
         <!-- 头部 -->
         <header class="header">
-            <h1>eSIM 配置解析器</h1>
-            <p class="subtitle">双向解析 eSIM 配置文件 · 京都风格设计</p>
+            <div class="header-section">
+                <h1 class="main-title">📱 <span class="lang-content active" id="title-en">eSIM Configuration Intelligent Parser</span><span class="lang-content" id="title-ja">eSIM設定インテリジェントパーサー</span></h1>
+                <p class="sub-title">
+                    <span class="lang-content active" id="subtitle-en">Bidirectional eSIM configuration analysis<br>Solve irregular eSIM installation errors</span>
+                    <span class="lang-content" id="subtitle-ja">双方向eSIM設定解析<br>不規則なeSIMインストールエラーを解決</span>
+                </p>
+                
+                <!-- 语言切换器 -->
+                <div class="language-switcher">
+                    <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en">🇺🇸 English</button>
+                    <button class="lang-btn" onclick="switchLanguage('ja')" id="lang-ja">🇯🇵 日本語</button>
+                </div>
+            </div>
         </header>
 
         <!-- 主要内容区域 -->
@@ -103,9 +114,13 @@
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📷</div>
                     <p class="upload-text">
-                        拖拽二维码图片到此处<br>
-                        或 <button class="upload-btn" onclick="handleUploadClick()">
-                            <span>📁</span> 选择文件
+                        <span class="lang-content active" id="drag-text-en">Drag QR code image here</span>
+                        <span class="lang-content" id="drag-text-ja">QRコード画像をここにドラッグ</span><br>
+                        <span class="lang-content active" id="or-text-en">or</span><span class="lang-content" id="or-text-ja">または</span> 
+                        <button class="upload-btn" onclick="handleUploadClick()">
+                            <span class="btn-icon">📁</span> 
+                            <span class="lang-content active" id="btn-en">Select File</span>
+                            <span class="lang-content" id="btn-ja">ファイル選択</span>
                         </button>
                     </p>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">

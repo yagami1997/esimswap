@@ -1652,9 +1652,13 @@ class EsimSwapApp {
       uploadArea.innerHTML = `
         <div class="upload-icon">📷</div>
         <p class="upload-text">
-          拖拽二维码图片到此处<br>
-          或 <button class="upload-btn" onclick="handleUploadClickNew('${newFileInputId}')">
-            <span>📁</span> 选择文件
+          <span class="lang-content active" id="drag-text-en">Drag QR code image here</span>
+          <span class="lang-content" id="drag-text-ja">QRコード画像をここにドラッグ</span><br>
+          <span class="lang-content active" id="or-text-en">or</span><span class="lang-content" id="or-text-ja">または</span> 
+          <button class="upload-btn" onclick="handleUploadClickNew('${newFileInputId}')">
+            <span class="btn-icon">📁</span> 
+            <span class="lang-content active" id="btn-en">Select File</span>
+            <span class="lang-content" id="btn-ja">ファイル選択</span>
           </button>
         </p>
         <input type="file" id="${newFileInputId}" accept="image/*" style="display: none;" onchange="handleFileChangeNew(event, '${newFileInputId}')">
@@ -1905,7 +1909,45 @@ function handleFileChangeNew(event, fileInputId) {
   }
 }
 
+// 语言切换功能
+function switchLanguage(lang) {
+  console.log('切换语言到:', lang);
+  
+  // 更新语言按钮状态
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.getElementById(`lang-${lang}`).classList.add('active');
+  
+  // 更新语言内容显示
+  document.querySelectorAll('.lang-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // 显示对应语言的内容
+  document.querySelectorAll(`.lang-content`).forEach(content => {
+    if (content.id.endsWith(`-${lang}`)) {
+      content.classList.add('active');
+    }
+  });
+  
+  // 更新页面语言属性
+  document.documentElement.lang = lang === 'en' ? 'en-US' : 'ja-JP';
+  
+  // 保存语言选择到本地存储
+  localStorage.setItem('selectedLanguage', lang);
+  
+  console.log(`语言已切换到 ${lang === 'en' ? 'English' : '日本語'}`);
+}
+
+// 初始化语言设置
+function initializeLanguage() {
+  const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+  switchLanguage(savedLang);
+}
+
 // 初始化应用
 document.addEventListener('DOMContentLoaded', () => {
   window.esimApp = new EsimSwapApp();
+  initializeLanguage();
 });
