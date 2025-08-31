@@ -1,0 +1,17 @@
+{
+  "name": "esimswap",
+  "version": "1.0.0",
+  "description": "Standards-compliant eSIM profile and QR code converter with accurate configuration output",
+  "homepage": "https://esim.kyowarp.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yagami1997/esimswap.git"
+  },
+  "scripts": {
+    "dev": "npx serve public",
+    "preview": "npx serve public"
+  },
+  "keywords": ["esim", "qr-code", "lpa", "qr-generator", "qr-parser"],
+  "author": "yagami1997",
+  "license": "GPL-3.0"
+}
