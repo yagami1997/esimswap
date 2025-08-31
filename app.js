@@ -170,7 +170,10 @@ class EsimSwapApp {
 
     // 文件上传
     document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileUpload(e));
-    document.getElementById('uploadArea').addEventListener('click', () => {
+    document.getElementById('uploadArea').addEventListener('click', (e) => {
+      console.log('上传区域被点击', e.target);
+      e.preventDefault();
+      e.stopPropagation();
       document.getElementById('fileInput').click();
     });
 
@@ -190,6 +193,7 @@ class EsimSwapApp {
       uploadArea.addEventListener(eventName, (e) => {
         e.preventDefault();
         e.stopPropagation();
+        console.log('拖拽事件:', eventName);
       });
     });
 
