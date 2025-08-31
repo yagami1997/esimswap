@@ -1,3 +1,296 @@
-# eSIM Swap
+# 📱 eSIM Configuration Intelligent Parser
 
-Standards-compliant eSIM profile and QR code converter with accurate configuration output
+<div align="center">
+
+![eSIM Parser](https://img.shields.io/badge/eSIM-Parser-6b46c1?style=for-the-badge&logo=mobile&logoColor=white)
+![CloudFlare Pages](https://img.shields.io/badge/CloudFlare-Pages-f38020?style=for-the-badge&logo=cloudflare&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-f7df1e?style=for-the-badge&logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+**Bidirectional eSIM configuration analysis - Solve irregular eSIM installation errors**
+
+[🚀 Live Demo](https://esim.kyowarp.com) | [📖 Documentation](#documentation) | [🛠️ Deployment](#deployment)
+
+</div>
+
+---
+
+## 🎯 Why This Application?
+
+### The Problem
+
+eSIM technology has revolutionized mobile connectivity, but users frequently encounter frustrating installation failures due to **non-standard QR code formats** provided by carriers. Common issues include:
+
+- 📱 **iPhone Recognition Failures**: iOS devices reject QR codes missing proper LPA prefixes
+- 🔧 **Format Inconsistencies**: Carriers use proprietary formats that don't comply with GSMA standards
+- ❌ **Installation Errors**: Missing version information or incorrect SM-DP+ address formatting
+- 🔄 **Manual Conversion Hassles**: Users struggle to manually convert between different eSIM formats
+
+### Real-World Impact
+
+When carriers provide eSIM QR codes in formats like:
+```
+1$t-mobile.idemia.io$GLOP2-4JTL9-2X5OP-CA7HA
+```
+
+Instead of the standard LPA format:
+```
+LPA:1$t-mobile.idemia.io$GLOP2-4JTL9-2X5OP-CA7HA
+```
+
+Your iPhone simply **refuses to recognize it** as a valid eSIM profile, leaving users stranded.
+
+---
+
+## ✨ Our Solution
+
+The **eSIM Configuration Intelligent Parser** is a comprehensive web application that bridges the gap between carrier-provided eSIM data and device compatibility requirements.
+
+### 🔄 Bidirectional Processing
+
+| **Generate QR Codes** | **Parse QR Codes** |
+|----------------------|-------------------|
+| Convert SM-DP+ addresses to QR codes | Extract information from carrier QR codes |
+| Support multiple input formats | Intelligent format detection |
+| Standards-compliant output | Error correction and repair |
+| iPhone-compatible results | Detailed analysis and feedback |
+
+### 🧠 Intelligent Features
+
+- **🔍 Smart Detection**: Automatically identifies non-standard formats
+- **🛠️ Auto-Repair**: Converts irregular formats to standards-compliant versions
+- **📊 Detailed Analysis**: Shows separated SM-DP+ address, activation code, and password
+- **🎯 Multi-Format Support**: Handles various carrier-specific formats
+- **📱 Device Compatibility**: Ensures QR codes work across all eSIM-capable devices
+
+---
+
+## 🔬 Technical Principles
+
+### eSIM QR Code Structure
+
+Standard eSIM QR codes follow the **GSMA SGP.22** specification:
+
+```
+LPA:1$<SM-DP+ Address>$<Activation Code>$<Confirmation Code (Optional)>
+```
+
+### Our Processing Pipeline
+
+1. **📥 Input Analysis**: Detect format type and extract components
+2. **🔧 Format Correction**: Add missing LPA prefix and version information
+3. **✅ Validation**: Verify SM-DP+ address format and activation code structure
+4. **📱 QR Generation**: Create standards-compliant QR codes using multiple fallback libraries
+5. **🎨 User Interface**: Present results in an intuitive, mobile-friendly interface
+
+### Supported Input Formats
+
+| Format Type | Example | Status |
+|-------------|---------|---------|
+| **Standard LPA** | `LPA:1$carrier.com$CODE123` | ✅ Direct processing |
+| **Missing LPA Prefix** | `1$carrier.com$CODE123` | 🔧 Auto-repair |
+| **Carrier Proprietary** | `carrier.com$CODE123` | 🛠️ Intelligent extraction |
+| **Separated Components** | SM-DP+: `carrier.com`<br>Code: `CODE123` | 🔄 Component assembly |
+
+---
+
+## 🎨 User Interface
+
+### Kyoto-Inspired Design
+
+Our application features a **Japanese aesthetic** inspired by Kyoto's serene color palette:
+
+- **🟣 Primary Purple**: `#6b46c1` - Representing technology and innovation
+- **🎴 Card-Based Layout**: Clean, organized information presentation
+- **📱 Responsive Design**: Optimized for both desktop and mobile devices
+- **🌸 Subtle Animations**: Smooth transitions and hover effects
+
+### Key Components
+
+- **📝 Input Methods**: Combined input and separated component entry
+- **🔍 QR Code Parser**: Drag-and-drop or file selection
+- **📊 Results Display**: Tabbed interface showing LPA address and separated information
+- **💬 Smart Dialogs**: Context-aware error handling and user guidance
+
+---
+
+## 🚀 Live Application
+
+**🌐 Access the application at: [esim.kyowarp.com](https://esim.kyowarp.com)**
+
+### Quick Start Guide
+
+1. **📱 Generate QR Code**:
+   - Enter your SM-DP+ address and activation code
+   - Click "Generate QR Code"
+   - Scan with your device or download the image
+
+2. **🔍 Parse Existing QR Code**:
+   - Drag and drop a QR code image
+   - Or click "Select File" to browse
+   - View extracted information and corrected format
+
+3. **🛠️ Handle Errors**:
+   - Application automatically detects format issues
+   - Follow guided repair process
+   - Get standards-compliant results
+
+---
+
+## 🛠️ Deployment
+
+### CloudFlare Pages Deployment
+
+This application is deployed using **CloudFlare Pages** for optimal global performance and reliability.
+
+#### Prerequisites
+
+- GitHub repository with your code
+- CloudFlare account
+- Custom domain (optional)
+
+#### Deployment Steps
+
+1. **📂 Repository Setup**:
+   ```bash
+   git clone https://github.com/yagami1997/esimswap.git
+   cd esimswap
+   ```
+
+2. **☁️ CloudFlare Pages Configuration**:
+   - Connect your GitHub repository to CloudFlare Pages
+   - Set build command: `# No build required - static files`
+   - Set output directory: `/` (root directory)
+   - Deploy from `main` branch
+
+3. **🌐 Custom Domain** (Optional):
+   - Add your custom domain in CloudFlare Pages settings
+   - Configure DNS records to point to CloudFlare
+   - Enable SSL/TLS encryption
+
+4. **🔄 Automatic Deployments**:
+   - Every push to `main` branch triggers automatic deployment
+   - Changes are live within minutes
+   - Global CDN distribution for fast loading
+
+#### File Structure
+
+```
+esimswap/
+├── index.html          # Main application page
+├── style.css           # Kyoto-inspired styling
+├── app.js              # Core application logic
+├── .gitignore          # Git ignore rules
+├── package.json        # Project metadata
+└── README.md           # This documentation
+```
+
+#### Performance Features
+
+- **⚡ Global CDN**: CloudFlare's edge network
+- **🔒 SSL/TLS**: Automatic HTTPS encryption
+- **📱 Mobile Optimized**: Responsive design
+- **🚀 Fast Loading**: Optimized static assets
+- **🛡️ DDoS Protection**: Built-in security
+
+---
+
+## 🔧 Technical Stack
+
+### Frontend Technologies
+
+- **📄 HTML5**: Semantic markup and modern web standards
+- **🎨 CSS3**: Custom properties, flexbox, and grid layouts
+- **⚡ Vanilla JavaScript**: ES6+ features, no framework dependencies
+- **📱 Responsive Design**: Mobile-first approach
+
+### External Libraries
+
+- **📊 QRious.js**: QR code generation with multiple CDN fallbacks
+- **🔍 jsQR**: QR code parsing and image analysis
+- **🎯 Fallback Systems**: Internal implementations for reliability
+
+### Browser Compatibility
+
+- ✅ **Chrome/Edge**: Full support
+- ✅ **Firefox**: Full support  
+- ✅ **Safari**: Full support
+- ✅ **Mobile Browsers**: Optimized experience
+
+---
+
+## 📈 Features & Benefits
+
+### For End Users
+
+- **🎯 One-Click Solutions**: Convert any eSIM format instantly
+- **📱 Device Compatibility**: Works with iPhone, Android, and other eSIM devices
+- **🔧 Error Recovery**: Intelligent repair of malformed QR codes
+- **📊 Detailed Information**: Clear breakdown of eSIM components
+
+### For Developers
+
+- **🔓 Open Source**: MIT license for community contributions
+- **📚 Well Documented**: Comprehensive code comments and documentation
+- **🧪 Tested**: Robust error handling and edge case coverage
+- **🔄 Maintainable**: Clean, modular code structure
+
+### For Businesses
+
+- **💰 Cost Effective**: Free solution for eSIM format conversion
+- **🌐 Global Access**: CloudFlare CDN for worldwide availability
+- **🔒 Secure**: Client-side processing, no data transmission
+- **📈 Scalable**: Handles high traffic loads efficiently
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Here's how you can help:
+
+1. **🍴 Fork** the repository
+2. **🌿 Create** a feature branch
+3. **💻 Make** your changes
+4. **✅ Test** thoroughly
+5. **📤 Submit** a pull request
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/yagami1997/esimswap.git
+
+# Navigate to project directory
+cd esimswap
+
+# Open in your preferred editor
+code .
+
+# Serve locally (optional)
+python -m http.server 8000
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **GSMA** for eSIM standards and specifications
+- **CloudFlare** for reliable hosting and CDN services
+- **Open Source Community** for the excellent libraries used in this project
+- **Contributors** who help improve this application
+
+---
+
+<div align="center">
+
+**Made with ❤️ for the eSIM community**
+
+[⭐ Star this project](https://github.com/yagami1997/esimswap) | [🐛 Report Issues](https://github.com/yagami1997/esimswap/issues) | [💡 Request Features](https://github.com/yagami1997/esimswap/issues/new)
+
+</div>
