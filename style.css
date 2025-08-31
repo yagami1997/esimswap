@@ -1,32 +1,32 @@
-/* 京都风格 eSIM 解析器样式 */
+/* Kyoto Style eSIM Parser Styles */
 
 :root {
-  /* 京都紫色系 - 主色调 */
+  /* Kyoto Purple Color Scheme - Primary Colors */
   --primary-purple: #6B46C1;
   --primary-purple-light: #8B5CF6;
   --primary-purple-dark: #553C9A;
   
-  /* 背景色系 */
+  /* Background Colors */
   --bg-primary: #F3F0FF;
   --bg-secondary: #FFFFFF;
   --bg-tertiary: #F9FAFB;
   
-  /* 强调色 */
+  /* Accent Colors */
   --accent-red: #EF4444;
   --accent-orange: #F59E0B;
   
-  /* 文本色系 */
+  /* Text Colors */
   --text-primary: #1F2937;
   --text-secondary: #6B7280;
   --text-light: #9CA3AF;
   
-  /* 边框和阴影 */
+  /* Borders and Shadows */
   --border-color: #E5E7EB;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   
-  /* 圆角 */
+  /* Border Radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
@@ -53,7 +53,7 @@ body {
   padding: 2rem 1rem;
 }
 
-/* 头部样式 */
+/* Header Styles */
 .header {
   text-align: center;
   margin-bottom: 3rem;
@@ -74,7 +74,7 @@ body {
   font-weight: 400;
 }
 
-/* 卡片布局 */
+/* Card Layout */
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -105,7 +105,7 @@ body {
   border-bottom: 2px solid var(--bg-primary);
 }
 
-/* 输入区域样式 */
+/* Input Area Styles */
 .input-group {
   margin-bottom: 1.5rem;
 }
@@ -149,7 +149,7 @@ body {
   color: var(--primary-purple);
 }
 
-/* 输入框样式 */
+/* Input Field Styles */
 .input-field, .textarea-field, select {
   width: 100%;
   padding: 0.875rem 1rem;
@@ -174,7 +174,7 @@ body {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
-/* 按钮样式 */
+/* Button Styles */
 .btn {
   padding: 0.875rem 2rem;
   border: none;
@@ -224,7 +224,7 @@ body {
   background: #DC2626;
 }
 
-/* 二维码显示区域 */
+/* QR Code Display Area */
 .qr-display {
   text-align: center;
   padding: 2rem;
@@ -261,7 +261,7 @@ body {
   margin: 1rem 0;
 }
 
-/* 文件上传区域 */
+/* File Upload Area */
 .upload-area {
   border: 2px dashed var(--primary-purple);
   border-radius: var(--radius-lg);
@@ -349,57 +349,9 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
-/* 语言切换器 */
-.language-switcher {
-  display: flex;
-  justify-content: center;
-  margin: 1.5rem 0;
-  gap: 0.5rem;
-}
+/* Language Switcher Styles Removed - Now English Only */
 
-.lang-btn {
-  background: rgba(139, 69, 255, 0.1);
-  border: 2px solid rgba(139, 69, 255, 0.2);
-  color: var(--text-primary);
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.lang-btn.active {
-  background: var(--primary-purple);
-  color: white;
-  border-color: var(--primary-purple);
-  box-shadow: 0 4px 15px rgba(139, 69, 255, 0.3);
-}
-
-.lang-btn:hover:not(.active) {
-  background: rgba(139, 69, 255, 0.15);
-  border-color: rgba(139, 69, 255, 0.4);
-  transform: translateY(-2px);
-}
-
-.lang-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.lang-btn:hover::before {
-  left: 100%;
-}
-
-/* 标题区域 */
+/* Title Area */
 .header-section {
   text-align: center;
   margin-bottom: 2rem;
@@ -423,16 +375,9 @@ body {
   line-height: 1.6;
 }
 
-/* 隐藏非活跃语言 */
-.lang-content {
-  display: none;
-}
+/* Language Content Styles Removed - Now English Only */
 
-.lang-content.active {
-  display: block;
-}
-
-/* 解析结果显示 */
+/* Parse Results Display */
 .parse-result {
   background: var(--bg-primary);
   border-radius: var(--radius-lg);
@@ -469,7 +414,7 @@ body {
   word-break: break-all;
 }
 
-/* 通知样式 */
+/* Notification Styles */
 .notification {
   position: fixed;
   top: 2rem;
@@ -506,7 +451,7 @@ body {
   color: white;
 }
 
-/* 加载状态 */
+/* Loading State */
 .loading {
   display: inline-flex;
   align-items: center;
@@ -528,7 +473,7 @@ body {
   }
 }
 
-/* 响应式设计 */
+/* Responsive Design */
 @media (max-width: 768px) {
   .main-grid {
     grid-template-columns: 1fr;
@@ -553,7 +498,7 @@ body {
   }
 }
 
-/* 显示模式切换 */
+/* Display Mode Toggle */
 .display-modes {
   background: var(--card-bg);
   border-radius: 0.75rem;

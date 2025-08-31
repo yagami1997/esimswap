@@ -1,122 +1,116 @@
 /**
- * eSIM 配置解析器 - 纯前端版本
- * 京都风格设计 - 无需后端服务
+ * eSIM Configuration Parser - Pure Frontend Version
+ * Kyoto Style Design - No Backend Service Required
  */
 
-class EsimSwapApp {
+class ESIMParser {
   constructor() {
-    this.currentMode = 'combined';
+    this.currentLPA = null;
+    this.currentParsed = null;
     this.currentQRData = null;
-    this.init();
-  }
-
-  init() {
-    this.bindEvents();
-    this.setupDragAndDrop();
-    this.loadExternalLibraries();
     
-    // 设置全局引用以便对话框调用
-    window.esimApp = this;
+    // Set global reference for dialog calls
+    window.esimParser = this;
   }
 
   /**
-   * 加载外部库
+   * Load external libraries
    */
   async loadExternalLibraries() {
-    console.log('开始加载外部库...');
+    console.log('Loading external libraries...');
     
     try {
-      // 简单直接的加载方式
+      // Simple direct loading method
       await this.loadQRious();
       await this.loadJsQR();
       
       if (window.QRious && window.jsQR) {
-        console.log('所有库加载成功');
-        this.showNotification('应用已就绪！', 'success');
+        console.log('All libraries loaded successfully');
+        this.showNotification('application_ready', 'success');
       } else {
-        console.log('部分库加载失败，使用内置功能');
-        this.showNotification('使用内置功能', 'warning');
+        console.log('Some libraries failed to load, using built-in functions');
+        this.showNotification('using_builtin_functions', 'warning');
       }
       
     } catch (error) {
-      console.error('库加载过程出错:', error);
-      this.showNotification('使用内置功能', 'warning');
+      console.error('Library loading process error:', error);
+      this.showNotification('using_builtin_functions', 'warning');
     }
   }
 
   /**
-   * 加载 QRious 库
+   * Load QRious library
    */
   async loadQRious() {
-    if (window.QRious) {
-      console.log('QRious 已存在');
-      return;
-    }
+    return new Promise((resolve) => {
+      if (window.QRious) {
+        console.log('QRious already exists');
+        resolve();
+        return;
+      }
 
-    return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js';
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
       script.onload = () => {
-        console.log('QRious 加载成功');
+        console.log('QRious loaded successfully');
         resolve();
       };
       script.onerror = () => {
-        console.log('QRious 加载失败');
-        resolve(); // 不要 reject，继续执行
+        console.log('QRious loading failed');
+        resolve(); // Don't reject, continue execution
       };
       document.head.appendChild(script);
     });
   }
 
   /**
-   * 加载 jsQR 库
+   * Load jsQR library
    */
   async loadJsQR() {
-    if (window.jsQR) {
-      console.log('jsQR 已存在');
-      return;
-    }
-
-    // 尝试多个 CDN 源
-    const cdnUrls = [
-      'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
-      'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js'
-    ];
-
-    for (const url of cdnUrls) {
-      try {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = url;
-          script.onload = () => {
-            console.log(`jsQR 从 ${url} 加载成功`);
-            resolve();
-          };
-          script.onerror = () => {
-            console.log(`jsQR 从 ${url} 加载失败`);
-            reject();
-          };
-          document.head.appendChild(script);
-        });
-        
-        // 如果成功加载，跳出循环
-        if (window.jsQR) {
-          break;
-        }
-      } catch (error) {image.pngimage.pngimage.pngimage.png
-        console.log(`尝试下一个 CDN...`);
-        continue;
+    return new Promise(async (resolve) => {
+      if (window.jsQR) {
+        console.log('jsQR already exists');
+        resolve();
+        return;
       }
-    }
 
-    if (!window.jsQR) {
-      console.warn('所有 jsQR CDN 源都加载失败，二维码解析功能将不可用');
-    }
+      // Try multiple CDN sources
+      const cdnUrls = [
+        'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
+        'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js'
+      ];
+
+      for (let i = 0; i < cdnUrls.length; i++) {
+        const url = cdnUrls[i];
+        try {
+          await this.loadScript(url);
+          if (window.jsQR) {
+            console.log(`jsQR loaded successfully from ${url}`);
+            resolve();
+            return;
+          } else {
+            console.log(`jsQR loading failed from ${url}`);
+          }
+        } catch (error) {
+          // If successful loading, break the loop
+          if (window.jsQR) {
+            resolve();
+            return;
+          }
+        }
+        console.log(`Trying next CDN...`);
+      }
+
+      if (!window.jsQR) {
+        console.warn('All jsQR CDN sources failed to load, QR code parsing will be unavailable');
+      }
+      resolve();
+    });
   }
 
   /**
-   * 动态加载脚本
+   * Dynamically load script
    */
   loadScript(src) {
     return new Promise((resolve, reject) => {
@@ -129,130 +123,127 @@ class EsimSwapApp {
   }
 
   /**
-   * 带备选方案的脚本加载
+   * Script loading with fallback
    */
   async loadScriptWithFallback(urls) {
     for (let i = 0; i < urls.length; i++) {
       try {
         await this.loadScript(urls[i]);
-        console.log(`成功加载: ${urls[i]}`);
+        console.log(`Successfully loaded: ${urls[i]}`);
         return;
       } catch (error) {
-        console.warn(`加载失败: ${urls[i]}, 尝试下一个...`);
+        console.warn(`Loading failed: ${urls[i]}, trying next...`);
         if (i === urls.length - 1) {
-          throw new Error(`所有 CDN 都加载失败: ${urls.join(', ')}`);
+          throw new Error(`All CDNs failed to load: ${urls.join(', ')}`);
         }
       }
     }
   }
 
   /**
-   * 绑定事件监听器
+   * Bind event listeners
    */
   bindEvents() {
-    // 输入模式切换
+    // Input mode switching
     document.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode));
+      btn.addEventListener('click', (e) => this.switchInputMode(e.target.dataset.mode));
     });
 
-    // 显示模式切换
+    // Display mode switching
     document.querySelectorAll('.display-tab').forEach(tab => {
       tab.addEventListener('click', (e) => this.switchDisplayMode(e.target.dataset.mode));
     });
 
-    // 复制按钮
+    // Copy buttons
     document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => this.copyToClipboard(e.target.dataset.copy));
+      btn.addEventListener('click', (e) => this.copyToClipboard(e.target.closest('.copy-btn').dataset.copy));
     });
 
-    // 生成二维码
+    // Generate QR code
     document.getElementById('generateBtn').addEventListener('click', () => this.generateQR());
 
-    // 文件上传事件现在通过HTML内联事件处理
-    console.log('使用HTML内联事件处理文件上传');
+    // File upload events now handled through HTML inline events
+    console.log('Using HTML inline event handling for file upload');
 
-    // 操作按钮
-    document.getElementById('downloadBtn')?.addEventListener('click', () => this.downloadQR());
-    document.getElementById('copyBtn')?.addEventListener('click', () => this.copyLPA());
-    document.getElementById('clearBtn')?.addEventListener('click', () => this.clearResults());
+    // Action buttons
+    document.getElementById('downloadBtn').addEventListener('click', () => this.downloadQR());
+    document.getElementById('copyBtn').addEventListener('click', () => this.copyLPA());
+    document.getElementById('clearBtn').addEventListener('click', () => this.clearResults());
+
+    // Set up drag and drop
+    this.setupDragAndDrop();
   }
 
   /**
-   * 设置拖拽上传
+   * Set up drag and drop upload
    */
   setupDragAndDrop() {
     const uploadArea = document.getElementById('uploadArea');
-    
+    if (!uploadArea) return;
+
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
       uploadArea.addEventListener(eventName, (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('拖拽事件:', eventName);
+        console.log('Drag event:', eventName);
       });
     });
 
     ['dragenter', 'dragover'].forEach(eventName => {
       uploadArea.addEventListener(eventName, () => {
-        uploadArea.classList.add('dragover');
+        uploadArea.classList.add('drag-over');
       });
     });
 
     ['dragleave', 'drop'].forEach(eventName => {
       uploadArea.addEventListener(eventName, () => {
-        uploadArea.classList.remove('dragover');
+        uploadArea.classList.remove('drag-over');
       });
     });
 
     uploadArea.addEventListener('drop', (e) => {
       const files = e.dataTransfer.files;
       if (files.length > 0) {
-        this.processFile(files[0]);
+        this.handleFile(files[0]);
       }
     });
   }
 
   /**
-   * 切换输入模式
+   * Switch input mode
    */
-  switchMode(mode) {
-    this.currentMode = mode;
-    
-    // 更新按钮状态
+  switchInputMode(mode) {
+    // Update button state
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.mode === mode);
     });
 
-    // 切换输入区域
+    // Switch input area
     document.getElementById('combinedInput').style.display = mode === 'combined' ? 'block' : 'none';
     document.getElementById('separatedInput').style.display = mode === 'separated' ? 'block' : 'none';
   }
 
   /**
-   * 切换显示模式
+   * Switch display mode
    */
   switchDisplayMode(mode) {
-    // 更新标签状态
+    // Update tab state
     document.querySelectorAll('.display-tab').forEach(tab => {
-      tab.classList.remove('active');
+      tab.classList.toggle('active', tab.dataset.mode === mode);
     });
-    document.querySelector(`.display-tab[data-mode="${mode}"]`).classList.add('active');
 
-    // 切换显示内容
-    document.querySelectorAll('.display-content').forEach(content => {
-      content.classList.remove('active');
-    });
-    
-    const targetId = mode === 'lpa' ? 'displayLPA' : 'displaySeparated';
-    document.getElementById(targetId).classList.add('active');
+    // Switch display content
+    document.getElementById('displayLPA').classList.toggle('active', mode === 'lpa');
+    document.getElementById('displaySeparated').classList.toggle('active', mode === 'separated');
   }
 
   /**
-   * 复制到剪贴板
+   * Copy to clipboard
    */
   async copyToClipboard(type) {
     let text = '';
     
-    switch(type) {
+    switch (type) {
       case 'lpa':
         text = this.currentLPA || '';
         break;
@@ -268,774 +259,817 @@ class EsimSwapApp {
     }
 
     if (!text) {
-      this.showNotification('没有可复制的内容', 'warning');
+      this.showNotification('no_content_to_copy', 'warning');
       return;
     }
 
     try {
       await navigator.clipboard.writeText(text);
-      this.showNotification('已复制到剪贴板', 'success');
+      this.showNotification('copied_to_clipboard', 'success');
     } catch (error) {
-      // 降级方案
+      // Fallback method
       const textArea = document.createElement('textarea');
       textArea.value = text;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      this.showNotification('已复制到剪贴板', 'success');
+      this.showNotification('copied_to_clipboard', 'success');
     }
   }
 
   /**
-   * 生成二维码
+   * Generate QR code
    */
   async generateQR() {
     try {
       this.showLoading('generateBtn');
       
-      // 获取输入
+      // Get input
       const input = document.getElementById('combinedText').value.trim();
       if (!input) {
-        this.showNotification('请输入 eSIM 配置信息', 'warning');
+        this.showNotification('enter_esim_config', 'warning');
         return;
       }
       
-      // 简单解析
+      // Simple parsing
       const parts = input.split('$');
-      let smdpAddress, activationCode, password = '';
-      
-      if (parts[0] === '1' && parts.length >= 3) {
-        smdpAddress = parts[1];
-        activationCode = parts[2];
-        password = parts[3] || '';
-      } else if (parts.length >= 2) {
-        smdpAddress = parts[0];
-        activationCode = parts[1];
-        password = parts[2] || '';
+      let smdpAddress, activationCode, password;
+
+      if (parts.length >= 2) {
+        if (parts[0] === '1' || parts[0].startsWith('LPA:1')) {
+          // Format: 1$smdp$activation or LPA:1$smdp$activation
+          smdpAddress = parts[1];
+          activationCode = parts[2];
+          password = parts[3] || '';
+        } else {
+          // Format: smdp$activation$password
+          smdpAddress = parts[0].replace('LPA:', '');
+          activationCode = parts[1];
+          password = parts[2] || '';
+        }
       } else {
-        // 显示格式错误对话框
+        // Show format error dialog
         this.showFormatErrorDialog(input);
         return;
       }
+
+      // Generate LPA string
+      const lpaString = this.generateLPAString(smdpAddress, activationCode, password);
       
-      // 生成 LPA 字符串
-      let lpaString = `LPA:1$${smdpAddress}$${activationCode}`;
-      if (password) {
-        lpaString += `$${password}`;
-      }
-      
-      // 生成二维码
+      // Generate QR code
       let qrCanvas;
       if (window.QRious) {
         const qr = new QRious({
-          element: document.createElement('canvas'),
           value: lpaString,
-          size: 256,
+          size: 300,
           level: 'M'
         });
         qrCanvas = qr.canvas;
       } else {
-        qrCanvas = this.generateSimpleQR(lpaString);
+        // Use built-in simple QR generator
+        qrCanvas = this.generateSimpleQR(lpaString, 300);
       }
 
-      // 显示二维码
-      const qrDisplay = document.getElementById('qrDisplay');
-      const qrContainer = document.getElementById('qrContainer');
-      
-      if (qrContainer) {
-        qrContainer.innerHTML = '';
-        qrContainer.appendChild(qrCanvas);
-      }
-      
-      if (qrDisplay) {
-        qrDisplay.style.display = 'block';
-        qrDisplay.scrollIntoView({ behavior: 'smooth' });
-      }
-      
-      // 更新显示内容
-      const lpaAddressDisplay = document.getElementById('lpaAddressDisplay');
-      const smdpDisplay = document.getElementById('smdpDisplay');
-      const activationDisplay = document.getElementById('activationDisplay');
-      const passwordDisplay = document.getElementById('passwordDisplay');
-      const passwordDisplayItem = document.getElementById('passwordDisplayItem');
-      
-      if (lpaAddressDisplay) {
-        lpaAddressDisplay.textContent = lpaString;
-      }
-      
-      if (smdpDisplay) {
-        smdpDisplay.textContent = smdpAddress;
-      }
-      
-      if (activationDisplay) {
-        activationDisplay.textContent = activationCode;
-      }
-      
-      if (passwordDisplay && passwordDisplayItem) {
-        if (password) {
-          passwordDisplay.textContent = password;
-          passwordDisplayItem.style.display = 'block';
-        } else {
-          passwordDisplayItem.style.display = 'none';
+      // Display QR code
+      this.displayQRCode({
+        qrCode: { canvas: qrCanvas },
+        esimData: {
+          lpaString,
+          smdpAddress,
+          activationCode,
+          activationPassword: password
         }
-      }
-      
-      // 存储数据
+      });
+
+      // Update display content
+      this.updateDisplayModes({
+        esimData: {
+          lpaString,
+          smdpAddress,
+          activationCode,
+          activationPassword: password
+        }
+      });
+
+      // Store data
       this.currentLPA = lpaString;
       this.currentParsed = { smdpAddress, activationCode, activationPassword: password };
       this.currentQRData = { qrCode: { canvas: qrCanvas } };
       
-      this.showNotification('二维码生成成功！', 'success');
+      this.showNotification('qr_generated_success', 'success');
 
     } catch (error) {
-      console.error('生成失败:', error);
-      this.showGenerationErrorDialog(error.message || '未知错误');
+      console.error('Generation failed:', error);
+      this.showGenerationErrorDialog(error.message || 'Unknown error');
     } finally {
       this.hideLoading('generateBtn');
     }
   }
 
   /**
-   * 解析 eSIM 输入
+   * Parse eSIM input
    */
-  parseEsimInput(input) {
+  parseESIMInput(input) {
     try {
-      // 清理输入
-      const cleanInput = input.trim().replace(/\s+/g, '').replace(/[\r\n\t]/g, '');
-      console.log('解析输入:', input, '清理后:', cleanInput);
-      
+      // Clean input
+      const cleanInput = input.trim();
+      console.log('Parsing input:', input, 'cleaned:', cleanInput);
+
       if (!cleanInput) {
-        return { success: false, error: '输入不能为空' };
+        return { success: false, error: 'Input cannot be empty' };
       }
 
       let smdpAddress, activationCode, password = '';
 
-      // 检查是否已包含 LPA 前缀
-      if (cleanInput.startsWith('LPA:1$')) {
-        const content = cleanInput.substring(6);
+      // Check if it already contains LPA prefix
+      if (cleanInput.startsWith('LPA:')) {
+        const content = cleanInput.substring(4); // Remove "LPA:"
         const parts = content.split('$');
-        
-        if (parts.length < 2) {
-          return { success: false, error: 'LPA 格式错误：缺少必要信息' };
+        if (parts.length < 3) {
+          return { success: false, error: 'LPA format error: missing required information' };
         }
-        
-        smdpAddress = parts[0];
-        activationCode = parts[1];
-        password = parts[2] || '';
-      }
-      // 检查分隔符格式
-      else if (cleanInput.includes('$')) {
-        const parts = cleanInput.split('$');
-        
-        if (parts.length < 2) {
-          return { success: false, error: '格式错误：至少需要 SM-DP+ 地址和激活码' };
-        }
-        
-        if (parts[0] === '1' && parts.length >= 3) {
-          // 格式：1$smdp$activation$password
-          smdpAddress = parts[1];
-          activationCode = parts[2];
-          password = parts[3] || '';
-          console.log('解析为格式1:', { smdpAddress, activationCode, password });
+        // Skip version number (parts[0] should be "1")
+        smdpAddress = parts[1];
+        activationCode = parts[2];
+        password = parts[3] || '';
+      } else {
+        // Check separator format
+        if (cleanInput.includes('$')) {
+          const parts = cleanInput.split('$');
+          if (parts.length < 2) {
+            return { success: false, error: 'Format error: at least SM-DP+ address and activation code required' };
+          }
+          
+          if (parts[0] === '1') {
+            // Format: 1$smdp$activation$password
+            smdpAddress = parts[1];
+            activationCode = parts[2];
+            password = parts[3] || '';
+            console.log('Parsed as format1:', { smdpAddress, activationCode, password });
+          } else {
+            // Format: smdp$activation$password
+            smdpAddress = parts[0];
+            activationCode = parts[1];
+            password = parts[2] || '';
+            console.log('Parsed as format2:', { smdpAddress, activationCode, password });
+          }
         } else {
-          // 格式：smdp$activation$password
-          smdpAddress = parts[0];
-          activationCode = parts[1];
-          password = parts[2] || '';
-          console.log('解析为格式2:', { smdpAddress, activationCode, password });
-        }
-      }
-      // 尝试其他分隔符
-      else {
-        const separators = ['|', ';', ':', ',', ' '];
-        let found = false;
-        
-        for (const sep of separators) {
-          if (cleanInput.includes(sep)) {
-            const parts = cleanInput.split(sep).filter(part => part.trim());
-            if (parts.length >= 2) {
-              smdpAddress = parts[0].trim();
-              activationCode = parts[1].trim();
-              password = parts[2]?.trim() || '';
-              found = true;
-              break;
+          // Try other separators
+          const separators = [' ', ',', '|', ';', '\t', '\n'];
+          let parsed = false;
+          
+          for (const sep of separators) {
+            if (cleanInput.includes(sep)) {
+              const parts = cleanInput.split(sep).filter(p => p.trim());
+              if (parts.length >= 2) {
+                smdpAddress = parts[0].trim();
+                activationCode = parts[1].trim();
+                password = parts[2] ? parts[2].trim() : '';
+                parsed = true;
+                break;
+              }
             }
           }
-        }
-        
-        if (!found) {
-          return { success: false, error: '无法识别输入格式，请使用标准格式' };
+          
+          if (!parsed) {
+            return { success: false, error: 'Unable to recognize input format, please use standard format' };
+          }
         }
       }
 
-      // 验证结果
-      console.log('验证前的数据:', { smdpAddress, activationCode, password });
+      // Validate results
+      console.log('Data before validation:', { smdpAddress, activationCode, password });
       
-      if (!this.isValidSmdpAddress(smdpAddress)) {
-        console.log('SM-DP+ 地址验证失败:', smdpAddress);
-        return { success: false, error: 'SM-DP+ 地址格式无效' };
+      if (!this.validateSMDPAddress(smdpAddress)) {
+        console.log('SM-DP+ address validation failed:', smdpAddress);
+        return { success: false, error: 'Invalid SM-DP+ address format' };
       }
       
-      if (!this.isValidActivationCode(activationCode)) {
-        console.log('激活码验证失败:', activationCode);
-        return { success: false, error: '激活码格式无效' };
+      if (!this.validateActivationCode(activationCode)) {
+        console.log('Activation code validation failed:', activationCode);
+        return { success: false, error: 'Invalid activation code format' };
       }
-      
-      console.log('验证通过，返回数据:', { smdpAddress, activationCode, password });
 
+      console.log('Validation passed, returning data:', { smdpAddress, activationCode, password });
+      
       return {
         success: true,
         data: { smdpAddress, activationCode, password }
       };
-
     } catch (error) {
-      return { success: false, error: '解析过程中发生错误' };
+      console.error('Error during parsing:', error);
+      return { success: false, error: 'Error occurred during parsing' };
     }
   }
 
   /**
-   * 生成 LPA 字符串
+   * Generate LPA string
    */
-  generateLpaString(data) {
-    let lpaString = `LPA:1$${data.smdpAddress}$${data.activationCode}`;
-    if (data.password) {
-      lpaString += `$${data.password}`;
+  generateLPAString(smdpAddress, activationCode, password = '') {
+    if (password) {
+      return `LPA:1$${smdpAddress}$${activationCode}$${password}`;
+    } else {
+      return `LPA:1$${smdpAddress}$${activationCode}`;
     }
-    return lpaString;
   }
 
   /**
-   * 验证 SM-DP+ 地址
+   * Validate SM-DP+ address
    */
-  isValidSmdpAddress(address) {
+  validateSMDPAddress(address) {
     if (!address || typeof address !== 'string') return false;
-    
-    const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    return domainPattern.test(address) && address.includes('.');
+    // Basic domain format check
+    return /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(address.trim());
   }
 
   /**
-   * 验证激活码
+   * Validate activation code
    */
-  isValidActivationCode(code) {
+  validateActivationCode(code) {
     if (!code || typeof code !== 'string') return false;
-    
-    const codePattern = /^[A-Z0-9-]+$/i;
-    return codePattern.test(code) && code.length >= 5 && code.length <= 50;
+    // Basic activation code format check
+    return /^[A-Z0-9-]{8,}$/i.test(code.trim());
   }
 
   /**
-   * 显示二维码
+   * Display QR code
    */
   displayQRCode(data) {
-    const qrDisplay = document.getElementById('qrDisplay');
-    const qrContainer = document.getElementById('qrContainer');
-
-    console.log('显示二维码，元素检查:', {
-      qrDisplay: !!qrDisplay,
-      qrContainer: !!qrContainer
+    console.log('Displaying QR code, element check:', {
+      qrDisplay: !!document.getElementById('qrDisplay'),
+      qrContainer: !!document.getElementById('qrContainer')
     });
 
+    const qrDisplay = document.getElementById('qrDisplay');
+    const qrContainer = document.getElementById('qrContainer');
+    
     if (!qrDisplay || !qrContainer) {
-      console.error('找不到必要的显示元素');
-      this.showNotification('页面元素加载异常，请刷新页面', 'error');
+      console.error('Cannot find necessary display elements');
+      this.showNotification('page_element_error', 'error');
       return;
     }
 
-    // 清空容器
+    // Clear container
     qrContainer.innerHTML = '';
-    
-    // 添加二维码到主容器
+
+    // Add QR code to main container
     qrContainer.appendChild(data.qrCode.canvas);
-    
-    // 更新两种显示方式的内容
+
+    // Update both display modes
     this.updateDisplayModes(data);
-    
-    // 存储数据供下载和复制使用
+
+    // Store data for download and copy use
     this.currentQRData = data;
-    this.currentLPA = data.esimData.lpaString;
-    this.currentParsed = data.esimData;
     
+    // Show display area
     qrDisplay.style.display = 'block';
     qrDisplay.scrollIntoView({ behavior: 'smooth' });
   }
 
   /**
-   * 更新显示模式内容
+   * Update display mode content
    */
   updateDisplayModes(data) {
-    console.log('更新显示模式，数据:', data);
+    console.log('Updating display mode, data:', data);
 
-    // 更新 LPA 地址显示
+    // Update LPA address display
     const lpaAddressDisplay = document.getElementById('lpaAddressDisplay');
-    if (lpaAddressDisplay) {
+    if (lpaAddressDisplay && data.esimData?.lpaString) {
       lpaAddressDisplay.textContent = data.esimData.lpaString;
-      console.log('LPA地址已更新:', data.esimData.lpaString);
+      console.log('LPA address updated:', data.esimData.lpaString);
     } else {
-      console.error('找不到 lpaAddressDisplay 元素');
+      console.error('Cannot find lpaAddressDisplay element');
     }
 
-    // 更新分离信息显示
+    // Update separated information display
     const smdpDisplay = document.getElementById('smdpDisplay');
     const activationDisplay = document.getElementById('activationDisplay');
     const passwordDisplay = document.getElementById('passwordDisplay');
     const passwordDisplayItem = document.getElementById('passwordDisplayItem');
 
-    console.log('eSIM数据:', data.esimData);
-    console.log('找到的元素:', {
+    console.log('eSIM data:', data.esimData);
+    console.log('Found elements:', {
       smdpDisplay: !!smdpDisplay,
       activationDisplay: !!activationDisplay,
       passwordDisplay: !!passwordDisplay,
       passwordDisplayItem: !!passwordDisplayItem
     });
-    
-    if (smdpDisplay) {
-      smdpDisplay.textContent = data.esimData.smdpAddress || '-';
-      console.log('SM-DP+地址已更新:', data.esimData.smdpAddress);
+
+    if (smdpDisplay && data.esimData?.smdpAddress) {
+      smdpDisplay.textContent = data.esimData.smdpAddress;
+      console.log('SM-DP+ address updated:', data.esimData.smdpAddress);
     }
-    
-    if (activationDisplay) {
-      activationDisplay.textContent = data.esimData.activationCode || '-';
-      console.log('激活码已更新:', data.esimData.activationCode);
+
+    if (activationDisplay && data.esimData?.activationCode) {
+      activationDisplay.textContent = data.esimData.activationCode;
+      console.log('Activation code updated:', data.esimData.activationCode);
     }
-    
+
     if (passwordDisplay && passwordDisplayItem) {
-      if (data.esimData.activationPassword || data.esimData.password) {
+      if (data.esimData?.activationPassword || data.esimData?.password) {
         passwordDisplay.textContent = data.esimData.activationPassword || data.esimData.password;
         passwordDisplayItem.style.display = 'block';
-        console.log('密码已更新:', data.esimData.activationPassword || data.esimData.password);
+        console.log('Password updated:', data.esimData.activationPassword || data.esimData.password);
       } else {
         passwordDisplayItem.style.display = 'none';
-        console.log('无密码，隐藏密码项');
+        console.log('No password, hiding password item');
       }
     }
   }
 
   /**
-   * 检测是否可能是 eSIM 数据
+   * Detect if it might be eSIM data
    */
-  isPotentialESIMData(data) {
-    const cleanData = data.trim();
+  isPotentialESIMData(text) {
+    const cleanData = text.trim().toLowerCase();
     
-    // 检查是否包含 eSIM 相关的关键信息
+    // Check if it contains eSIM-related key information
     return (
-      cleanData.includes('$') ||  // 包含分隔符
-      cleanData.includes('.') ||  // 包含域名
-      /[A-Z0-9-]{10,}/.test(cleanData) ||  // 包含长的字母数字串（可能是激活码）
-      cleanData.toLowerCase().includes('lpa') ||  // 包含 LPA 关键字
-      cleanData.toLowerCase().includes('esim')    // 包含 eSIM 关键字
+      cleanData.includes('$') ||  // Contains separator
+      cleanData.includes('.') ||  // Contains domain
+      /[A-Z0-9-]{10,}/.test(cleanData) ||  // Contains long alphanumeric string (possibly activation code)
+      cleanData.toLowerCase().includes('lpa') ||  // Contains LPA keyword
+      cleanData.toLowerCase().includes('esim')    // Contains eSIM keyword
     );
   }
 
   /**
-   * 显示提取确认对话框
+   * Show extraction confirmation dialog
    */
-  showExtractionDialog(qrData) {
-    // 创建对话框
+  showExtractionDialog(detectedText) {
+    // Create dialog
     const dialog = document.createElement('div');
-    dialog.className = 'extraction-dialog';
+    dialog.className = 'dialog-overlay';
     dialog.innerHTML = `
-      <div class="dialog-overlay"></div>
       <div class="dialog-content">
-        <div class="dialog-header">
-          <h3>⚠️ LPA信息不完整或错误</h3>
-        </div>
         <div class="dialog-body">
-          <p><strong>检测到的二维码内容：</strong></p>
-          <div class="detected-content">${qrData}</div>
-          <div class="problem-explanation">
-            <p><strong>⚠️ 问题：</strong>此二维码格式不符合标准，iPhone无法直接识别。</p>
-            <p><strong>💡 常见原因：</strong></p>
-            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-              <li>缺少 "LPA:" 前缀</li>
-              <li>缺少版本号信息</li>
-              <li>运营商使用了非标准格式</li>
+          <h3>⚠️ Incomplete or Incorrect LPA Information</h3>
+          
+          <div class="detected-content">
+          <p><strong>Detected QR code content:</strong></p>
+          <div class="code-block">${detectedText}</div>
+          
+            <p><strong>⚠️ Problem:</strong> This QR code format does not comply with standards and cannot be directly recognized by iPhone.</p>
+            <p><strong>💡 Common causes:</strong></p>
+            <ul>
+              <li>Missing "LPA:" prefix</li>
+              <li>Missing version number information</li>
+              <li>Carrier used non-standard format</li>
             </ul>
           </div>
-          <p><strong>🔧 解决方案：</strong>是否要提取原始信息并重新生成标准格式的二维码？</p>
-        </div>
-        <div class="dialog-actions">
-          <button class="btn btn-secondary" onclick="this.closest('.extraction-dialog').remove()">
-            <span>❌</span> 取消
-          </button>
-          <button class="btn btn-primary" onclick="window.esimApp.confirmExtraction('${qrData.replace(/'/g, "\\'")}'); this.closest('.extraction-dialog').remove();">
-            <span>✅</span> 是，提取并修复
-          </button>
+          <p><strong>🔧 Solution:</strong> Do you want to extract the original information and regenerate a standard format QR code?</p>
+          
+          <div class="dialog-actions">
+            <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel">
+              <span>❌</span> Cancel
+            </button>
+            <button onclick="window.esimParser.confirmExtraction('${detectedText.replace(/'/g, "\\'")}'); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+              <span>✅</span> Yes, Extract and Fix
+            </button>
+          </div>
         </div>
       </div>
     `;
-    
-    // 添加样式
-    dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    // Add styles
+    if (!document.querySelector('#extraction-dialog-styles')) {
+      const style = document.createElement('style');
+      style.id = 'extraction-dialog-styles';
+      style.textContent = `
+        .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          backdrop-filter: blur(5px);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Add internal styles
+    const internalStyle = document.createElement('style');
+    internalStyle.textContent = `
+      .dialog-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--primary-purple);
+      }
+      
+      .dialog-body h3 {
+        color: var(--primary-purple);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .detected-content {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid var(--primary-purple);
+      }
+      
+      .code-block {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        word-break: break-all;
+        margin: 0.5rem 0;
+      }
+      
+      .dialog-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      
+      .btn-cancel, .btn-confirm {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-cancel {
+        background: #e2e8f0;
+        color: #4a5568;
+      }
+      
+      .btn-cancel:hover {
+        background: #cbd5e0;
+      }
+      
+      .btn-confirm {
+        background: var(--primary-purple);
+        color: white;
+      }
+      
+      .btn-confirm:hover {
+        background: var(--secondary-purple);
+        transform: translateY(-2px);
+      }
     `;
-    
-    // 添加内部样式
-    const overlay = dialog.querySelector('.dialog-overlay');
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    `;
-    
-    const content = dialog.querySelector('.dialog-content');
-    content.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-      z-index: 1001;
-    `;
-    
-    const header = dialog.querySelector('.dialog-header');
-    header.style.cssText = `
-      padding: 1.5rem 1.5rem 0;
-      color: var(--text-primary);
-    `;
-    
-    const body = dialog.querySelector('.dialog-body');
-    body.style.cssText = `
-      padding: 1rem 1.5rem;
-      color: var(--text-secondary);
-    `;
-    
-    const detectedContent = dialog.querySelector('.detected-content');
-    detectedContent.style.cssText = `
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      font-family: monospace;
-      font-size: 0.9rem;
-      word-break: break-all;
-      color: var(--text-primary);
-    `;
-    
-    const actions = dialog.querySelector('.dialog-actions');
-    actions.style.cssText = `
-      padding: 0 1.5rem 1.5rem;
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-    `;
-    
+    dialog.appendChild(internalStyle);
+
     document.body.appendChild(dialog);
-    
-    // 点击遮罩关闭
-    overlay.addEventListener('click', () => {
-      dialog.remove();
+
+    // Click overlay to close
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.remove();
+      }
     });
   }
 
   /**
-   * 确认提取信息
+   * Confirm extraction
    */
-  confirmExtraction(qrData) {
-    // 显示第二个确认对话框
-    this.showExtractionConfirmDialog(qrData);
+  confirmExtraction(detectedText) {
+    // Show second confirmation dialog
+    this.showExtractionConfirmDialog(detectedText);
   }
 
   /**
-   * 显示提取确认对话框
+   * Show extraction confirmation dialog
    */
-  showExtractionConfirmDialog(qrData) {
+  showExtractionConfirmDialog(detectedText) {
+    // Create dialog
     const dialog = document.createElement('div');
-    dialog.className = 'extraction-confirm-dialog';
+    dialog.className = 'dialog-overlay';
     dialog.innerHTML = `
-      <div class="dialog-overlay"></div>
       <div class="dialog-content">
-        <div class="dialog-header">
-          <h3>🔧 准备提取信息</h3>
-        </div>
         <div class="dialog-body">
-          <p><strong>即将执行：</strong></p>
-          <ul style="margin: 1rem 0; padding-left: 1.5rem;">
-            <li>将原始信息填充到左侧输入框</li>
-            <li>您可以手动编辑和修正信息</li>
-            <li>点击"生成二维码"创建正确的二维码</li>
+          <h3>🔧 Prepare to Extract Information</h3>
+          
+          <div class="extraction-info">
+          <p><strong>About to execute:</strong></p>
+          <ul>
+            <li>Fill original information into left input box</li>
+            <li>You can manually edit and correct the information</li>
+            <li>Click "Generate QR Code" to create correct QR code</li>
           </ul>
-          <p><strong>原始信息：</strong></p>
-          <div class="detected-content">${qrData}</div>
-        </div>
-        <div class="dialog-actions">
-          <button class="btn btn-secondary" onclick="this.closest('.extraction-confirm-dialog').remove()">
-            <span>⬅️</span> 返回
-          </button>
-          <button class="btn btn-primary" onclick="window.esimApp.executeExtraction('${qrData.replace(/'/g, "\\'")}'); this.closest('.extraction-confirm-dialog').remove();">
-            <span>🚀</span> 确认提取
-          </button>
+          <p><strong>Original information:</strong></p>
+          <div class="code-block">${detectedText}</div>
+          </div>
+          
+          <div class="dialog-actions">
+            <button onclick="this.closest('.dialog-overlay').remove(); window.esimParser.showExtractionDialog('${detectedText.replace(/'/g, "\\'")}');" class="btn-cancel">
+              <span>⬅️</span> Back
+            </button>
+            <button onclick="window.esimParser.executeExtraction('${detectedText.replace(/'/g, "\\'")}'); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+              <span>🚀</span> Confirm Extraction
+            </button>
+          </div>
         </div>
       </div>
     `;
-    
-    // 添加样式（复用之前的样式）
-    dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1002;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    // Add styles (reuse previous styles)
+    if (!document.querySelector('#extraction-dialog-styles')) {
+      const style = document.createElement('style');
+      style.id = 'extraction-dialog-styles';
+      style.textContent = `
+        .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          backdrop-filter: blur(5px);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Add internal styles
+    const internalStyle = document.createElement('style');
+    internalStyle.textContent = `
+      .dialog-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--primary-purple);
+      }
+      
+      .dialog-body h3 {
+        color: var(--primary-purple);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .extraction-info {
+        background: #f0f8ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid var(--primary-purple);
+      }
+      
+      .code-block {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        word-break: break-all;
+        margin: 0.5rem 0;
+      }
+      
+      .dialog-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      
+      .btn-cancel, .btn-confirm {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-cancel {
+        background: #e2e8f0;
+        color: #4a5568;
+      }
+      
+      .btn-cancel:hover {
+        background: #cbd5e0;
+      }
+      
+      .btn-confirm {
+        background: var(--primary-purple);
+        color: white;
+      }
+      
+      .btn-confirm:hover {
+        background: var(--secondary-purple);
+        transform: translateY(-2px);
+      }
     `;
-    
-    // 添加内部样式
-    const overlay = dialog.querySelector('.dialog-overlay');
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    `;
-    
-    const content = dialog.querySelector('.dialog-content');
-    content.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-      z-index: 1003;
-    `;
-    
-    const header = dialog.querySelector('.dialog-header');
-    header.style.cssText = `
-      padding: 1.5rem 1.5rem 0;
-      color: var(--text-primary);
-    `;
-    
-    const body = dialog.querySelector('.dialog-body');
-    body.style.cssText = `
-      padding: 1rem 1.5rem;
-      color: var(--text-secondary);
-    `;
-    
-    const detectedContent = dialog.querySelector('.detected-content');
-    detectedContent.style.cssText = `
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      font-family: monospace;
-      font-size: 0.9rem;
-      word-break: break-all;
-      color: var(--text-primary);
-    `;
-    
-    const actions = dialog.querySelector('.dialog-actions');
-    actions.style.cssText = `
-      padding: 0 1.5rem 1.5rem;
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-    `;
-    
+    dialog.appendChild(internalStyle);
+
     document.body.appendChild(dialog);
-    
-    // 点击遮罩关闭
-    overlay.addEventListener('click', () => {
-      dialog.remove();
+
+    // Click overlay to close
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.remove();
+      }
     });
   }
 
   /**
-   * 执行提取操作
+   * Execute extraction operation
    */
-  executeExtraction(qrData) {
-    // 填充到输入框
-    const combinedInput = document.getElementById('combinedText');
-    if (combinedInput) {
-      combinedInput.value = qrData;
+  executeExtraction(detectedText) {
+    // Fill into input box
+    const combinedTextInput = document.getElementById('combinedText');
+    if (combinedTextInput) {
+      combinedTextInput.value = detectedText;
       
-      // 高亮显示输入框
-      combinedInput.style.borderColor = '#8b45ff';
-      combinedInput.style.boxShadow = '0 0 0 3px rgba(139, 69, 255, 0.1)';
+      // Highlight input box
+      combinedTextInput.style.border = '2px solid var(--primary-purple)';
+      combinedTextInput.style.boxShadow = '0 0 10px rgba(139, 92, 246, 0.3)';
       
-      // 滚动到输入区域
-      combinedInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Scroll to input area
+      this.focusInputArea();
       
-      // 聚焦输入框
+      // Focus input box
+      combinedTextInput.focus();
+      
+      // Restore style after 3 seconds
       setTimeout(() => {
-        combinedInput.focus();
-      }, 500);
-      
-      // 3秒后恢复样式
-      setTimeout(() => {
-        combinedInput.style.borderColor = '';
-        combinedInput.style.boxShadow = '';
+        combinedTextInput.style.border = '';
+        combinedTextInput.style.boxShadow = '';
       }, 3000);
     }
-    
-    // 显示成功提示
-    this.showNotification('✅ 提取成功！您可以手动编辑信息，然后点击"生成二维码"', 'success');
+
+    // Show success message
+    this.showNotification('extraction_success', 'success');
   }
 
   /**
-   * 尝试修复二维码
+   * Try to fix QR code
    */
   tryFixQRCode(qrData) {
-    console.log('尝试修复二维码:', qrData);
+    console.log('Trying to fix QR code:', qrData);
     
-    // 清理数据
+    // Clean data
     const cleanData = qrData.trim();
+
+    // Check various common problems
     
-    // 检查各种常见问题
-    
-    // 1. 缺少 LPA: 前缀
+    // 1. Missing LPA: prefix
     if (!cleanData.startsWith('LPA:')) {
+      // Check if it looks like valid eSIM data
       if (cleanData.includes('$') && cleanData.split('$').length >= 2) {
-        const fixedLPA = `LPA:${cleanData.startsWith('1$') ? '' : '1$'}${cleanData}`;
-        const parseResult = this.parseLpaString(fixedLPA);
-        if (parseResult.success) {
-          return {
-            success: true,
-            problem: '缺少 LPA: 前缀',
-            fixedLPA: fixedLPA,
-            data: parseResult.data
-          };
-        }
+        const fixed = `LPA:${cleanData.startsWith('1$') ? cleanData : '1$' + cleanData}`;
+        return {
+          success: true,
+          fixed: fixed,
+          original: qrData,
+          problem: 'Missing LPA: prefix',
+          solution: 'Added LPA: prefix and version number'
+        };
       }
     }
-    
-    // 2. 缺少版本号 "1$"
+
+    // 2. Missing version number "1$"
     if (cleanData.startsWith('LPA:') && !cleanData.startsWith('LPA:1$')) {
-      const content = cleanData.substring(4); // 移除 "LPA:"
-      if (content.includes('$')) {
-        const fixedLPA = `LPA:1$${content}`;
-        const parseResult = this.parseLpaString(fixedLPA);
-        if (parseResult.success) {
-          return {
-            success: true,
-            problem: '缺少版本号 "1$"',
-            fixedLPA: fixedLPA,
-            data: parseResult.data
-          };
-        }
+      const content = cleanData.substring(4); // Remove "LPA:"
+      if (content.includes('$') && content.split('$').length >= 2) {
+        const fixed = `LPA:1$${content}`;
+        return {
+          success: true,
+          fixed: fixed,
+          original: qrData,
+          problem: 'Missing version number "1$"',
+          solution: 'Added version number "1$"'
+        };
       }
     }
-    
-    // 3. 格式错误但包含有效信息
-    if (cleanData.includes('$')) {
-      const parts = cleanData.split('$');
-      if (parts.length >= 2) {
-        // 尝试重新组织
-        let smdpAddress = '';
-        let activationCode = '';
+
+    // 3. Format error but contains valid information
+    const parts = cleanData.replace('LPA:', '').split(/[$\s,|;]/);
+    if (parts.length >= 2) {
+      // Try to reorganize
+      const smdpAddress = parts.find(p => p.includes('.'));
+      const activationCode = parts.find(p => /^[A-Z0-9-]{8,}$/i.test(p) && !p.includes('.'));
+      
+      // Find part that looks like domain
+      if (smdpAddress && activationCode) {
+        const password = parts.find(p => p && p !== smdpAddress && p !== activationCode && p !== '1');
+        const fixed = password ? 
+          `LPA:1$${smdpAddress}$${activationCode}$${password}` : 
+          `LPA:1$${smdpAddress}$${activationCode}`;
         
-        // 查找看起来像域名的部分
-        for (const part of parts) {
-          if (part.includes('.') && part.length > 5) {
-            smdpAddress = part;
-          } else if (part.length > 10 && /^[A-Z0-9-]+$/i.test(part)) {
-            activationCode = part;
-          }
-        }
-        
-        if (smdpAddress && activationCode) {
-          const fixedLPA = `LPA:1$${smdpAddress}$${activationCode}`;
-          const parseResult = this.parseLpaString(fixedLPA);
-          if (parseResult.success) {
-            return {
-              success: true,
-              problem: '格式混乱，已重新组织',
-              fixedLPA: fixedLPA,
-              data: parseResult.data
-            };
-          }
-        }
+        return {
+          success: true,
+          fixed: fixed,
+          original: qrData,
+          problem: 'Format confusion, reorganized',
+          solution: 'Reorganized information into standard format'
+        };
       }
     }
-    
-    // 4. 检查是否是纯文本但格式正确
-    if (!cleanData.includes('$') && cleanData.length > 20) {
+
+    // 4. Check if it's plain text but correct format
+    if (this.isPotentialESIMData(cleanData)) {
       return {
         success: false,
-        problem: '不是有效的 eSIM LPA 格式，请手动输入正确的 LPA 字符串'
+        problem: 'Not valid eSIM LPA format, please manually input correct LPA string'
       };
     }
-    
-    // 5. 其他格式问题
+
+    // 5. Other format problems
     return {
       success: false,
-      problem: '无法识别的二维码格式，可能不是 eSIM 配置信息'
+      problem: 'Unrecognizable QR code format, may not be eSIM configuration information'
     };
   }
 
   /**
-   * 显示修复前后对比
+   * Show before/after comparison
    */
-  showFixComparison(originalData, fixedLPA, problem) {
-    // 创建对比显示
+  showFixComparison(original, fixed, problem) {
+    // Create comparison display
     const notification = document.createElement('div');
-    notification.className = 'fix-comparison';
+    notification.className = 'notification info';
     notification.innerHTML = `
-      <div class="fix-comparison-content">
-        <h3>🔧 二维码修复报告</h3>
-        <div class="problem">
-          <strong>发现问题：</strong>${problem}
-        </div>
+      <div class="fix-comparison">
+        <h3>🔧 QR Code Fix Report</h3>
+        <p>
+          <strong>Problem found:</strong>${problem}
+        </p>
         <div class="comparison">
-          <div class="before">
-            <strong>修复前：</strong>
-            <code>${originalData}</code>
+          <div class="before-after">
+            <strong>Before fix:</strong>
+            <code>${original}</code>
           </div>
-          <div class="after">
-            <strong>修复后：</strong>
-            <code>${fixedLPA}</code>
+          <div class="before-after">
+            <strong>After fix:</strong>
+            <code>${fixed}</code>
           </div>
         </div>
-        <div class="tip">
-          💡 建议联系运营商更新二维码格式以符合标准
-        </div>
-        <button onclick="this.parentElement.parentElement.remove()" class="close-btn">关闭</button>
+        <p class="suggestion">
+          💡 Suggest contacting carrier to update QR code format for compliance
+        </p>
+        <button onclick="this.parentElement.parentElement.remove()" class="close-btn">Close</button>
       </div>
     `;
-    
-    // 添加样式
-    notification.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      border: 2px solid var(--primary-purple);
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      z-index: 1001;
-      max-width: 500px;
-      width: 90%;
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .fix-comparison { padding: 1rem; }
+      .fix-comparison h3 { color: var(--primary-purple); margin-bottom: 1rem; }
+      .comparison { margin: 1rem 0; }
+      .before-after { margin: 0.5rem 0; }
+      .before-after code { 
+        display: block; 
+        background: #f5f5f5; 
+        padding: 0.5rem; 
+        border-radius: 4px; 
+        margin-top: 0.25rem;
+        word-break: break-all;
+      }
+      .suggestion { color: var(--text-secondary); font-style: italic; }
+      .close-btn { 
+        background: var(--primary-purple); 
+        color: white; 
+        border: none; 
+        padding: 0.5rem 1rem; 
+        border-radius: 4px; 
+        cursor: pointer; 
+        margin-top: 1rem;
+      }
     `;
-    
-    const content = notification.querySelector('.fix-comparison-content');
-    content.style.cssText = `
-      padding: 1.5rem;
-      color: var(--text-primary);
-    `;
-    
+    notification.appendChild(style);
+
     document.body.appendChild(notification);
-    
-    // 3秒后自动关闭
+
+    // Auto close after 3 seconds
     setTimeout(() => {
       if (notification.parentElement) {
         notification.remove();
@@ -1044,538 +1078,738 @@ class EsimSwapApp {
   }
 
   /**
-   * 显示备用输入提示
+   * Show fallback input prompt
    */
-  showFallbackInput(detectedText = '') {
-    // 如果有检测到的文本，显示提取对话框
-    if (detectedText) {
+  showFallbackInput(detectedText = null) {
+    // If detected text exists, show extraction dialog
+    if (detectedText && this.isPotentialESIMData(detectedText)) {
       this.showExtractionDialog(detectedText);
     } else {
-      // 如果没有检测到文本，显示手动输入提示对话框
+      // If no text detected, show manual input prompt dialog
       this.showManualInputDialog();
     }
   }
 
   /**
-   * 显示手动输入提示对话框
+   * Show manual input prompt dialog
    */
   showManualInputDialog() {
+    // Create dialog
     const dialog = document.createElement('div');
-    dialog.className = 'manual-input-dialog';
+    dialog.className = 'dialog-overlay';
     dialog.innerHTML = `
-      <div class="dialog-overlay"></div>
       <div class="dialog-content">
-        <div class="dialog-header">
-          <h3>📝 需要手动输入</h3>
-        </div>
         <div class="dialog-body">
-          <p><strong>❌ 无法识别二维码内容</strong></p>
-          <p>可能的原因：</p>
-          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-            <li>图片不够清晰</li>
-            <li>不是 eSIM 二维码</li>
-            <li>二维码损坏</li>
+          <h3>📝 Manual Input Required</h3>
+          
+          <div class="manual-input-info">
+          <p><strong>❌ Unable to recognize QR code content</strong></p>
+          <p>Possible reasons:</p>
+          <ul>
+            <li>Image not clear enough</li>
+            <li>Not an eSIM QR code</li>
+            <li>QR code damaged</li>
           </ul>
-          <p><strong>💡 建议：</strong>请在上方输入框中手动输入 LPA 字符串</p>
-          <div style="background: #f0f0f0; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.9rem;">
-            <strong>格式示例：</strong><br>
-            LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD<br>
-            或：1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD
+          <p><strong>💡 Suggestion:</strong> Please manually input LPA string in the input box above</p>
+          <div class="format-examples">
+            <strong>Format examples:</strong><br>
+            <code>LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br>
+            or: <code>1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code>
           </div>
-        </div>
-        <div class="dialog-actions">
-          <button class="btn btn-primary" onclick="this.closest('.manual-input-dialog').remove(); window.esimApp.focusInputArea();">
-            <span>✏️</span> 去输入框填写
-          </button>
+          </div>
+          
+          <div class="dialog-actions">
+            <button onclick="window.esimParser.focusInputArea(); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+              <span>✏️</span> Go to Input Box
+            </button>
+          </div>
         </div>
       </div>
     `;
-    
-    // 添加样式
-    dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    // Add styles
+    if (!document.querySelector('#manual-input-dialog-styles')) {
+      const style = document.createElement('style');
+      style.id = 'manual-input-dialog-styles';
+      style.textContent = `
+        .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          backdrop-filter: blur(5px);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Add internal styles
+    const internalStyle = document.createElement('style');
+    internalStyle.textContent = `
+      .dialog-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--primary-purple);
+      }
+      
+      .dialog-body h3 {
+        color: var(--primary-purple);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .manual-input-info {
+        background: #fff5f5;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #f56565;
+      }
+      
+      .format-examples {
+        background: #f7fafc;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        border: 1px solid #e2e8f0;
+      }
+      
+      .format-examples code {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin: 0.25rem 0;
+      }
+      
+      .dialog-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      
+      .btn-confirm {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--primary-purple);
+        color: white;
+      }
+      
+      .btn-confirm:hover {
+        background: var(--secondary-purple);
+        transform: translateY(-2px);
+      }
     `;
-    
-    // 添加内部样式
-    const overlay = dialog.querySelector('.dialog-overlay');
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    `;
-    
-    const content = dialog.querySelector('.dialog-content');
-    content.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-      z-index: 1001;
-    `;
-    
-    const header = dialog.querySelector('.dialog-header');
-    header.style.cssText = `
-      padding: 1.5rem 1.5rem 0;
-      color: var(--text-primary);
-    `;
-    
-    const body = dialog.querySelector('.dialog-body');
-    body.style.cssText = `
-      padding: 1rem 1.5rem;
-      color: var(--text-secondary);
-    `;
-    
-    const actions = dialog.querySelector('.dialog-actions');
-    actions.style.cssText = `
-      padding: 0 1.5rem 1.5rem;
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    `;
-    
+    dialog.appendChild(internalStyle);
+
     document.body.appendChild(dialog);
-    
-    // 点击遮罩关闭
-    overlay.addEventListener('click', () => {
-      dialog.remove();
+
+    // Click overlay to close
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.remove();
+      }
     });
   }
 
   /**
-   * 显示格式错误对话框
+   * Show format error dialog
    */
   showFormatErrorDialog(input) {
+    // Create dialog
     const dialog = document.createElement('div');
-    dialog.className = 'format-error-dialog';
+    dialog.className = 'dialog-overlay';
     dialog.innerHTML = `
-      <div class="dialog-overlay"></div>
       <div class="dialog-content">
-        <div class="dialog-header">
-          <h3>❌ 输入格式错误</h3>
-        </div>
         <div class="dialog-body">
-          <p><strong>您输入的内容：</strong></p>
-          <div class="detected-content">${input}</div>
-          <p><strong>⚠️ 问题：</strong>格式不正确，无法解析为有效的 eSIM 配置。</p>
-          <p><strong>💡 正确格式：</strong></p>
-          <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 4px solid #4CAF50;">
-            <div style="font-size: 0.9rem; line-height: 1.4;">
-              <strong>标准格式：</strong><br>
-              <code>LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br><br>
-              <strong>简化格式：</strong><br>
-              <code>1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br><br>
-              <strong>基本格式：</strong><br>
+          <h3>❌ Input Format Error</h3>
+          
+          <div class="error-info">
+          <p><strong>Your input:</strong></p>
+          <div class="code-block">${input}</div>
+          <p><strong>⚠️ Problem:</strong> Format incorrect, cannot parse as valid eSIM configuration.</p>
+          <p><strong>💡 Correct formats:</strong></p>
+          <div class="format-examples">
+            <div class="format-item">
+              <strong>Standard format:</strong><br>
+              <code>LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br>
+              <strong>Simplified format:</strong><br>
+              <code>1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br>
+              <strong>Basic format:</strong><br>
               <code>t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code>
             </div>
           </div>
-          <p><strong>🔧 建议：</strong>请检查并修正输入格式，确保包含 SM-DP+ 地址和激活码。</p>
-        </div>
-        <div class="dialog-actions">
-          <button class="btn btn-primary" onclick="this.closest('.format-error-dialog').remove(); window.esimApp.focusInputArea();">
-            <span>✏️</span> 修正输入
-          </button>
+          <p><strong>🔧 Suggestion:</strong> Please check and correct input format, ensure it contains SM-DP+ address and activation code.</p>
+          </div>
+          
+          <div class="dialog-actions">
+            <button onclick="window.esimParser.focusInputArea(); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+              <span>✏️</span> Correct Input
+            </button>
+          </div>
         </div>
       </div>
     `;
-    
-    // 添加样式
-    dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    // Add styles
+    if (!document.querySelector('#format-error-dialog-styles')) {
+      const style = document.createElement('style');
+      style.id = 'format-error-dialog-styles';
+      style.textContent = `
+        .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          backdrop-filter: blur(5px);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Add internal styles
+    const internalStyle = document.createElement('style');
+    internalStyle.textContent = `
+      .dialog-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid #f56565;
+      }
+      
+      .dialog-body h3 {
+        color: #f56565;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .error-info {
+        background: #fff5f5;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #f56565;
+      }
+      
+      .code-block {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        word-break: break-all;
+        margin: 0.5rem 0;
+      }
+      
+      .format-examples {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+        border: 1px solid #e2e8f0;
+      }
+      
+      .format-item code {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin: 0.25rem 0;
+      }
+      
+      .dialog-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      
+      .btn-confirm {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--primary-purple);
+        color: white;
+      }
+      
+      .btn-confirm:hover {
+        background: var(--secondary-purple);
+        transform: translateY(-2px);
+      }
     `;
-    
-    // 添加内部样式
-    const overlay = dialog.querySelector('.dialog-overlay');
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    `;
-    
-    const content = dialog.querySelector('.dialog-content');
-    content.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 600px;
-      width: 90%;
-      position: relative;
-      z-index: 1001;
-    `;
-    
-    const header = dialog.querySelector('.dialog-header');
-    header.style.cssText = `
-      padding: 1.5rem 1.5rem 0;
-      color: var(--text-primary);
-    `;
-    
-    const body = dialog.querySelector('.dialog-body');
-    body.style.cssText = `
-      padding: 1rem 1.5rem;
-      color: var(--text-secondary);
-    `;
-    
-    const detectedContent = dialog.querySelector('.detected-content');
-    detectedContent.style.cssText = `
-      background: #ffebee;
-      border: 1px solid #f44336;
-      border-radius: 6px;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      font-family: monospace;
-      font-size: 0.9rem;
-      word-break: break-all;
-      color: #d32f2f;
-    `;
-    
-    const actions = dialog.querySelector('.dialog-actions');
-    actions.style.cssText = `
-      padding: 0 1.5rem 1.5rem;
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    `;
-    
+    dialog.appendChild(internalStyle);
+
     document.body.appendChild(dialog);
-    
-    // 点击遮罩关闭
-    overlay.addEventListener('click', () => {
-      dialog.remove();
+
+    // Click overlay to close
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.remove();
+      }
     });
   }
 
   /**
-   * 显示生成错误对话框
+   * Show generation error dialog
    */
   showGenerationErrorDialog(errorMessage) {
+    // Create dialog
     const dialog = document.createElement('div');
-    dialog.className = 'generation-error-dialog';
+    dialog.className = 'dialog-overlay';
     dialog.innerHTML = `
-      <div class="dialog-overlay"></div>
       <div class="dialog-content">
-        <div class="dialog-header">
-          <h3>⚠️ 二维码生成失败</h3>
-        </div>
         <div class="dialog-body">
-          <p><strong>❌ 生成过程中出现错误：</strong></p>
+          <h3>⚠️ QR Code Generation Failed</h3>
+          
+          <div class="error-info">
+          <p><strong>❌ Error occurred during generation:</strong></p>
           <div class="error-message">${errorMessage}</div>
-          <p><strong>🔧 可能的解决方案：</strong></p>
-          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-            <li>检查输入格式是否正确</li>
-            <li>确保包含有效的 SM-DP+ 地址</li>
-            <li>确保激活码格式正确</li>
-            <li>尝试刷新页面重新生成</li>
+          <p><strong>🔧 Possible solutions:</strong></p>
+          <ul>
+            <li>Check if input format is correct</li>
+            <li>Ensure valid SM-DP+ address</li>
+            <li>Ensure activation code format is correct</li>
+            <li>Try refreshing page and regenerate</li>
           </ul>
-          <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 4px solid #2196F3;">
-            <strong>💡 提示：</strong>如果问题持续，请尝试使用标准格式：<br>
+          <div class="format-hint">
+            <strong>💡 Tip:</strong> If problem persists, try using standard format:<br>
             <code>LPA:1$smdp-address$activation-code</code>
           </div>
-        </div>
-        <div class="dialog-actions">
-          <button class="btn btn-secondary" onclick="this.closest('.generation-error-dialog').remove();">
-            <span>❌</span> 关闭
-          </button>
-          <button class="btn btn-primary" onclick="this.closest('.generation-error-dialog').remove(); window.esimApp.focusInputArea();">
-            <span>✏️</span> 重新输入
-          </button>
-        </div>
-      </div>
-    `;
-    
-    // 添加样式
-    dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-    
-    // 添加内部样式
-    const overlay = dialog.querySelector('.dialog-overlay');
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    `;
-    
-    const content = dialog.querySelector('.dialog-content');
-    content.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-      z-index: 1001;
-    `;
-    
-    const header = dialog.querySelector('.dialog-header');
-    header.style.cssText = `
-      padding: 1.5rem 1.5rem 0;
-      color: var(--text-primary);
-    `;
-    
-    const body = dialog.querySelector('.dialog-body');
-    body.style.cssText = `
-      padding: 1rem 1.5rem;
-      color: var(--text-secondary);
-    `;
-    
-    const errorMessageElement = dialog.querySelector('.error-message');
-    errorMessageElement.style.cssText = `
-      background: #ffebee;
-      border: 1px solid #f44336;
-      border-radius: 6px;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      font-family: monospace;
-      font-size: 0.9rem;
-      color: #d32f2f;
-    `;
-    
-    const actions = dialog.querySelector('.dialog-actions');
-    actions.style.cssText = `
-      padding: 0 1.5rem 1.5rem;
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    `;
-    
-    document.body.appendChild(dialog);
-    
-    // 点击遮罩关闭
-    overlay.addEventListener('click', () => {
-      dialog.remove();
-    });
-  }
-
-  /**
-   * 显示库加载错误对话框
-   */
-  showLibraryErrorDialog() {
-    const dialog = document.createElement('div');
-    dialog.className = 'library-error-dialog';
-    dialog.innerHTML = `
-      <div class="dialog-overlay"></div>
-      <div class="dialog-content">
-        <div class="dialog-header">
-          <h3>📚 二维码解析库未加载</h3>
-        </div>
-        <div class="dialog-body">
-          <p><strong>⚠️ 问题：</strong>二维码解析功能暂时不可用。</p>
-          <p><strong>🔧 解决方案：</strong></p>
-          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-            <li>刷新页面重新加载库文件</li>
-            <li>检查网络连接是否正常</li>
-            <li>或者直接手动输入 LPA 字符串</li>
-          </ul>
-          <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 4px solid #2196F3;">
-            <strong>💡 提示：</strong>您可以在上方输入框中手动输入 LPA 字符串，<br>
-            格式如：<code>LPA:1$smdp-address$activation-code</code>
+          </div>
+          
+          <div class="dialog-actions">
+            <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel">
+              <span>❌</span> Close
+            </button>
+            <button onclick="window.esimParser.focusInputArea(); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+              <span>✏️</span> Re-enter
+            </button>
           </div>
         </div>
-        <div class="dialog-actions">
-          <button class="btn btn-secondary" onclick="window.location.reload();">
-            <span>🔄</span> 刷新页面
-          </button>
-          <button class="btn btn-primary" onclick="this.closest('.library-error-dialog').remove(); window.esimApp.focusInputArea();">
-            <span>✏️</span> 手动输入
-          </button>
-        </div>
       </div>
     `;
-    
-    // 添加样式
-    dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    // Add styles
+    if (!document.querySelector('#generation-error-dialog-styles')) {
+      const style = document.createElement('style');
+      style.id = 'generation-error-dialog-styles';
+      style.textContent = `
+        .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          backdrop-filter: blur(5px);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Add internal styles
+    const internalStyle = document.createElement('style');
+    internalStyle.textContent = `
+      .dialog-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid #f59e0b;
+      }
+      
+      .dialog-body h3 {
+        color: #f59e0b;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .error-info {
+        background: #fffbeb;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #f59e0b;
+      }
+      
+      .error-message {
+        background: #fef2f2;
+        color: #dc2626;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        margin: 0.5rem 0;
+        border: 1px solid #fecaca;
+      }
+      
+      .format-hint {
+        background: #f0f9ff;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        border: 1px solid #bae6fd;
+      }
+      
+      .format-hint code {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+      }
+      
+      .dialog-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      
+      .btn-cancel, .btn-confirm {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-cancel {
+        background: #e2e8f0;
+        color: #4a5568;
+      }
+      
+      .btn-cancel:hover {
+        background: #cbd5e0;
+      }
+      
+      .btn-confirm {
+        background: var(--primary-purple);
+        color: white;
+      }
+      
+      .btn-confirm:hover {
+        background: var(--secondary-purple);
+        transform: translateY(-2px);
+      }
     `;
-    
-    // 添加内部样式
-    const overlay = dialog.querySelector('.dialog-overlay');
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    `;
-    
-    const content = dialog.querySelector('.dialog-content');
-    content.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-      z-index: 1001;
-    `;
-    
-    const header = dialog.querySelector('.dialog-header');
-    header.style.cssText = `
-      padding: 1.5rem 1.5rem 0;
-      color: var(--text-primary);
-    `;
-    
-    const body = dialog.querySelector('.dialog-body');
-    body.style.cssText = `
-      padding: 1rem 1.5rem;
-      color: var(--text-secondary);
-    `;
-    
-    const actions = dialog.querySelector('.dialog-actions');
-    actions.style.cssText = `
-      padding: 0 1.5rem 1.5rem;
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    `;
-    
+    dialog.appendChild(internalStyle);
+
     document.body.appendChild(dialog);
-    
-    // 点击遮罩关闭
-    overlay.addEventListener('click', () => {
-      dialog.remove();
+
+    // Click overlay to close
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.remove();
+      }
     });
   }
 
   /**
-   * 聚焦到输入区域
+   * Show library loading error dialog
+   */
+  showLibraryErrorDialog() {
+    // Create dialog
+    const dialog = document.createElement('div');
+    dialog.className = 'dialog-overlay';
+    dialog.innerHTML = `
+      <div class="dialog-content">
+        <div class="dialog-body">
+          <h3>📚 QR Code Parsing Library Not Loaded</h3>
+          
+          <div class="library-error-info">
+          <p><strong>⚠️ Problem:</strong> QR code parsing function temporarily unavailable.</p>
+          <p><strong>🔧 Solutions:</strong></p>
+          <ul>
+            <li>Refresh page to reload library files</li>
+            <li>Check if network connection is normal</li>
+            <li>Or directly manually input LPA string</li>
+          </ul>
+          <div class="manual-input-hint">
+            <strong>💡 Tip:</strong> You can manually input LPA string in the input box above,<br>
+            format like: <code>LPA:1$smdp-address$activation-code</code>
+          </div>
+          </div>
+          
+          <div class="dialog-actions">
+            <button onclick="location.reload()" class="btn-refresh">
+              <span>🔄</span> Refresh Page
+            </button>
+            <button onclick="window.esimParser.focusInputArea(); this.closest('.dialog-overlay').remove()" class="btn-manual">
+              <span>✏️</span> Manual Input
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add styles
+    if (!document.querySelector('#library-error-dialog-styles')) {
+      const style = document.createElement('style');
+      style.id = 'library-error-dialog-styles';
+      style.textContent = `
+        .dialog-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          backdrop-filter: blur(5px);
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Add internal styles
+    const internalStyle = document.createElement('style');
+    internalStyle.textContent = `
+      .dialog-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 2px solid #3b82f6;
+      }
+      
+      .dialog-body h3 {
+        color: #3b82f6;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .library-error-info {
+        background: #eff6ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #3b82f6;
+      }
+      
+      .manual-input-hint {
+        background: #f9fafb;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        border: 1px solid #e5e7eb;
+      }
+      
+      .manual-input-hint code {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+      }
+      
+      .dialog-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      
+      .btn-refresh, .btn-manual {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-refresh {
+        background: #3b82f6;
+        color: white;
+      }
+      
+      .btn-refresh:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+      }
+      
+      .btn-manual {
+        background: var(--primary-purple);
+        color: white;
+      }
+      
+      .btn-manual:hover {
+        background: var(--secondary-purple);
+        transform: translateY(-2px);
+      }
+    `;
+    dialog.appendChild(internalStyle);
+
+    document.body.appendChild(dialog);
+
+    // Click overlay to close
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        dialog.remove();
+      }
+    });
+  }
+
+  /**
+   * Focus to input area
    */
   focusInputArea() {
-    const combinedInput = document.getElementById('combinedText');
-    if (combinedInput) {
-      // 滚动到输入区域
-      combinedInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const combinedTextInput = document.getElementById('combinedText');
+    if (combinedTextInput) {
+      // Scroll to input area
+      combinedTextInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
-      // 聚焦输入框
+      // Focus input box
       setTimeout(() => {
-        combinedInput.focus();
-        // 高亮显示输入框
-        combinedInput.style.borderColor = '#8b45ff';
-        combinedInput.style.boxShadow = '0 0 0 3px rgba(139, 69, 255, 0.1)';
+        combinedTextInput.focus();
+        // Highlight input box
+        combinedTextInput.style.border = '2px solid var(--primary-purple)';
+        combinedTextInput.style.boxShadow = '0 0 10px rgba(139, 92, 246, 0.3)';
         
-        // 3秒后恢复样式
+        // Restore style after 3 seconds
         setTimeout(() => {
-          combinedInput.style.borderColor = '';
-          combinedInput.style.boxShadow = '';
+          combinedTextInput.style.border = '';
+          combinedTextInput.style.boxShadow = '';
         }, 3000);
       }, 500);
     }
   }
 
   /**
-   * 处理文件上传
+   * Handle file upload
    */
-  async handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-      await this.processFile(file);
+  handleUpload(event) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.handleFile(files[0]);
     }
   }
 
   /**
-   * 处理文件
+   * Handle file
    */
-  async processFile(file) {
+  async handleFile(file) {
     try {
       this.showLoading('uploadArea');
       
-      // 验证文件
+      // Validate file
       if (!file.type.startsWith('image/')) {
-        this.showNotification('请上传图片文件', 'warning');
+        this.showNotification('upload_image_file', 'warning');
         return;
       }
       
-      if (file.size > 5 * 1024 * 1024) {
-        this.showNotification('文件大小不能超过 5MB', 'warning');
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        this.showNotification('file_size_limit', 'warning');
         return;
       }
-
-      // 检查 jsQR 是否可用
-      if (typeof jsQR === 'undefined') {
+      
+      // Check if jsQR is available
+      if (!window.jsQR) {
         this.showLibraryErrorDialog();
         return;
       }
-
-      // 读取图片
+      
+      // Read image
       const imageData = await this.loadImageData(file);
       
-      // 解析二维码
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      // Parse QR code
+      const qrResult = window.jsQR(imageData.data, imageData.width, imageData.height);
       
-      if (!code) {
-        this.showNotification('未在图片中检测到二维码，请尝试更清晰的图片或手动输入', 'warning');
-        this.showFallbackInput();
+      if (!qrResult) {
+        this.showNotification('no_qr_detected', 'warning');
         return;
       }
-
-      // 解析 LPA 内容
-      const parseResult = this.parseLpaString(code.data);
+      
+      // Parse LPA content
+      const parseResult = this.parseLpaString(qrResult.data);
       if (!parseResult.success) {
-        // 无论什么情况都显示对话框，让用户选择
-        this.showExtractionDialog(code.data);
+        // Always show dialog regardless of situation, let user choose
+        this.showExtractionDialog(qrResult.data);
         return;
       }
-
-      this.displayParseResult(parseResult.data, code.data);
-      this.showNotification('二维码解析成功！', 'success');
       
-      // 重新绑定上传区域事件（确保事件不会丢失）
-      console.log('正确解析后重新绑定事件');
-      // 立即执行，不延迟
+      this.showNotification('qr_parse_success', 'success');
+      
+      // Re-bind upload area events (ensure events are not lost)
+      console.log('Re-binding events after correct parsing');
+      // Execute immediately, no delay
       this.rebindUploadEvents();
-
+      
     } catch (error) {
-      console.error('解析二维码失败:', error);
-      this.showNotification('解析二维码失败，请确保图片清晰', 'error');
+      console.error('QR code parsing failed:', error);
+      this.showNotification('qr_parse_failed', 'error');
     } finally {
       this.hideLoading('uploadArea');
     }
   }
 
   /**
-   * 加载图片数据
+   * Load image data
    */
   loadImageData(file) {
     return new Promise((resolve, reject) => {
@@ -1598,253 +1832,244 @@ class EsimSwapApp {
   }
 
   /**
-   * 解析 LPA 字符串
+   * Parse LPA string
    */
   parseLpaString(lpaString) {
-    if (!lpaString.startsWith('LPA:1$')) {
-      return { success: false, error: '不是有效的 eSIM LPA 格式' };
+    if (!lpaString.startsWith('LPA:')) {
+      return { success: false, error: 'Not valid eSIM LPA format' };
     }
     
-    const content = lpaString.substring(6);
+    const content = lpaString.substring(4); // Remove "LPA:"
     const parts = content.split('$');
     
-    if (parts.length < 2) {
-      return { success: false, error: 'LPA 格式错误' };
+    if (parts.length < 3) {
+      return { success: false, error: 'LPA format error' };
     }
     
     return {
       success: true,
       data: {
-        smdpAddress: parts[0],
-        activationCode: parts[1],
-        password: parts[2] || null,
-        rawData: lpaString
+        smdpAddress: parts[1],
+        activationCode: parts[2],
+        password: parts[3] || ''
       }
     };
   }
 
   /**
-   * 重新绑定上传区域事件
+   * Re-bind upload area events
    */
   rebindUploadEvents() {
-    console.log('rebindUploadEvents 被调用');
+    console.log('rebindUploadEvents called');
     
-    // 检查是否有重复的 fileInput 元素
-    const allFileInputs = document.querySelectorAll('#fileInput');
-    console.log('找到的 fileInput 元素数量:', allFileInputs.length);
+    // Check if there are duplicate fileInput elements
+    const allFileInputs = document.querySelectorAll('[id^="fileInput"]');
+    console.log('Found fileInput elements count:', allFileInputs.length);
     
-    // 移除所有旧的 fileInput 元素
+    // Remove all old fileInput elements
     allFileInputs.forEach((input, index) => {
-      console.log(`移除第 ${index + 1} 个 fileInput`);
+      console.log(`Removing ${index + 1}th fileInput`);
       input.remove();
     });
     
     const uploadArea = document.getElementById('uploadArea');
-    
     if (uploadArea) {
-      console.log('开始重新创建上传区域...');
+      console.log('Starting to recreate upload area...');
       
-      // 使用唯一的ID和时间戳
+      // Use unique ID and timestamp
       const timestamp = Date.now();
       const newFileInputId = `fileInput_${timestamp}`;
       
-      // 重新创建上传区域的HTML内容
+      // Recreate upload area HTML content
       uploadArea.innerHTML = `
         <div class="upload-icon">📷</div>
         <p class="upload-text">
-          <span class="lang-content active" id="drag-text-en">Drag QR code image here</span>
-          <span class="lang-content" id="drag-text-ja">QRコード画像をここにドラッグ</span><br>
-          <span class="lang-content active" id="or-text-en">or</span><span class="lang-content" id="or-text-ja">または</span> 
+          Drag QR code image here<br>
+          or 
           <button class="upload-btn" onclick="handleUploadClickNew('${newFileInputId}')">
             <span class="btn-icon">📁</span> 
-            <span class="lang-content active" id="btn-en">Select File</span>
-            <span class="lang-content" id="btn-ja">ファイル選択</span>
+            Select File
           </button>
         </p>
         <input type="file" id="${newFileInputId}" accept="image/*" style="display: none;" onchange="handleFileChangeNew(event, '${newFileInputId}')">
       `;
       
-      // 重新设置拖拽事件
+      // Re-set drag events
       this.setupDragAndDrop();
       
-      console.log(`上传区域已重新创建，新的 fileInput ID: ${newFileInputId}`);
+      console.log(`Upload area recreated, new fileInput ID: ${newFileInputId}`);
     } else {
-      console.error('找不到uploadArea元素');
+      console.error('Cannot find uploadArea element');
     }
   }
 
   /**
-   * 显示解析结果
+   * Show parsing results
    */
-  displayParseResult(data, rawData) {
-    const parseResult = document.getElementById('parseResult');
+  showParseResult(data) {
+    document.getElementById('parsedSmdp').textContent = data.smdpAddress;
+    document.getElementById('parsedActivation').textContent = data.activationCode;
+    document.getElementById('parsedPassword').textContent = data.password || 'None';
+    document.getElementById('parsedRaw').textContent = data.raw || '-';
     
-    document.getElementById('parsedSmdp').textContent = data.smdpAddress || '-';
-    document.getElementById('parsedActivation').textContent = data.activationCode || '-';
-    document.getElementById('parsedPassword').textContent = data.password || '无';
-    document.getElementById('parsedRaw').textContent = rawData || '-';
-    
-    parseResult.style.display = 'block';
+    document.getElementById('parseResult').style.display = 'block';
   }
 
   /**
-   * 下载二维码
+   * Download QR code
    */
   downloadQR() {
-    if (!this.currentQRData) {
-      this.showNotification('没有可下载的二维码', 'warning');
+    if (!this.currentQRData || !this.currentQRData.qrCode) {
+      this.showNotification('no_qr_to_download', 'warning');
       return;
     }
 
     const canvas = this.currentQRData.qrCode.canvas;
-    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = 'esim-qr-code.png';
+    link.href = canvas.toDataURL();
+    link.click();
     
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = `esim-qr-${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    this.showNotification('二维码下载成功！', 'success');
+    this.showNotification('qr_download_success', 'success');
   }
 
   /**
-   * 复制 LPA 字符串
+   * Copy LPA string
    */
   async copyLPA() {
-    if (!this.currentQRData) {
-      this.showNotification('没有可复制的 LPA 字符串', 'warning');
+    if (!this.currentLPA) {
+      this.showNotification('no_lpa_to_copy', 'warning');
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(this.currentQRData.esimData.lpaString);
-      this.showNotification('LPA 字符串已复制到剪贴板！', 'success');
+      await navigator.clipboard.writeText(this.currentLPA);
+      this.showNotification('lpa_copied', 'success');
     } catch (error) {
-      // 备用方法
+      // Fallback method
       const textArea = document.createElement('textarea');
-      textArea.value = this.currentQRData.esimData.lpaString;
+      textArea.value = this.currentLPA;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      this.showNotification('LPA 字符串已复制到剪贴板！', 'success');
+      this.showNotification('lpa_copied', 'success');
     }
   }
 
   /**
-   * 清除结果
+   * Clear results
    */
   clearResults() {
+    // Clear display
     document.getElementById('qrDisplay').style.display = 'none';
     document.getElementById('parseResult').style.display = 'none';
-    this.currentQRData = null;
     
-    // 清空输入
+    // Clear input
     document.getElementById('combinedText').value = '';
     document.getElementById('smdpAddress').value = '';
     document.getElementById('activationCode').value = '';
     document.getElementById('activationPassword').value = '';
     document.getElementById('fileInput').value = '';
     
-    this.showNotification('已清除所有结果', 'success');
+    this.showNotification('results_cleared', 'success');
   }
 
   /**
-   * 显示加载状态
+   * Show loading state
    */
   showLoading(elementId) {
     const element = document.getElementById(elementId);
+    if (!element) return;
     
-    // 特殊处理上传区域
+    // Special handling for upload area
     if (elementId === 'uploadArea') {
-      element.classList.add('loading');
-      element.style.pointerEvents = 'none';
-      element.style.opacity = '0.6';
-      
-      // 添加加载指示器
+      // Add loading indicator
       const loadingIndicator = document.createElement('div');
-      loadingIndicator.className = 'upload-loading-indicator';
-      loadingIndicator.innerHTML = '<span class="spinner"></span>解析中...';
+      loadingIndicator.className = 'loading-indicator';
+      loadingIndicator.innerHTML = '<span class="spinner"></span>Parsing...';
       loadingIndicator.style.cssText = `
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(139, 69, 255, 0.9);
+        background: rgba(139, 92, 246, 0.9);
         color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        z-index: 10;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       `;
+      
+      // Make upload area relative positioned
       element.style.position = 'relative';
       element.appendChild(loadingIndicator);
     } else {
-      // 按钮元素的原有逻辑
-      const originalText = element.textContent;
-      element.dataset.originalText = originalText;
-      element.innerHTML = '<span class="loading"><span class="spinner"></span>处理中...</span>';
+      // Button element original logic
       element.disabled = true;
+      element.style.opacity = '0.7';
+      element.innerHTML = '<span class="loading"><span class="spinner"></span>Processing...</span>';
     }
   }
 
   /**
-   * 隐藏加载状态
+   * Hide loading state
    */
   hideLoading(elementId) {
     const element = document.getElementById(elementId);
+    if (!element) return;
     
-    // 特殊处理上传区域
+    // Special handling for upload area
     if (elementId === 'uploadArea') {
-      element.classList.remove('loading');
-      element.style.pointerEvents = '';
-      element.style.opacity = '';
-      
-      // 移除加载指示器
-      const loadingIndicator = element.querySelector('.upload-loading-indicator');
+      // Remove loading indicator
+      const loadingIndicator = element.querySelector('.loading-indicator');
       if (loadingIndicator) {
         loadingIndicator.remove();
       }
     } else {
-      // 按钮元素的原有逻辑
-      const originalText = element.dataset.originalText || element.textContent;
-      element.innerHTML = originalText;
+      // Button element original logic
       element.disabled = false;
+      element.style.opacity = '1';
+      
+      // Restore button content based on ID
+      const buttonTexts = {
+        'generateBtn': '<span>🎯</span>Generate QR Code'
+      };
+      element.innerHTML = buttonTexts[elementId] || 'Complete';
     }
   }
 
   /**
-   * 生成简化二维码（备用方案）
+   * Generate simple QR code (fallback)
    */
-  generateSimpleQR(text) {
+  generateSimpleQR(text, size = 200) {
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const size = 256;
     canvas.width = size;
     canvas.height = size;
+    const ctx = canvas.getContext('2d');
     
-    // 简单的网格二维码（仅用于演示）
+    // Simple grid QR code (for demo only)
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, size, size);
     
     ctx.fillStyle = '#000000';
-    const gridSize = 16;
+    const gridSize = 20;
     const cellSize = size / gridSize;
     
-    // 根据文本内容生成简单的图案
-    for (let i = 0; i < text.length && i < gridSize * gridSize; i++) {
-      const charCode = text.charCodeAt(i);
-      const x = (i % gridSize) * cellSize;
-      const y = Math.floor(i / gridSize) * cellSize;
-      
-      if (charCode % 2 === 1) {
-        ctx.fillRect(x, y, cellSize, cellSize);
+    // Generate simple pattern based on text content
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const charCode = text.charCodeAt((i * gridSize + j) % text.length);
+        if (charCode % 2 === 0) {
+          ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+        }
       }
     }
     
-    // 添加边框
+    // Add border
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 2;
     ctx.strokeRect(0, 0, size, size);
@@ -1853,12 +2078,48 @@ class EsimSwapApp {
   }
 
   /**
-   * 显示通知
+   * Get current language
    */
-  showNotification(message, type = 'info') {
+  getCurrentLanguage() {
+    return 'en'; // Always return English since we're now English-only
+  }
+
+  /**
+   * Get localized message
+   */
+  getMessage(key) {
+    const messages = {
+      'application_ready': 'Application ready!',
+      'using_builtin_functions': 'Using built-in functions',
+      'no_content_to_copy': 'No content to copy',
+      'copied_to_clipboard': 'Copied to clipboard',
+      'enter_esim_config': 'Please enter eSIM configuration information',
+      'qr_generated_success': 'QR code generated successfully!',
+      'page_element_error': 'Page element loading error, please refresh',
+      'extraction_success': '✅ Extraction successful! You can manually edit and generate QR code',
+      'upload_image_file': 'Please upload image file',
+      'file_size_limit': 'File size cannot exceed 5MB',
+      'no_qr_detected': 'No QR code detected in image, try clearer image or manual input',
+      'qr_parse_success': 'QR code parsed successfully!',
+      'qr_parse_failed': 'QR code parsing failed, ensure image is clear',
+      'no_qr_to_download': 'No QR code to download',
+      'qr_download_success': 'QR code downloaded successfully!',
+      'no_lpa_to_copy': 'No LPA string to copy',
+      'lpa_copied': 'LPA string copied to clipboard!',
+      'results_cleared': 'All results cleared'
+    };
+    
+    return messages[key] || key;
+  }
+
+  /**
+   * Show notification with localization
+   */
+  showNotification(messageKey, type = 'info') {
     const notification = document.getElementById('notification');
     const notificationText = document.getElementById('notificationText');
     
+    const message = this.getMessage(messageKey);
     notificationText.textContent = message;
     notification.className = `notification ${type}`;
     notification.classList.add('show');
@@ -1869,85 +2130,36 @@ class EsimSwapApp {
   }
 }
 
-// 全局函数 - 处理上传区域点击
+// Global functions for HTML inline event handlers
 function handleUploadClick() {
-  console.log('全局函数：上传区域被点击');
   const fileInput = document.getElementById('fileInput');
   if (fileInput) {
-    console.log('全局函数：触发文件选择');
     fileInput.click();
-  } else {
-    console.error('全局函数：找不到fileInput');
   }
 }
 
-// 全局函数 - 处理文件选择
 function handleFileChange(event) {
-  console.log('全局函数：文件被选择', event.target.files);
-  if (window.esimApp && event.target.files[0]) {
-    window.esimApp.processFile(event.target.files[0]);
+  if (window.esimParser) {
+    window.esimParser.handleUpload(event);
   }
 }
 
-// 新的全局函数 - 处理重新创建的上传区域点击
 function handleUploadClickNew(fileInputId) {
-  console.log('新全局函数：上传区域被点击，fileInputId:', fileInputId);
   const fileInput = document.getElementById(fileInputId);
   if (fileInput) {
-    console.log('新全局函数：触发文件选择');
     fileInput.click();
-  } else {
-    console.error('新全局函数：找不到fileInput，ID:', fileInputId);
   }
 }
 
-// 新的全局函数 - 处理重新创建的文件选择
 function handleFileChangeNew(event, fileInputId) {
-  console.log('新全局函数：文件被选择', event.target.files, 'fileInputId:', fileInputId);
-  if (window.esimApp && event.target.files[0]) {
-    window.esimApp.processFile(event.target.files[0]);
+  if (window.esimParser) {
+    window.esimParser.handleUpload(event);
   }
 }
 
-// 语言切换功能
-function switchLanguage(lang) {
-  console.log('切换语言到:', lang);
-  
-  // 更新语言按钮状态
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  document.getElementById(`lang-${lang}`).classList.add('active');
-  
-  // 更新语言内容显示
-  document.querySelectorAll('.lang-content').forEach(content => {
-    content.classList.remove('active');
-  });
-  
-  // 显示对应语言的内容
-  document.querySelectorAll(`.lang-content`).forEach(content => {
-    if (content.id.endsWith(`-${lang}`)) {
-      content.classList.add('active');
-    }
-  });
-  
-  // 更新页面语言属性
-  document.documentElement.lang = lang === 'en' ? 'en-US' : 'ja-JP';
-  
-  // 保存语言选择到本地存储
-  localStorage.setItem('selectedLanguage', lang);
-  
-  console.log(`语言已切换到 ${lang === 'en' ? 'English' : '日本語'}`);
-}
-
-// 初始化语言设置
-function initializeLanguage() {
-  const savedLang = localStorage.getItem('selectedLanguage') || 'en';
-  switchLanguage(savedLang);
-}
-
-// 初始化应用
-document.addEventListener('DOMContentLoaded', () => {
-  window.esimApp = new EsimSwapApp();
-  initializeLanguage();
+// Initialize application
+document.addEventListener('DOMContentLoaded', async () => {
+  const parser = new ESIMParser();
+  await parser.loadExternalLibraries();
+  parser.bindEvents();
 });
