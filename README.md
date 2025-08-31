@@ -89,7 +89,7 @@ Your iPhone simply **refuses to recognize it** as a valid eSIM profile, leaving 
 This project was born from frustration with carrier format incompatibilities encountered in real-world usage. Many eSIM QR codes provided by carriers fail to work properly across different devices and platforms due to non-standard formatting.
 
 We drew inspiration from open-source eSIM adapter solutions that implement SGP.22-compliant error correction mechanisms. By studying these approaches, we developed this comprehensive tool to make standardized eSIM format correction accessible to everyone facing similar compatibility issues.
-
+om m
 ---
 
 ## ✨ Our Solution
