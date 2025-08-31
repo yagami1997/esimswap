@@ -74,19 +74,42 @@ class EsimSwapApp {
       return;
     }
 
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
-      script.onload = () => {
-        console.log('jsQR 加载成功');
-        resolve();
-      };
-      script.onerror = () => {
-        console.log('jsQR 加载失败');
-        resolve(); // 不要 reject，继续执行
-      };
-      document.head.appendChild(script);
-    });
+    // 尝试多个 CDN 源
+    const cdnUrls = [
+      'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
+      'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js'
+    ];
+
+    for (const url of cdnUrls) {
+      try {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = url;
+          script.onload = () => {
+            console.log(`jsQR 从 ${url} 加载成功`);
+            resolve();
+          };
+          script.onerror = () => {
+            console.log(`jsQR 从 ${url} 加载失败`);
+            reject();
+          };
+          document.head.appendChild(script);
+        });
+        
+        // 如果成功加载，跳出循环
+        if (window.jsQR) {
+          break;
+        }
+      } catch (error) {
+        console.log(`尝试下一个 CDN...`);
+        continue;
+      }
+    }
+
+    if (!window.jsQR) {
+      console.warn('所有 jsQR CDN 源都加载失败，二维码解析功能将不可用');
+    }
   }
 
   /**
@@ -560,6 +583,36 @@ class EsimSwapApp {
   }
 
   /**
+   * 显示备用输入提示
+   */
+  showFallbackInput(detectedText = '') {
+    // 滚动到输入区域
+    const inputArea = document.querySelector('.card');
+    if (inputArea) {
+      inputArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 如果检测到了文本，填入输入框
+    if (detectedText) {
+      const combinedInput = document.getElementById('combinedText');
+      if (combinedInput) {
+        combinedInput.value = detectedText;
+        combinedInput.focus();
+        // 高亮显示输入框
+        combinedInput.style.borderColor = '#8b45ff';
+        setTimeout(() => {
+          combinedInput.style.borderColor = '';
+        }, 3000);
+      }
+    }
+
+    // 显示提示信息
+    setTimeout(() => {
+      this.showNotification('💡 提示：您可以在上方输入框中手动输入 LPA 字符串', 'info');
+    }, 1000);
+  }
+
+  /**
    * 处理文件上传
    */
   async handleFileUpload(event) {
@@ -589,7 +642,8 @@ class EsimSwapApp {
 
       // 检查 jsQR 是否可用
       if (typeof jsQR === 'undefined') {
-        this.showNotification('二维码解析库未加载，请刷新页面重试', 'error');
+        this.showNotification('二维码解析库未加载，请手动输入 LPA 字符串', 'warning');
+        this.showFallbackInput();
         return;
       }
 
@@ -600,14 +654,16 @@ class EsimSwapApp {
       const code = jsQR(imageData.data, imageData.width, imageData.height);
       
       if (!code) {
-        this.showNotification('未在图片中检测到二维码', 'warning');
+        this.showNotification('未在图片中检测到二维码，请尝试更清晰的图片或手动输入', 'warning');
+        this.showFallbackInput();
         return;
       }
 
       // 解析 LPA 内容
       const parseResult = this.parseLpaString(code.data);
       if (!parseResult.success) {
-        this.showNotification(parseResult.error, 'error');
+        this.showNotification(parseResult.error + '，请手动输入正确的 LPA 字符串', 'error');
+        this.showFallbackInput(code.data);
         return;
       }
 
