@@ -611,6 +611,158 @@ class EsimSwapApp {
   }
 
   /**
+   * 尝试修复二维码
+   */
+  tryFixQRCode(qrData) {
+    console.log('尝试修复二维码:', qrData);
+    
+    // 清理数据
+    const cleanData = qrData.trim();
+    
+    // 检查各种常见问题
+    
+    // 1. 缺少 LPA: 前缀
+    if (!cleanData.startsWith('LPA:')) {
+      if (cleanData.includes('$') && cleanData.split('$').length >= 2) {
+        const fixedLPA = `LPA:${cleanData.startsWith('1$') ? '' : '1$'}${cleanData}`;
+        const parseResult = this.parseLpaString(fixedLPA);
+        if (parseResult.success) {
+          return {
+            success: true,
+            problem: '缺少 LPA: 前缀',
+            fixedLPA: fixedLPA,
+            data: parseResult.data
+          };
+        }
+      }
+    }
+    
+    // 2. 缺少版本号 "1$"
+    if (cleanData.startsWith('LPA:') && !cleanData.startsWith('LPA:1$')) {
+      const content = cleanData.substring(4); // 移除 "LPA:"
+      if (content.includes('$')) {
+        const fixedLPA = `LPA:1$${content}`;
+        const parseResult = this.parseLpaString(fixedLPA);
+        if (parseResult.success) {
+          return {
+            success: true,
+            problem: '缺少版本号 "1$"',
+            fixedLPA: fixedLPA,
+            data: parseResult.data
+          };
+        }
+      }
+    }
+    
+    // 3. 格式错误但包含有效信息
+    if (cleanData.includes('$')) {
+      const parts = cleanData.split('$');
+      if (parts.length >= 2) {
+        // 尝试重新组织
+        let smdpAddress = '';
+        let activationCode = '';
+        
+        // 查找看起来像域名的部分
+        for (const part of parts) {
+          if (part.includes('.') && part.length > 5) {
+            smdpAddress = part;
+          } else if (part.length > 10 && /^[A-Z0-9-]+$/i.test(part)) {
+            activationCode = part;
+          }
+        }
+        
+        if (smdpAddress && activationCode) {
+          const fixedLPA = `LPA:1$${smdpAddress}$${activationCode}`;
+          const parseResult = this.parseLpaString(fixedLPA);
+          if (parseResult.success) {
+            return {
+              success: true,
+              problem: '格式混乱，已重新组织',
+              fixedLPA: fixedLPA,
+              data: parseResult.data
+            };
+          }
+        }
+      }
+    }
+    
+    // 4. 检查是否是纯文本但格式正确
+    if (!cleanData.includes('$') && cleanData.length > 20) {
+      return {
+        success: false,
+        problem: '不是有效的 eSIM LPA 格式，请手动输入正确的 LPA 字符串'
+      };
+    }
+    
+    // 5. 其他格式问题
+    return {
+      success: false,
+      problem: '无法识别的二维码格式，可能不是 eSIM 配置信息'
+    };
+  }
+
+  /**
+   * 显示修复前后对比
+   */
+  showFixComparison(originalData, fixedLPA, problem) {
+    // 创建对比显示
+    const notification = document.createElement('div');
+    notification.className = 'fix-comparison';
+    notification.innerHTML = `
+      <div class="fix-comparison-content">
+        <h3>🔧 二维码修复报告</h3>
+        <div class="problem">
+          <strong>发现问题：</strong>${problem}
+        </div>
+        <div class="comparison">
+          <div class="before">
+            <strong>修复前：</strong>
+            <code>${originalData}</code>
+          </div>
+          <div class="after">
+            <strong>修复后：</strong>
+            <code>${fixedLPA}</code>
+          </div>
+        </div>
+        <div class="tip">
+          💡 建议联系运营商更新二维码格式以符合标准
+        </div>
+        <button onclick="this.parentElement.parentElement.remove()" class="close-btn">关闭</button>
+      </div>
+    `;
+    
+    // 添加样式
+    notification.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 2px solid var(--primary-purple);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      z-index: 1001;
+      max-width: 500px;
+      width: 90%;
+    `;
+    
+    const content = notification.querySelector('.fix-comparison-content');
+    content.style.cssText = `
+      padding: 1.5rem;
+      color: var(--text-primary);
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // 3秒后自动关闭
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 8000);
+  }
+
+  /**
    * 显示备用输入提示
    */
   showFallbackInput(detectedText = '') {
@@ -690,8 +842,18 @@ class EsimSwapApp {
       // 解析 LPA 内容
       const parseResult = this.parseLpaString(code.data);
       if (!parseResult.success) {
-        this.showNotification(parseResult.error + '，请手动输入正确的 LPA 字符串', 'error');
-        this.showFallbackInput(code.data);
+        // 尝试智能修复
+        const fixResult = this.tryFixQRCode(code.data);
+        if (fixResult.success) {
+          this.showNotification(`检测到问题：${fixResult.problem}，已自动修复！`, 'success');
+          this.displayParseResult(fixResult.data, fixResult.fixedLPA);
+          
+          // 显示修复前后对比
+          this.showFixComparison(code.data, fixResult.fixedLPA, fixResult.problem);
+        } else {
+          this.showNotification(`二维码有问题：${fixResult.problem}，请手动输入`, 'error');
+          this.showFallbackInput(code.data);
+        }
         return;
       }
 
