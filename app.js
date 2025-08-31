@@ -150,8 +150,6 @@ class EsimSwapApp {
    * 绑定事件监听器
    */
   bindEvents() {
-    console.log('开始绑定事件...');
-    
     // 输入模式切换
     document.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode));
@@ -171,33 +169,10 @@ class EsimSwapApp {
     document.getElementById('generateBtn').addEventListener('click', () => this.generateQR());
 
     // 文件上传
-    const fileInput = document.getElementById('fileInput');
-    const uploadArea = document.getElementById('uploadArea');
-    
-    console.log('文件输入框:', fileInput);
-    console.log('上传区域:', uploadArea);
-    
-    if (fileInput) {
-      fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
-      console.log('文件输入框事件已绑定');
-    } else {
-      console.error('找不到文件输入框元素');
-    }
-    
-    if (uploadArea) {
-      uploadArea.addEventListener('click', () => {
-        console.log('上传区域被点击');
-        if (fileInput) {
-          console.log('触发文件选择');
-          fileInput.click();
-        } else {
-          console.error('找不到文件输入框');
-        }
-      });
-      console.log('上传区域点击事件已绑定');
-    } else {
-      console.error('找不到上传区域元素');
-    }
+    document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileUpload(e));
+    document.getElementById('uploadArea').addEventListener('click', () => {
+      document.getElementById('fileInput').click();
+    });
 
     // 操作按钮
     document.getElementById('downloadBtn')?.addEventListener('click', () => this.downloadQR());
