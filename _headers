@@ -1,0 +1,17 @@
+# CloudFlare Pages 安全头部配置
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# 静态资源缓存
+/*.css
+  Cache-Control: public, max-age=86400
+  
+/*.js
+  Cache-Control: public, max-age=86400
+
+/*.html
+  Cache-Control: public, max-age=3600
