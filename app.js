@@ -1703,10 +1703,38 @@ class EsimSwapApp {
    */
   showLoading(elementId) {
     const element = document.getElementById(elementId);
-    const originalText = element.textContent;
-    element.dataset.originalText = originalText;
-    element.innerHTML = '<span class="loading"><span class="spinner"></span>处理中...</span>';
-    element.disabled = true;
+    
+    // 特殊处理上传区域
+    if (elementId === 'uploadArea') {
+      element.classList.add('loading');
+      element.style.pointerEvents = 'none';
+      element.style.opacity = '0.6';
+      
+      // 添加加载指示器
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.className = 'upload-loading-indicator';
+      loadingIndicator.innerHTML = '<span class="spinner"></span>解析中...';
+      loadingIndicator.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(139, 69, 255, 0.9);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        z-index: 10;
+      `;
+      element.style.position = 'relative';
+      element.appendChild(loadingIndicator);
+    } else {
+      // 按钮元素的原有逻辑
+      const originalText = element.textContent;
+      element.dataset.originalText = originalText;
+      element.innerHTML = '<span class="loading"><span class="spinner"></span>处理中...</span>';
+      element.disabled = true;
+    }
   }
 
   /**
@@ -1714,9 +1742,24 @@ class EsimSwapApp {
    */
   hideLoading(elementId) {
     const element = document.getElementById(elementId);
-    const originalText = element.dataset.originalText || element.textContent;
-    element.innerHTML = originalText;
-    element.disabled = false;
+    
+    // 特殊处理上传区域
+    if (elementId === 'uploadArea') {
+      element.classList.remove('loading');
+      element.style.pointerEvents = '';
+      element.style.opacity = '';
+      
+      // 移除加载指示器
+      const loadingIndicator = element.querySelector('.upload-loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.remove();
+      }
+    } else {
+      // 按钮元素的原有逻辑
+      const originalText = element.dataset.originalText || element.textContent;
+      element.innerHTML = originalText;
+      element.disabled = false;
+    }
   }
 
   /**
