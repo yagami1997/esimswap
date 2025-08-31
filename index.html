@@ -100,13 +100,13 @@
             <div class="card">
                 <h2>🔍 解析二维码</h2>
                 
-                <div class="upload-area" id="uploadArea">
+                <div class="upload-area" id="uploadArea" onclick="handleUploadClick()">
                     <div class="upload-icon">📷</div>
                     <p class="upload-text">
                         拖拽二维码图片到此处<br>
                         或点击选择文件
                     </p>
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
                 </div>
 
                 <!-- 解析结果 -->
@@ -239,6 +239,6 @@
     </div>
 
     <!-- 主应用脚本 -->
-    <script src="app.js?v=20241220-1"></script>
+    <script src="app.js?v=20241220-2"></script>
 </body>
 </html>
