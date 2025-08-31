@@ -624,7 +624,7 @@ class ESIMParser {
             <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel">
               <span>❌</span> Cancel
             </button>
-            <button onclick="window.esimParser.confirmExtraction('${detectedText.replace(/'/g, "\\'")}'); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+            <button onclick="window.esimParser.confirmExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
               <span>✅</span> Yes, Extract and Fix
             </button>
           </div>
@@ -688,10 +688,10 @@ class ESIMParser {
           </div>
           
           <div class="dialog-actions">
-            <button onclick="this.closest('.dialog-overlay').remove(); window.esimParser.showExtractionDialog('${detectedText.replace(/'/g, "\\'")}');" class="btn-cancel">
+            <button onclick="this.closest('.dialog-overlay').remove(); window.esimParser.showExtractionDialog(\`${detectedText.replace(/`/g, '\\`')}\`);" class="btn-cancel">
               <span>⬅️</span> Back
             </button>
-            <button onclick="window.esimParser.executeExtraction('${detectedText.replace(/'/g, "\\'")}'); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+            <button onclick="window.esimParser.executeExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
               <span>🚀</span> Confirm Extraction
             </button>
           </div>
@@ -1370,6 +1370,14 @@ class ESIMParser {
         this.showExtractionDialog(qrResult.data);
         return;
       }
+      
+      // Display parse results
+      this.showParseResult({
+        smdpAddress: parseResult.data.smdpAddress,
+        activationCode: parseResult.data.activationCode,
+        password: parseResult.data.password,
+        raw: qrResult.data
+      });
       
       this.showNotification('qr_parse_success', 'success');
       
