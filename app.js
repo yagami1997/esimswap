@@ -613,9 +613,9 @@ class ESIMParser {
     dialog.style.alignItems = 'center';
     dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
-      <div class="dialog-content">
+      <div class="dialog-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 2px solid #6b46c1;">
         <div class="dialog-body">
-          <h3>⚠️ Incomplete or Incorrect LPA Information</h3>
+          <h3 style="color: #6b46c1; margin-bottom: 1rem; text-align: center;">⚠️ Incomplete or Incorrect LPA Information</h3>
           
           <div class="detected-content">
           <p><strong>Detected QR code content:</strong></p>
@@ -631,11 +631,11 @@ class ESIMParser {
           </div>
           <p><strong>🔧 Solution:</strong> Do you want to extract the original information and regenerate a standard format QR code?</p>
           
-          <div class="dialog-actions">
-            <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel">
+          <div class="dialog-actions" style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+            <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel" style="padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; background: #e2e8f0; color: #4a5568;">
               <span>❌</span> Cancel
             </button>
-            <button onclick="window.esimParser.confirmExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+            <button onclick="window.esimParser.confirmExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm" style="padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; background: #6b46c1; color: white;">
               <span>✅</span> Yes, Extract and Fix
             </button>
           </div>
@@ -694,9 +694,9 @@ class ESIMParser {
     dialog.style.alignItems = 'center';
     dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
-      <div class="dialog-content">
+      <div class="dialog-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 2px solid #6b46c1;">
         <div class="dialog-body">
-          <h3>🔧 Prepare to Extract Information</h3>
+          <h3 style="color: #6b46c1; margin-bottom: 1rem; text-align: center;">🔧 Prepare to Extract Information</h3>
           
           <div class="extraction-info">
           <p><strong>About to execute:</strong></p>
@@ -955,9 +955,9 @@ class ESIMParser {
     dialog.style.alignItems = 'center';
     dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
-      <div class="dialog-content">
+      <div class="dialog-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 2px solid #6b46c1;">
         <div class="dialog-body">
-          <h3>📝 Manual Input Required</h3>
+          <h3 style="color: #6b46c1; margin-bottom: 1rem; text-align: center;">📝 Manual Input Required</h3>
           
           <div class="manual-input-info">
           <p><strong>❌ Unable to recognize QR code content</strong></p>
@@ -1046,9 +1046,9 @@ class ESIMParser {
     dialog.style.alignItems = 'center';
     dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
-      <div class="dialog-content">
+      <div class="dialog-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 2px solid #6b46c1;">
         <div class="dialog-body">
-          <h3>❌ Input Format Error</h3>
+          <h3 style="color: #6b46c1; margin-bottom: 1rem; text-align: center;">❌ Input Format Error</h3>
           
           <div class="error-info">
           <p><strong>Your input:</strong></p>
@@ -1148,9 +1148,9 @@ class ESIMParser {
     dialog.style.alignItems = 'center';
     dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
-      <div class="dialog-content">
+      <div class="dialog-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 2px solid #6b46c1;">
         <div class="dialog-body">
-          <h3>⚠️ QR Code Generation Failed</h3>
+          <h3 style="color: #6b46c1; margin-bottom: 1rem; text-align: center;">⚠️ QR Code Generation Failed</h3>
           
           <div class="error-info">
           <p><strong>❌ Error occurred during generation:</strong></p>
@@ -1260,9 +1260,9 @@ class ESIMParser {
     dialog.style.alignItems = 'center';
     dialog.style.justifyContent = 'center';
     dialog.innerHTML = `
-      <div class="dialog-content">
+      <div class="dialog-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 2px solid #6b46c1;">
         <div class="dialog-body">
-          <h3>📚 QR Code Parsing Library Not Loaded</h3>
+          <h3 style="color: #6b46c1; margin-bottom: 1rem; text-align: center;">📚 QR Code Parsing Library Not Loaded</h3>
           
           <div class="library-error-info">
           <p><strong>⚠️ Problem:</strong> QR code parsing function temporarily unavailable.</p>
