@@ -169,13 +169,38 @@ class EsimSwapApp {
     document.getElementById('generateBtn').addEventListener('click', () => this.generateQR());
 
     // 文件上传
-    document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileUpload(e));
-    document.getElementById('uploadArea').addEventListener('click', (e) => {
-      console.log('上传区域被点击', e.target);
-      e.preventDefault();
-      e.stopPropagation();
-      document.getElementById('fileInput').click();
-    });
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    console.log('初始化时 - fileInput:', fileInput);
+    console.log('初始化时 - uploadArea:', uploadArea);
+    
+    if (fileInput) {
+      fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+      console.log('fileInput change事件已绑定');
+    } else {
+      console.error('初始化时找不到fileInput元素');
+    }
+    
+    if (uploadArea) {
+      uploadArea.addEventListener('click', (e) => {
+        console.log('初始上传区域被点击', e.target);
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const currentFileInput = document.getElementById('fileInput');
+        console.log('点击时的fileInput:', currentFileInput);
+        
+        if (currentFileInput) {
+          currentFileInput.click();
+        } else {
+          console.error('点击时找不到fileInput元素');
+        }
+      });
+      console.log('uploadArea click事件已绑定');
+    } else {
+      console.error('初始化时找不到uploadArea元素');
+    }
 
     // 操作按钮
     document.getElementById('downloadBtn')?.addEventListener('click', () => this.downloadQR());
