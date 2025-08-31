@@ -1,11 +1,11 @@
-# 📱 eSIM Configuration Intelligent Parser
-
 <div align="center">
 
-![eSIM Parser](https://img.shields.io/badge/eSIM-Parser-6b46c1?style=for-the-badge&logo=mobile&logoColor=white)
-![CloudFlare Pages](https://img.shields.io/badge/CloudFlare-Pages-f38020?style=for-the-badge&logo=cloudflare&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-f7df1e?style=for-the-badge&logo=javascript&logoColor=black)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+# 📱 eSIM Configuration Intelligent Parser
+
+![eSIM Parser](https://img.shields.io/badge/eSIM-Parser-6b46c1?style=flat-square&logo=mobile&logoColor=white)
+![CloudFlare Pages](https://img.shields.io/badge/CloudFlare-Pages-f38020?style=flat-square&logo=cloudflare&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-f7df1e?style=flat-square&logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=flat-square)
 
 **Bidirectional eSIM configuration analysis - Solve irregular eSIM installation errors**
 
@@ -96,9 +96,9 @@ LPA:1$<SM-DP+ Address>$<Activation Code>$<Confirmation Code (Optional)>
 
 ## 🎨 User Interface
 
-### Kyoto-Inspired Design
+### Japanese Elegant Design Style
 
-Our application features a **Japanese aesthetic** inspired by Kyoto's serene color palette:
+Our application features a **refined Japanese aesthetic** with an elegant and minimalist design approach:
 
 - **🟣 Primary Purple**: `#6b46c1` - Representing technology and innovation
 - **🎴 Card-Based Layout**: Clean, organized information presentation
@@ -152,9 +152,17 @@ This application is deployed using **CloudFlare Pages** for optimal global perfo
 #### Deployment Steps
 
 1. **📂 Repository Setup**:
+   
+   If you want to follow our design and code exactly:
    ```bash
    git clone https://github.com/yagami1997/esimswap.git
    cd esimswap
+   ```
+   
+   If you plan to use your own code and features, please use your forked repository:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+   cd YOUR_REPO_NAME
    ```
 
 2. **☁️ CloudFlare Pages Configuration**:
@@ -230,7 +238,7 @@ esimswap/
 
 ### For Developers
 
-- **🔓 Open Source**: MIT license for community contributions
+- **🔓 Open Source**: GPL-3.0 license for community contributions
 - **📚 Well Documented**: Comprehensive code comments and documentation
 - **🧪 Tested**: Robust error handling and edge case coverage
 - **🔄 Maintainable**: Clean, modular code structure
@@ -274,7 +282,7 @@ python -m http.server 8000
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GPL-3.0 License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
