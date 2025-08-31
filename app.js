@@ -20,51 +20,32 @@ class EsimSwapApp {
    * 加载外部库
    */
   async loadExternalLibraries() {
+    console.log('开始加载外部库...');
+    
+    // 直接尝试加载，简化逻辑
     try {
-      // 检查是否已经有库可用
+      // 加载 QRious
+      console.log('正在加载 QRious...');
+      await this.loadScript('https://unpkg.com/qrious@4.0.2/dist/qrious.min.js');
+      console.log('QRious 加载成功');
+      
+      // 加载 jsQR
+      console.log('正在加载 jsQR...');
+      await this.loadScript('https://unpkg.com/jsqr@1.4.0/dist/jsQR.js');
+      console.log('jsQR 加载成功');
+      
+      // 验证库是否可用
       if (typeof QRious !== 'undefined' && typeof jsQR !== 'undefined') {
-        console.log('库文件已可用');
+        console.log('所有库加载完成并可用');
         this.showNotification('应用已就绪！', 'success');
-        return;
-      }
-
-      // 尝试加载外部库
-      let qrLoaded = false;
-      let jsQRLoaded = false;
-
-      // 尝试加载 QRious
-      try {
-        await this.loadScriptWithFallback([
-          'https://unpkg.com/qrious@4.0.2/dist/qrious.min.js',
-          'https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js'
-        ]);
-        qrLoaded = true;
-      } catch (e) {
-        console.warn('QRious 加载失败，使用内置实现');
-      }
-
-      // 尝试加载 jsQR  
-      try {
-        await this.loadScriptWithFallback([
-          'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
-          'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js'
-        ]);
-        jsQRLoaded = true;
-      } catch (e) {
-        console.warn('jsQR 加载失败，使用简化实现');
-      }
-
-      if (qrLoaded || jsQRLoaded) {
-        this.showNotification('部分库文件加载成功！', 'success');
       } else {
-        this.showNotification('使用内置功能，二维码解析功能受限', 'warning');
+        console.warn('库加载了但不可用');
+        this.showNotification('库文件状态异常', 'warning');
       }
       
     } catch (error) {
-      console.error('库加载过程出错:', error);
-      this.showNotification('使用内置功能', 'warning');
+      console.error('库加载失败:', error);
+      this.showNotification('库文件加载失败，使用内置功能', 'warning');
     }
   }
 
