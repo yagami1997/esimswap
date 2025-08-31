@@ -104,7 +104,7 @@ class EsimSwapApp {
         if (window.jsQR) {
           break;
         }
-      } catch (error) {image.pngimage.png
+      } catch (error) {image.pngimage.pngimage.pngimage.png
         console.log(`尝试下一个 CDN...`);
         continue;
       }
@@ -316,7 +316,8 @@ class EsimSwapApp {
         activationCode = parts[1];
         password = parts[2] || '';
       } else {
-        this.showNotification('格式错误，请使用 $ 分隔符', 'error');
+        // 显示格式错误对话框
+        this.showFormatErrorDialog(input);
         return;
       }
       
@@ -1137,6 +1138,119 @@ class EsimSwapApp {
     body.style.cssText = `
       padding: 1rem 1.5rem;
       color: var(--text-secondary);
+    `;
+    
+    const actions = dialog.querySelector('.dialog-actions');
+    actions.style.cssText = `
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // 点击遮罩关闭
+    overlay.addEventListener('click', () => {
+      dialog.remove();
+    });
+  }
+
+  /**
+   * 显示格式错误对话框
+   */
+  showFormatErrorDialog(input) {
+    const dialog = document.createElement('div');
+    dialog.className = 'format-error-dialog';
+    dialog.innerHTML = `
+      <div class="dialog-overlay"></div>
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3>❌ 输入格式错误</h3>
+        </div>
+        <div class="dialog-body">
+          <p><strong>您输入的内容：</strong></p>
+          <div class="detected-content">${input}</div>
+          <p><strong>⚠️ 问题：</strong>格式不正确，无法解析为有效的 eSIM 配置。</p>
+          <p><strong>💡 正确格式：</strong></p>
+          <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 4px solid #4CAF50;">
+            <div style="font-size: 0.9rem; line-height: 1.4;">
+              <strong>标准格式：</strong><br>
+              <code>LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br><br>
+              <strong>简化格式：</strong><br>
+              <code>1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code><br><br>
+              <strong>基本格式：</strong><br>
+              <code>t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code>
+            </div>
+          </div>
+          <p><strong>🔧 建议：</strong>请检查并修正输入格式，确保包含 SM-DP+ 地址和激活码。</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-primary" onclick="this.closest('.format-error-dialog').remove(); window.esimApp.focusInputArea();">
+            <span>✏️</span> 修正输入
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // 添加样式
+    dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // 添加内部样式
+    const overlay = dialog.querySelector('.dialog-overlay');
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    `;
+    
+    const content = dialog.querySelector('.dialog-content');
+    content.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 600px;
+      width: 90%;
+      position: relative;
+      z-index: 1001;
+    `;
+    
+    const header = dialog.querySelector('.dialog-header');
+    header.style.cssText = `
+      padding: 1.5rem 1.5rem 0;
+      color: var(--text-primary);
+    `;
+    
+    const body = dialog.querySelector('.dialog-body');
+    body.style.cssText = `
+      padding: 1rem 1.5rem;
+      color: var(--text-secondary);
+    `;
+    
+    const detectedContent = dialog.querySelector('.detected-content');
+    detectedContent.style.cssText = `
+      background: #ffebee;
+      border: 1px solid #f44336;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      color: #d32f2f;
     `;
     
     const actions = dialog.querySelector('.dialog-actions');
