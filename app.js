@@ -643,16 +643,17 @@ class EsimSwapApp {
           <h3>⚠️ LPA信息不完整或错误</h3>
         </div>
         <div class="dialog-body">
-          <p>检测到的二维码内容：</p>
+          <p><strong>检测到的二维码内容：</strong></p>
           <div class="detected-content">${qrData}</div>
-          <p>需要手动提取原始信息吗？</p>
+          <p><strong>问题：</strong>LPA信息不完整或错误，iPhone无法直接识别此二维码。</p>
+          <p><strong>解决方案：</strong>需要手动提取原始信息并重新生成正确的二维码吗？</p>
         </div>
         <div class="dialog-actions">
           <button class="btn btn-secondary" onclick="this.closest('.extraction-dialog').remove()">
-            取消
+            <span>❌</span> 取消
           </button>
-          <button class="btn btn-primary" onclick="window.esimApp.extractAndFill('${qrData.replace(/'/g, "\\'")}'); this.closest('.extraction-dialog').remove();">
-            是，提取信息
+          <button class="btn btn-primary" onclick="window.esimApp.confirmExtraction('${qrData.replace(/'/g, "\\'")}'); this.closest('.extraction-dialog').remove();">
+            <span>✅</span> 是，提取并修复
           </button>
         </div>
       </div>
@@ -735,9 +736,126 @@ class EsimSwapApp {
   }
 
   /**
-   * 提取并填充信息
+   * 确认提取信息
    */
-  extractAndFill(qrData) {
+  confirmExtraction(qrData) {
+    // 显示第二个确认对话框
+    this.showExtractionConfirmDialog(qrData);
+  }
+
+  /**
+   * 显示提取确认对话框
+   */
+  showExtractionConfirmDialog(qrData) {
+    const dialog = document.createElement('div');
+    dialog.className = 'extraction-confirm-dialog';
+    dialog.innerHTML = `
+      <div class="dialog-overlay"></div>
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3>🔧 准备提取信息</h3>
+        </div>
+        <div class="dialog-body">
+          <p><strong>即将执行：</strong></p>
+          <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+            <li>将原始信息填充到左侧输入框</li>
+            <li>您可以手动编辑和修正信息</li>
+            <li>点击"生成二维码"创建正确的二维码</li>
+          </ul>
+          <p><strong>原始信息：</strong></p>
+          <div class="detected-content">${qrData}</div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onclick="this.closest('.extraction-confirm-dialog').remove()">
+            <span>⬅️</span> 返回
+          </button>
+          <button class="btn btn-primary" onclick="window.esimApp.executeExtraction('${qrData.replace(/'/g, "\\'")}'); this.closest('.extraction-confirm-dialog').remove();">
+            <span>🚀</span> 确认提取
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // 添加样式（复用之前的样式）
+    dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // 添加内部样式
+    const overlay = dialog.querySelector('.dialog-overlay');
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    `;
+    
+    const content = dialog.querySelector('.dialog-content');
+    content.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1003;
+    `;
+    
+    const header = dialog.querySelector('.dialog-header');
+    header.style.cssText = `
+      padding: 1.5rem 1.5rem 0;
+      color: var(--text-primary);
+    `;
+    
+    const body = dialog.querySelector('.dialog-body');
+    body.style.cssText = `
+      padding: 1rem 1.5rem;
+      color: var(--text-secondary);
+    `;
+    
+    const detectedContent = dialog.querySelector('.detected-content');
+    detectedContent.style.cssText = `
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      color: var(--text-primary);
+    `;
+    
+    const actions = dialog.querySelector('.dialog-actions');
+    actions.style.cssText = `
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // 点击遮罩关闭
+    overlay.addEventListener('click', () => {
+      dialog.remove();
+    });
+  }
+
+  /**
+   * 执行提取操作
+   */
+  executeExtraction(qrData) {
     // 填充到输入框
     const combinedInput = document.getElementById('combinedText');
     if (combinedInput) {
@@ -763,7 +881,7 @@ class EsimSwapApp {
     }
     
     // 显示成功提示
-    this.showNotification('✅ 提取成功，您可以手动解析和自动生成正确二维码', 'success');
+    this.showNotification('✅ 提取成功！您可以手动编辑信息，然后点击"生成二维码"', 'success');
   }
 
   /**
