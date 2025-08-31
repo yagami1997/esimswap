@@ -291,21 +291,50 @@ class EsimSwapApp {
    */
   async generateQR() {
     try {
+      console.log('开始生成二维码...');
       this.showLoading('generateBtn');
       
       let esimData;
 
       if (this.currentMode === 'combined') {
         const input = document.getElementById('combinedText').value.trim();
+        console.log('组合输入模式，输入内容:', input);
+        
         if (!input) {
           this.showNotification('请输入 eSIM 配置信息', 'warning');
           return;
         }
         
-        // 解析组合输入
-        esimData = this.parseEsimInput(input);
-        if (!esimData.success) {
-          this.showNotification(esimData.error, 'error');
+        // 简化解析逻辑，直接处理常见格式
+        if (input.includes('$')) {
+          const parts = input.split('$');
+          console.log('分割结果:', parts);
+          
+          let smdpAddress, activationCode, password = '';
+          
+          if (parts[0] === '1' && parts.length >= 3) {
+            // 格式：1$smdp$activation$password
+            smdpAddress = parts[1];
+            activationCode = parts[2];
+            password = parts[3] || '';
+          } else if (parts.length >= 2) {
+            // 格式：smdp$activation$password
+            smdpAddress = parts[0];
+            activationCode = parts[1];
+            password = parts[2] || '';
+          } else {
+            this.showNotification('输入格式错误', 'error');
+            return;
+          }
+          
+          console.log('解析结果:', { smdpAddress, activationCode, password });
+          
+          esimData = {
+            success: true,
+            data: { smdpAddress, activationCode, password }
+          };
+        } else {
+          this.showNotification('请使用 $ 分隔符格式', 'error');
           return;
         }
       } else {
@@ -326,11 +355,12 @@ class EsimSwapApp {
 
       // 生成 LPA 字符串
       const lpaString = this.generateLpaString(esimData.data);
+      console.log('生成的LPA字符串:', lpaString);
       
       // 生成二维码
       let qrCanvas;
-      if (typeof QRious !== 'undefined') {
-        // 使用 QRious 库
+      if (window.QRious) {
+        console.log('使用 QRious 库生成二维码');
         const qr = new QRious({
           element: document.createElement('canvas'),
           value: lpaString,
@@ -339,12 +369,11 @@ class EsimSwapApp {
         });
         qrCanvas = qr.canvas;
       } else {
-        // 使用内置简化实现
+        console.log('使用内置简化实现生成二维码');
         qrCanvas = this.generateSimpleQR(lpaString);
       }
 
       // 显示结果
-      console.log('准备显示结果，esimData:', esimData);
       const displayData = {
         qrCode: {
           canvas: qrCanvas,
@@ -353,18 +382,18 @@ class EsimSwapApp {
         esimData: {
           smdpAddress: esimData.data.smdpAddress,
           activationCode: esimData.data.activationCode,
-          activationPassword: esimData.data.password || esimData.data.activationPassword,
+          activationPassword: esimData.data.password,
           lpaString: lpaString
         }
       };
-      console.log('显示数据结构:', displayData);
+      
+      console.log('准备显示结果:', displayData);
       this.displayQRCode(displayData);
-
       this.showNotification('二维码生成成功！', 'success');
 
     } catch (error) {
       console.error('生成二维码失败:', error);
-      this.showNotification('生成二维码失败，请检查输入格式', 'error');
+      this.showNotification(`生成失败: ${error.message}`, 'error');
     } finally {
       this.hideLoading('generateBtn');
     }
