@@ -1562,6 +1562,7 @@ class EsimSwapApp {
       this.showNotification('二维码解析成功！', 'success');
       
       // 重新绑定上传区域事件（确保事件不会丢失）
+      console.log('正确解析后重新绑定事件');
       this.rebindUploadEvents();
 
     } catch (error) {
@@ -1626,42 +1627,24 @@ class EsimSwapApp {
    */
   rebindUploadEvents() {
     const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
     
-    if (uploadArea && fileInput) {
-      console.log('开始重新绑定上传事件...');
+    if (uploadArea) {
+      console.log('开始重新创建上传区域...');
       
-      // 强制设置样式确保可点击
-      uploadArea.style.pointerEvents = 'auto';
-      uploadArea.style.cursor = 'pointer';
-      uploadArea.style.position = 'relative';
-      uploadArea.style.zIndex = '999';
-      uploadArea.style.background = 'rgba(107, 70, 193, 0.02)';
+      // 重新创建上传区域的HTML内容
+      uploadArea.innerHTML = `
+        <div class="upload-icon">📷</div>
+        <p class="upload-text">
+          拖拽二维码图片到此处<br>
+          或 <button class="upload-btn" onclick="handleUploadClick()">点击选择文件</button>
+        </p>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
+      `;
       
-      // 添加一个新的点击处理器，使用更高的优先级
-      const clickHandler = (e) => {
-        console.log('新的点击处理器被触发', e.target, e.currentTarget);
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        // 直接触发文件选择
-        const currentFileInput = document.getElementById('fileInput');
-        if (currentFileInput) {
-          console.log('触发文件选择，fileInput:', currentFileInput);
-          currentFileInput.click();
-        } else {
-          console.error('找不到fileInput元素');
-        }
-      };
+      // 重新设置拖拽事件
+      this.setupDragAndDrop();
       
-      // 移除可能存在的旧事件监听器
-      uploadArea.removeEventListener('click', clickHandler);
-      
-      // 添加新的事件监听器，使用capture模式获得更高优先级
-      uploadArea.addEventListener('click', clickHandler, true);
-      
-      console.log('上传区域点击事件已重新绑定（高优先级）');
+      console.log('上传区域已重新创建');
     }
   }
 
