@@ -180,7 +180,7 @@ class ESIMParser {
   setupDragAndDrop() {
     const uploadArea = document.getElementById('uploadArea');
     if (!uploadArea) return;
-
+    
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
       uploadArea.addEventListener(eventName, (e) => {
         e.preventDefault();
@@ -260,8 +260,8 @@ class ESIMParser {
 
     if (!text) {
       this.showNotification('no_content_to_copy', 'warning');
-      return;
-    }
+          return;
+        }
 
     try {
       await navigator.clipboard.writeText(text);
@@ -320,11 +320,11 @@ class ESIMParser {
       // Generate QR code
       let qrCanvas;
       if (window.QRious) {
-        const qr = new QRious({
-          value: lpaString,
+      const qr = new QRious({
+        value: lpaString,
           size: 300,
-          level: 'M'
-        });
+        level: 'M'
+      });
         qrCanvas = qr.canvas;
       } else {
         // Use built-in simple QR generator
@@ -375,7 +375,7 @@ class ESIMParser {
       // Clean input
       const cleanInput = input.trim();
       console.log('Parsing input:', input, 'cleaned:', cleanInput);
-
+      
       if (!cleanInput) {
         return { success: false, error: 'Input cannot be empty' };
       }
@@ -396,42 +396,42 @@ class ESIMParser {
       } else {
         // Check separator format
         if (cleanInput.includes('$')) {
-          const parts = cleanInput.split('$');
-          if (parts.length < 2) {
+        const parts = cleanInput.split('$');
+        if (parts.length < 2) {
             return { success: false, error: 'Format error: at least SM-DP+ address and activation code required' };
-          }
-          
+        }
+        
           if (parts[0] === '1') {
             // Format: 1$smdp$activation$password
-            smdpAddress = parts[1];
-            activationCode = parts[2];
-            password = parts[3] || '';
+          smdpAddress = parts[1];
+          activationCode = parts[2];
+          password = parts[3] || '';
             console.log('Parsed as format1:', { smdpAddress, activationCode, password });
-          } else {
+        } else {
             // Format: smdp$activation$password
-            smdpAddress = parts[0];
-            activationCode = parts[1];
-            password = parts[2] || '';
+          smdpAddress = parts[0];
+          activationCode = parts[1];
+          password = parts[2] || '';
             console.log('Parsed as format2:', { smdpAddress, activationCode, password });
           }
         } else {
           // Try other separators
           const separators = [' ', ',', '|', ';', '\t', '\n'];
           let parsed = false;
-          
-          for (const sep of separators) {
-            if (cleanInput.includes(sep)) {
+        
+        for (const sep of separators) {
+          if (cleanInput.includes(sep)) {
               const parts = cleanInput.split(sep).filter(p => p.trim());
-              if (parts.length >= 2) {
-                smdpAddress = parts[0].trim();
-                activationCode = parts[1].trim();
+            if (parts.length >= 2) {
+              smdpAddress = parts[0].trim();
+              activationCode = parts[1].trim();
                 password = parts[2] ? parts[2].trim() : '';
                 parsed = true;
-                break;
-              }
+              break;
             }
           }
-          
+        }
+        
           if (!parsed) {
             return { success: false, error: 'Unable to recognize input format, please use standard format' };
           }
@@ -452,7 +452,7 @@ class ESIMParser {
       }
 
       console.log('Validation passed, returning data:', { smdpAddress, activationCode, password });
-      
+
       return {
         success: true,
         data: { smdpAddress, activationCode, password }
@@ -512,13 +512,13 @@ class ESIMParser {
 
     // Clear container
     qrContainer.innerHTML = '';
-
+    
     // Add QR code to main container
     qrContainer.appendChild(data.qrCode.canvas);
-
+    
     // Update both display modes
     this.updateDisplayModes(data);
-
+    
     // Store data for download and copy use
     this.currentQRData = data;
     
@@ -601,25 +601,6 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
-    
-    // Force correct positioning with inline styles
-    dialog.style.cssText = `
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      z-index: 10000 !important;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
-      margin: 0 !important;
-      padding: 0 !important;
-    `;
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
@@ -640,7 +621,7 @@ class ESIMParser {
           <p><strong>🔧 Solution:</strong> Do you want to extract the original information and regenerate a standard format QR code?</p>
           
           <div class="dialog-actions">
-            <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel">
+            <button onclick="document.body.classList.remove('dialog-open'); this.closest('.dialog-overlay').remove()" class="btn-cancel">
               <span>❌</span> Cancel
             </button>
             <button onclick="window.esimParser.confirmExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
@@ -665,11 +646,15 @@ class ESIMParser {
     `;
     dialog.appendChild(internalStyle);
 
+    // Add body class to prevent scrolling
+    document.body.classList.add('dialog-open');
+    
     document.body.appendChild(dialog);
 
     // Click overlay to close
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) {
+        document.body.classList.remove('dialog-open');
         dialog.remove();
       }
     });
@@ -710,7 +695,7 @@ class ESIMParser {
             <button onclick="this.closest('.dialog-overlay').remove(); window.esimParser.showExtractionDialog(\`${detectedText.replace(/`/g, '\\`')}\`);" class="btn-cancel">
               <span>⬅️</span> Back
             </button>
-            <button onclick="window.esimParser.executeExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+            <button onclick="window.esimParser.executeExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); document.body.classList.remove('dialog-open'); this.closest('.dialog-overlay').remove()" class="btn-confirm">
               <span>🚀</span> Confirm Extraction
             </button>
           </div>
@@ -737,6 +722,7 @@ class ESIMParser {
     // Click overlay to close
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) {
+        document.body.classList.remove('dialog-open');
         dialog.remove();
       }
     });
@@ -1364,13 +1350,13 @@ class ESIMParser {
         this.showNotification('file_size_limit', 'warning');
         return;
       }
-      
+
       // Check if jsQR is available
       if (!window.jsQR) {
         this.showLibraryErrorDialog();
         return;
       }
-      
+
       // Read image
       const imageData = await this.loadImageData(file);
       
@@ -1381,7 +1367,7 @@ class ESIMParser {
         this.showNotification('no_qr_detected', 'warning');
         return;
       }
-      
+
       // Parse LPA content
       const parseResult = this.parseLpaString(qrResult.data);
       if (!parseResult.success) {
@@ -1389,7 +1375,7 @@ class ESIMParser {
         this.showExtractionDialog(qrResult.data);
         return;
       }
-      
+
       // Display parse results
       this.showParseResult({
         smdpAddress: parseResult.data.smdpAddress,
@@ -1404,7 +1390,7 @@ class ESIMParser {
       console.log('Re-binding events after correct parsing');
       // Execute immediately, no delay
       this.rebindUploadEvents();
-      
+
     } catch (error) {
       console.error('QR code parsing failed:', error);
       this.showNotification('qr_parse_failed', 'error');
@@ -1614,7 +1600,7 @@ class ESIMParser {
       element.appendChild(loadingIndicator);
     } else {
       // Button element original logic
-      element.disabled = true;
+    element.disabled = true;
       element.style.opacity = '0.7';
       element.innerHTML = '<span class="loading"><span class="spinner"></span>Processing...</span>';
     }
@@ -1636,7 +1622,7 @@ class ESIMParser {
       }
     } else {
       // Button element original logic
-      element.disabled = false;
+    element.disabled = false;
       element.style.opacity = '1';
       
       // Restore button content based on ID
