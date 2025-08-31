@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eSIM Configuration Intelligent Parser | eSIM設定インテリジェントパーサー</title>
+    <title>eSIM Configuration Intelligent Parser</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
     <meta name="description" content="Intelligent eSIM configuration parser supporting bidirectional conversion. Solve irregular eSIM installation errors.">
@@ -18,183 +18,175 @@
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="eSIM 配置解析器">
+    <meta name="twitter:title" content="eSIM Configuration Parser">
     <meta name="twitter:description" content="Standards-compliant eSIM profile and QR code converter">
 </head>
 <body>
     <div class="container">
-        <!-- 头部 -->
+        <!-- Header -->
         <header class="header">
             <div class="header-section">
-                <h1 class="main-title">📱 <span class="lang-content active" id="title-en">eSIM Configuration Intelligent Parser</span><span class="lang-content" id="title-ja">eSIM設定インテリジェントパーサー</span></h1>
+                <h1 class="main-title">📱 eSIM Configuration Intelligent Parser</h1>
                 <p class="sub-title">
-                    <span class="lang-content active" id="subtitle-en">Bidirectional eSIM configuration analysis<br>Solve irregular eSIM installation errors</span>
-                    <span class="lang-content" id="subtitle-ja">双方向eSIM設定解析<br>不規則なeSIMインストールエラーを解決</span>
+                    Bidirectional eSIM configuration analysis<br>
+                    Solve irregular eSIM installation errors
                 </p>
-                
-                <!-- 语言切换器 -->
-                <div class="language-switcher">
-                    <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en">🇺🇸 English</button>
-                    <button class="lang-btn" onclick="switchLanguage('ja')" id="lang-ja">🇯🇵 日本語</button>
-                </div>
             </div>
         </header>
 
-        <!-- 主要内容区域 -->
+        <!-- Main Content Area -->
         <div class="main-grid">
-            <!-- 生成二维码区域 -->
+            <!-- Generate QR Code Area -->
             <div class="card">
-                <h2>📱 生成 eSIM 二维码</h2>
+                <h2>📱 Generate eSIM QR Code</h2>
                 
-                <!-- 输入模式选择 -->
+                <!-- Input Mode Selection -->
                 <div class="input-group">
-                    <label>输入方式</label>
+                    <label>Input Method</label>
                     <div class="input-mode-selector">
-                        <button class="mode-btn active" data-mode="combined">组合输入</button>
-                        <button class="mode-btn" data-mode="separated">分离输入</button>
+                        <button class="mode-btn active" data-mode="combined">Combined Input</button>
+                        <button class="mode-btn" data-mode="separated">Separated Input</button>
                     </div>
                 </div>
 
-                <!-- 组合输入模式 -->
+                <!-- Combined Input Mode -->
                 <div id="combinedInput" class="input-mode">
                     <div class="input-group">
-                        <label for="combinedText">eSIM 配置信息</label>
+                        <label for="combinedText">eSIM Configuration Information</label>
                         <textarea 
                             id="combinedText" 
                             class="textarea-field" 
-                            placeholder="输入格式示例：&#10;1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD&#10;或：t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD"
+                            placeholder="Input format examples:&#10;1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD&#10;or: t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD"
                         ></textarea>
                         <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
-                            支持多种格式，自动识别 SM-DP+ 地址和激活码
+                            Supports multiple formats, automatically recognizes SM-DP+ address and activation code
                         </small>
                     </div>
                 </div>
 
-                <!-- 分离输入模式 -->
+                <!-- Separated Input Mode -->
                 <div id="separatedInput" class="input-mode" style="display: none;">
                     <div class="input-group">
-                        <label for="smdpAddress">SM-DP+ 地址</label>
+                        <label for="smdpAddress">SM-DP+ Address</label>
                         <input 
                             type="text" 
                             id="smdpAddress" 
                             class="input-field" 
-                            placeholder="例：t-mobile.idemia.io"
+                            placeholder="e.g.: t-mobile.idemia.io"
                         >
                     </div>
                     <div class="input-group">
-                        <label for="activationCode">激活码</label>
+                        <label for="activationCode">Activation Code</label>
                         <input 
                             type="text" 
                             id="activationCode" 
                             class="input-field" 
-                            placeholder="例：1BCH0-T6TKQ-PWCXS-FM6OD"
+                            placeholder="e.g.: 1BCH0-T6TKQ-PWCXS-FM6OD"
                         >
                     </div>
                     <div class="input-group">
-                        <label for="activationPassword">激活密码（可选）</label>
+                        <label for="activationPassword">Activation Password (Optional)</label>
                         <input 
                             type="text" 
                             id="activationPassword" 
                             class="input-field" 
-                            placeholder="部分运营商需要"
+                            placeholder="Required by some carriers"
                         >
                     </div>
                 </div>
 
                 <button id="generateBtn" class="btn btn-primary">
                     <span>🎯</span>
-                    生成二维码
+                    Generate QR Code
                 </button>
             </div>
 
-            <!-- 二维码解析区域 -->
+            <!-- QR Code Parsing Area -->
             <div class="card">
-                <h2>🔍 解析二维码</h2>
+                <h2>🔍 Parse QR Code</h2>
                 
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📷</div>
                     <p class="upload-text">
-                        <span class="lang-content active" id="drag-text-en">Drag QR code image here</span>
-                        <span class="lang-content" id="drag-text-ja">QRコード画像をここにドラッグ</span><br>
-                        <span class="lang-content active" id="or-text-en">or</span><span class="lang-content" id="or-text-ja">または</span> 
+                        Drag QR code image here<br>
+                        or 
                         <button class="upload-btn" onclick="handleUploadClick()">
                             <span class="btn-icon">📁</span> 
-                            <span class="lang-content active" id="btn-en">Select File</span>
-                            <span class="lang-content" id="btn-ja">ファイル選択</span>
+                            Select File
                         </button>
                     </p>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
                 </div>
 
-                <!-- 解析结果 -->
+                <!-- Parse Results -->
                 <div id="parseResult" class="parse-result" style="display: none;">
-                    <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">📋 解析结果</h3>
+                    <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">📋 Parse Results</h3>
                     <div class="result-item">
-                        <span class="result-label">SM-DP+ 地址：</span>
+                        <span class="result-label">SM-DP+ Address:</span>
                         <span class="result-value" id="parsedSmdp">-</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">激活码：</span>
+                        <span class="result-label">Activation Code:</span>
                         <span class="result-value" id="parsedActivation">-</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">激活密码：</span>
+                        <span class="result-label">Activation Password:</span>
                         <span class="result-value" id="parsedPassword">-</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">原始数据：</span>
+                        <span class="result-label">Raw Data:</span>
                         <span class="result-value" id="parsedRaw">-</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 二维码显示区域 -->
+        <!-- QR Code Display Area -->
         <div id="qrDisplay" class="qr-display" style="display: none;">
-            <h2>✨ 生成的 eSIM 二维码</h2>
+            <h2>✨ Generated eSIM QR Code</h2>
             <div id="qrContainer" class="qr-container">
-                <!-- 二维码将在这里显示 -->
+                <!-- QR code will be displayed here -->
             </div>
             <div class="qr-info">
-                <!-- 两种显示方式 -->
+                <!-- Two display modes -->
                 <div class="display-modes" style="margin-top: 1rem;">
                     <div class="display-mode-tabs">
-                        <button class="display-tab active" data-mode="lpa">LPA地址</button>
-                        <button class="display-tab" data-mode="separated">分离信息</button>
+                        <button class="display-tab active" data-mode="lpa">LPA Address</button>
+                        <button class="display-tab" data-mode="separated">Separated Information</button>
                     </div>
                     
-                    <!-- LPA地址显示 -->
+                    <!-- LPA Address Display -->
                     <div id="displayLPA" class="display-content active">
                         <div class="display-item">
-                            <div class="display-label">🔗 LPA 地址</div>
+                            <div class="display-label">🔗 LPA Address</div>
                             <div id="lpaAddressDisplay" class="info-display">-</div>
                             <button class="copy-btn" data-copy="lpa">
-                                <span>📋</span> 复制
+                                <span>📋</span> Copy
                             </button>
                         </div>
                     </div>
                     
-                    <!-- 分离信息显示 -->
+                    <!-- Separated Information Display -->
                     <div id="displaySeparated" class="display-content">
                         <div class="display-item">
-                            <div class="display-label">📋 SM-DP+ 地址</div>
+                            <div class="display-label">📋 SM-DP+ Address</div>
                             <div id="smdpDisplay" class="info-display">-</div>
                             <button class="copy-btn" data-copy="smdp">
-                                <span>📋</span> 复制
+                                <span>📋</span> Copy
                             </button>
                         </div>
                         <div class="display-item">
-                            <div class="display-label">🔑 激活码</div>
+                            <div class="display-label">🔑 Activation Code</div>
                             <div id="activationDisplay" class="info-display">-</div>
                             <button class="copy-btn" data-copy="activation">
-                                <span>📋</span> 复制
+                                <span>📋</span> Copy
                             </button>
                         </div>
                         <div class="display-item" id="passwordDisplayItem" style="display: none;">
-                            <div class="display-label">🔐 激活密码</div>
+                            <div class="display-label">🔐 Activation Password</div>
                             <div id="passwordDisplay" class="info-display">-</div>
                             <button class="copy-btn" data-copy="password">
-                                <span>📋</span> 复制
+                                <span>📋</span> Copy
                             </button>
                         </div>
                     </div>
@@ -203,45 +195,45 @@
                 <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                     <button id="downloadBtn" class="btn btn-secondary">
                         <span>💾</span>
-                        下载二维码
+                        Download QR Code
                     </button>
                     <button id="copyBtn" class="btn btn-secondary">
                         <span>📋</span>
-                        复制 LPA 字符串
+                        Copy LPA String
                     </button>
                     <button id="clearBtn" class="btn btn-danger">
                         <span>🗑️</span>
-                        清除
+                        Clear
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- 使用说明 -->
+        <!-- Usage Instructions -->
         <div class="card" style="margin-top: 2rem;">
-            <h2>📖 使用说明</h2>
+            <h2>📖 Usage Instructions</h2>
             <div style="color: var(--text-secondary); line-height: 1.8;">
-                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">支持的输入格式：</h3>
+                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">Supported Input Formats:</h3>
                 <ul style="margin-left: 2rem; margin-bottom: 1rem;">
                     <li><code>LPA:1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code></li>
                     <li><code>1$t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code></li>
                     <li><code>t-mobile.idemia.io$1BCH0-T6TKQ-PWCXS-FM6OD</code></li>
                 </ul>
                 
-                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">功能特点：</h3>
+                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">Features:</h3>
                 <ul style="margin-left: 2rem;">
-                    <li>🎯 智能格式识别和容错处理</li>
-                    <li>📱 生成 iPhone 兼容的 eSIM 二维码</li>
-                    <li>🔍 从图片中解析 eSIM 配置信息</li>
-                    <li>💾 支持二维码下载和数据复制</li>
-                    <li>🌸 优雅的京都风格界面设计</li>
+                    <li>🎯 Intelligent format recognition and error tolerance</li>
+                    <li>📱 Generate iPhone-compatible eSIM QR codes</li>
+                    <li>🔍 Parse eSIM configuration from images</li>
+                    <li>💾 Support QR code download and data copying</li>
+                    <li>🌸 Elegant Kyoto-style interface design</li>
                 </ul>
             </div>
         </div>
         
-        <!-- 页脚 -->
+        <!-- Footer -->
         <footer style="text-align: center; margin-top: 3rem; padding: 2rem; color: var(--text-secondary);">
-            <p>© 2024 eSIM Swap | Powered by CloudFlare Pages + Worker</p>
+            <p>© 2025 eSIM Swap | Powered by CloudFlare Pages</p>
             <p>
                 <a href="https://github.com/yagami1997/esimswap" target="_blank" style="color: var(--primary-purple);">
                     GitHub Repository
@@ -250,12 +242,12 @@
         </footer>
     </div>
 
-    <!-- 通知组件 -->
+    <!-- Notification Component -->
     <div id="notification" class="notification">
         <span id="notificationText"></span>
     </div>
 
-    <!-- 主应用脚本 -->
-    <script src="app.js?v=20250831-1"></script>
+    <!-- Main Application Script -->
+    <script src="app.js?v=20250831-2"></script>
 </body>
 </html>
