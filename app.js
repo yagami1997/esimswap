@@ -20,51 +20,73 @@ class EsimSwapApp {
    * 加载外部库
    */
   async loadExternalLibraries() {
-    // 检查是否已经加载
-    if (window.QRious && window.jsQR) {
-      this.showNotification('应用已就绪！', 'success');
-      return;
-    }
-
+    console.log('开始加载外部库...');
+    
     try {
-      // 使用更简单的方式加载库
-      if (!window.QRious) {
-        const qrScript = document.createElement('script');
-        qrScript.src = 'https://unpkg.com/qrious@4.0.2/dist/qrious.min.js';
-        qrScript.crossOrigin = 'anonymous';
-        document.head.appendChild(qrScript);
-        
-        await new Promise((resolve, reject) => {
-          qrScript.onload = resolve;
-          qrScript.onerror = reject;
-        });
-      }
-
-      if (!window.jsQR) {
-        const jsqrScript = document.createElement('script');
-        jsqrScript.src = 'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js';
-        jsqrScript.crossOrigin = 'anonymous';
-        document.head.appendChild(jsqrScript);
-        
-        await new Promise((resolve, reject) => {
-          jsqrScript.onload = resolve;
-          jsqrScript.onerror = reject;
-        });
-      }
-
-      // 等待一小段时间确保库完全加载
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // 简单直接的加载方式
+      await this.loadQRious();
+      await this.loadJsQR();
       
       if (window.QRious && window.jsQR) {
+        console.log('所有库加载成功');
         this.showNotification('应用已就绪！', 'success');
       } else {
+        console.log('部分库加载失败，使用内置功能');
         this.showNotification('使用内置功能', 'warning');
       }
       
     } catch (error) {
-      console.error('库加载失败:', error);
+      console.error('库加载过程出错:', error);
       this.showNotification('使用内置功能', 'warning');
     }
+  }
+
+  /**
+   * 加载 QRious 库
+   */
+  async loadQRious() {
+    if (window.QRious) {
+      console.log('QRious 已存在');
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js';
+      script.onload = () => {
+        console.log('QRious 加载成功');
+        resolve();
+      };
+      script.onerror = () => {
+        console.log('QRious 加载失败');
+        resolve(); // 不要 reject，继续执行
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  /**
+   * 加载 jsQR 库
+   */
+  async loadJsQR() {
+    if (window.jsQR) {
+      console.log('jsQR 已存在');
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+      script.onload = () => {
+        console.log('jsQR 加载成功');
+        resolve();
+      };
+      script.onerror = () => {
+        console.log('jsQR 加载失败');
+        resolve(); // 不要 reject，继续执行
+      };
+      document.head.appendChild(script);
+    });
   }
 
   /**
@@ -300,16 +322,21 @@ class EsimSwapApp {
       }
 
       // 显示结果
-      this.displayQRCode({
+      console.log('准备显示结果，esimData:', esimData);
+      const displayData = {
         qrCode: {
           canvas: qrCanvas,
           dataURL: qrCanvas.toDataURL()
         },
         esimData: {
-          ...esimData.data,
+          smdpAddress: esimData.data.smdpAddress,
+          activationCode: esimData.data.activationCode,
+          activationPassword: esimData.data.password || esimData.data.activationPassword,
           lpaString: lpaString
         }
-      });
+      };
+      console.log('显示数据结构:', displayData);
+      this.displayQRCode(displayData);
 
       this.showNotification('二维码生成成功！', 'success');
 
@@ -478,13 +505,23 @@ class EsimSwapApp {
     
     // 更新二维码显示
     const qrCodeDisplay = document.getElementById('qrCodeDisplay');
-    qrCodeDisplay.innerHTML = '';
-    const qrCanvas = data.qrCode.canvas.cloneNode(true);
-    qrCodeDisplay.appendChild(qrCanvas);
+    if (qrCodeDisplay) {
+      qrCodeDisplay.innerHTML = '';
+      const qrCanvas = data.qrCode.canvas.cloneNode(true);
+      qrCodeDisplay.appendChild(qrCanvas);
+      console.log('二维码显示已更新');
+    } else {
+      console.error('找不到 qrCodeDisplay 元素');
+    }
 
     // 更新 LPA 地址显示
     const lpaAddressDisplay = document.getElementById('lpaAddressDisplay');
-    lpaAddressDisplay.textContent = data.esimData.lpaString;
+    if (lpaAddressDisplay) {
+      lpaAddressDisplay.textContent = data.esimData.lpaString;
+      console.log('LPA地址已更新:', data.esimData.lpaString);
+    } else {
+      console.error('找不到 lpaAddressDisplay 元素');
+    }
 
     // 更新分离信息显示
     const smdpDisplay = document.getElementById('smdpDisplay');
@@ -493,15 +530,32 @@ class EsimSwapApp {
     const passwordDisplayItem = document.getElementById('passwordDisplayItem');
 
     console.log('eSIM数据:', data.esimData);
+    console.log('找到的元素:', {
+      smdpDisplay: !!smdpDisplay,
+      activationDisplay: !!activationDisplay,
+      passwordDisplay: !!passwordDisplay,
+      passwordDisplayItem: !!passwordDisplayItem
+    });
     
-    smdpDisplay.textContent = data.esimData.smdpAddress || '-';
-    activationDisplay.textContent = data.esimData.activationCode || '-';
+    if (smdpDisplay) {
+      smdpDisplay.textContent = data.esimData.smdpAddress || '-';
+      console.log('SM-DP+地址已更新:', data.esimData.smdpAddress);
+    }
     
-    if (data.esimData.activationPassword || data.esimData.password) {
-      passwordDisplay.textContent = data.esimData.activationPassword || data.esimData.password;
-      passwordDisplayItem.style.display = 'block';
-    } else {
-      passwordDisplayItem.style.display = 'none';
+    if (activationDisplay) {
+      activationDisplay.textContent = data.esimData.activationCode || '-';
+      console.log('激活码已更新:', data.esimData.activationCode);
+    }
+    
+    if (passwordDisplay && passwordDisplayItem) {
+      if (data.esimData.activationPassword || data.esimData.password) {
+        passwordDisplay.textContent = data.esimData.activationPassword || data.esimData.password;
+        passwordDisplayItem.style.display = 'block';
+        console.log('密码已更新:', data.esimData.activationPassword || data.esimData.password);
+      } else {
+        passwordDisplayItem.style.display = 'none';
+        console.log('无密码，隐藏密码项');
+      }
     }
   }
 
