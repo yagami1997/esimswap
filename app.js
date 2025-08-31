@@ -14,6 +14,9 @@ class EsimSwapApp {
     this.bindEvents();
     this.setupDragAndDrop();
     this.loadExternalLibraries();
+    
+    // 设置全局引用以便对话框调用
+    window.esimApp = this;
   }
 
   /**
@@ -611,6 +614,159 @@ class EsimSwapApp {
   }
 
   /**
+   * 检测是否可能是 eSIM 数据
+   */
+  isPotentialESIMData(data) {
+    const cleanData = data.trim();
+    
+    // 检查是否包含 eSIM 相关的关键信息
+    return (
+      cleanData.includes('$') ||  // 包含分隔符
+      cleanData.includes('.') ||  // 包含域名
+      /[A-Z0-9-]{10,}/.test(cleanData) ||  // 包含长的字母数字串（可能是激活码）
+      cleanData.toLowerCase().includes('lpa') ||  // 包含 LPA 关键字
+      cleanData.toLowerCase().includes('esim')    // 包含 eSIM 关键字
+    );
+  }
+
+  /**
+   * 显示提取确认对话框
+   */
+  showExtractionDialog(qrData) {
+    // 创建对话框
+    const dialog = document.createElement('div');
+    dialog.className = 'extraction-dialog';
+    dialog.innerHTML = `
+      <div class="dialog-overlay"></div>
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3>⚠️ LPA信息不完整或错误</h3>
+        </div>
+        <div class="dialog-body">
+          <p>检测到的二维码内容：</p>
+          <div class="detected-content">${qrData}</div>
+          <p>需要手动提取原始信息吗？</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onclick="this.closest('.extraction-dialog').remove()">
+            取消
+          </button>
+          <button class="btn btn-primary" onclick="window.esimApp.extractAndFill('${qrData.replace(/'/g, "\\'")}'); this.closest('.extraction-dialog').remove();">
+            是，提取信息
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // 添加样式
+    dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // 添加内部样式
+    const overlay = dialog.querySelector('.dialog-overlay');
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    `;
+    
+    const content = dialog.querySelector('.dialog-content');
+    content.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1001;
+    `;
+    
+    const header = dialog.querySelector('.dialog-header');
+    header.style.cssText = `
+      padding: 1.5rem 1.5rem 0;
+      color: var(--text-primary);
+    `;
+    
+    const body = dialog.querySelector('.dialog-body');
+    body.style.cssText = `
+      padding: 1rem 1.5rem;
+      color: var(--text-secondary);
+    `;
+    
+    const detectedContent = dialog.querySelector('.detected-content');
+    detectedContent.style.cssText = `
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      color: var(--text-primary);
+    `;
+    
+    const actions = dialog.querySelector('.dialog-actions');
+    actions.style.cssText = `
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // 点击遮罩关闭
+    overlay.addEventListener('click', () => {
+      dialog.remove();
+    });
+  }
+
+  /**
+   * 提取并填充信息
+   */
+  extractAndFill(qrData) {
+    // 填充到输入框
+    const combinedInput = document.getElementById('combinedText');
+    if (combinedInput) {
+      combinedInput.value = qrData;
+      
+      // 高亮显示输入框
+      combinedInput.style.borderColor = '#8b45ff';
+      combinedInput.style.boxShadow = '0 0 0 3px rgba(139, 69, 255, 0.1)';
+      
+      // 滚动到输入区域
+      combinedInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // 聚焦输入框
+      setTimeout(() => {
+        combinedInput.focus();
+      }, 500);
+      
+      // 3秒后恢复样式
+      setTimeout(() => {
+        combinedInput.style.borderColor = '';
+        combinedInput.style.boxShadow = '';
+      }, 3000);
+    }
+    
+    // 显示成功提示
+    this.showNotification('✅ 提取成功，您可以手动解析和自动生成正确二维码', 'success');
+  }
+
+  /**
    * 尝试修复二维码
    */
   tryFixQRCode(qrData) {
@@ -842,17 +998,12 @@ class EsimSwapApp {
       // 解析 LPA 内容
       const parseResult = this.parseLpaString(code.data);
       if (!parseResult.success) {
-        // 尝试智能修复
-        const fixResult = this.tryFixQRCode(code.data);
-        if (fixResult.success) {
-          this.showNotification(`检测到问题：${fixResult.problem}，已自动修复！`, 'success');
-          this.displayParseResult(fixResult.data, fixResult.fixedLPA);
-          
-          // 显示修复前后对比
-          this.showFixComparison(code.data, fixResult.fixedLPA, fixResult.problem);
+        // 检测是否可能是不完整的 eSIM 信息
+        if (this.isPotentialESIMData(code.data)) {
+          this.showExtractionDialog(code.data);
         } else {
-          this.showNotification(`二维码有问题：${fixResult.problem}，请手动输入`, 'error');
-          this.showFallbackInput(code.data);
+          this.showNotification('二维码内容不是有效的 eSIM 配置信息', 'error');
+          this.showFallbackInput();
         }
         return;
       }
