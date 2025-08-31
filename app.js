@@ -168,39 +168,8 @@ class EsimSwapApp {
     // 生成二维码
     document.getElementById('generateBtn').addEventListener('click', () => this.generateQR());
 
-    // 文件上传
-    const fileInput = document.getElementById('fileInput');
-    const uploadArea = document.getElementById('uploadArea');
-    
-    console.log('初始化时 - fileInput:', fileInput);
-    console.log('初始化时 - uploadArea:', uploadArea);
-    
-    if (fileInput) {
-      fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
-      console.log('fileInput change事件已绑定');
-    } else {
-      console.error('初始化时找不到fileInput元素');
-    }
-    
-    if (uploadArea) {
-      uploadArea.addEventListener('click', (e) => {
-        console.log('初始上传区域被点击', e.target);
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const currentFileInput = document.getElementById('fileInput');
-        console.log('点击时的fileInput:', currentFileInput);
-        
-        if (currentFileInput) {
-          currentFileInput.click();
-        } else {
-          console.error('点击时找不到fileInput元素');
-        }
-      });
-      console.log('uploadArea click事件已绑定');
-    } else {
-      console.error('初始化时找不到uploadArea元素');
-    }
+    // 文件上传事件现在通过HTML内联事件处理
+    console.log('使用HTML内联事件处理文件上传');
 
     // 操作按钮
     document.getElementById('downloadBtn')?.addEventListener('click', () => this.downloadQR());
@@ -1892,7 +1861,27 @@ class EsimSwapApp {
   }
 }
 
+// 全局函数 - 处理上传区域点击
+function handleUploadClick() {
+  console.log('全局函数：上传区域被点击');
+  const fileInput = document.getElementById('fileInput');
+  if (fileInput) {
+    console.log('全局函数：触发文件选择');
+    fileInput.click();
+  } else {
+    console.error('全局函数：找不到fileInput');
+  }
+}
+
+// 全局函数 - 处理文件选择
+function handleFileChange(event) {
+  console.log('全局函数：文件被选择', event.target.files);
+  if (window.esimApp && event.target.files[0]) {
+    window.esimApp.processFile(event.target.files[0]);
+  }
+}
+
 // 初始化应用
 document.addEventListener('DOMContentLoaded', () => {
-  new EsimSwapApp();
+  window.esimApp = new EsimSwapApp();
 });
