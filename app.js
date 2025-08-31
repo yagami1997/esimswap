@@ -1639,12 +1639,20 @@ class EsimSwapApp {
       const newUploadArea = uploadArea.cloneNode(true);
       uploadArea.parentNode.replaceChild(newUploadArea, uploadArea);
       
+      // 获取新的 fileInput 引用
+      const newFileInput = newUploadArea.querySelector('#fileInput');
+      
       // 重新绑定点击事件
       newUploadArea.addEventListener('click', (e) => {
         console.log('重新绑定的上传区域被点击', e.target, e.currentTarget);
+        console.log('新的fileInput:', newFileInput);
         e.preventDefault();
         e.stopPropagation();
-        fileInput.click();
+        if (newFileInput) {
+          newFileInput.click();
+        } else {
+          console.error('找不到新的fileInput元素');
+        }
       });
       
       // 添加鼠标事件调试
@@ -1683,6 +1691,12 @@ class EsimSwapApp {
           this.processFile(files[0]);
         }
       });
+      
+      // 重新绑定文件输入框的change事件
+      if (newFileInput) {
+        newFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+        console.log('文件输入框change事件已重新绑定');
+      }
       
       // 强制设置样式确保可点击
       newUploadArea.style.pointerEvents = 'auto';
