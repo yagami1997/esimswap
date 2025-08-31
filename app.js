@@ -392,7 +392,7 @@ class EsimSwapApp {
 
     } catch (error) {
       console.error('生成失败:', error);
-      this.showNotification('生成失败，请检查输入格式', 'error');
+      this.showGenerationErrorDialog(error.message || '未知错误');
     } finally {
       this.hideLoading('generateBtn');
     }
@@ -1270,6 +1270,218 @@ class EsimSwapApp {
   }
 
   /**
+   * 显示生成错误对话框
+   */
+  showGenerationErrorDialog(errorMessage) {
+    const dialog = document.createElement('div');
+    dialog.className = 'generation-error-dialog';
+    dialog.innerHTML = `
+      <div class="dialog-overlay"></div>
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3>⚠️ 二维码生成失败</h3>
+        </div>
+        <div class="dialog-body">
+          <p><strong>❌ 生成过程中出现错误：</strong></p>
+          <div class="error-message">${errorMessage}</div>
+          <p><strong>🔧 可能的解决方案：</strong></p>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+            <li>检查输入格式是否正确</li>
+            <li>确保包含有效的 SM-DP+ 地址</li>
+            <li>确保激活码格式正确</li>
+            <li>尝试刷新页面重新生成</li>
+          </ul>
+          <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 4px solid #2196F3;">
+            <strong>💡 提示：</strong>如果问题持续，请尝试使用标准格式：<br>
+            <code>LPA:1$smdp-address$activation-code</code>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onclick="this.closest('.generation-error-dialog').remove();">
+            <span>❌</span> 关闭
+          </button>
+          <button class="btn btn-primary" onclick="this.closest('.generation-error-dialog').remove(); window.esimApp.focusInputArea();">
+            <span>✏️</span> 重新输入
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // 添加样式
+    dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // 添加内部样式
+    const overlay = dialog.querySelector('.dialog-overlay');
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    `;
+    
+    const content = dialog.querySelector('.dialog-content');
+    content.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1001;
+    `;
+    
+    const header = dialog.querySelector('.dialog-header');
+    header.style.cssText = `
+      padding: 1.5rem 1.5rem 0;
+      color: var(--text-primary);
+    `;
+    
+    const body = dialog.querySelector('.dialog-body');
+    body.style.cssText = `
+      padding: 1rem 1.5rem;
+      color: var(--text-secondary);
+    `;
+    
+    const errorMessage = dialog.querySelector('.error-message');
+    errorMessage.style.cssText = `
+      background: #ffebee;
+      border: 1px solid #f44336;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #d32f2f;
+    `;
+    
+    const actions = dialog.querySelector('.dialog-actions');
+    actions.style.cssText = `
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // 点击遮罩关闭
+    overlay.addEventListener('click', () => {
+      dialog.remove();
+    });
+  }
+
+  /**
+   * 显示库加载错误对话框
+   */
+  showLibraryErrorDialog() {
+    const dialog = document.createElement('div');
+    dialog.className = 'library-error-dialog';
+    dialog.innerHTML = `
+      <div class="dialog-overlay"></div>
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h3>📚 二维码解析库未加载</h3>
+        </div>
+        <div class="dialog-body">
+          <p><strong>⚠️ 问题：</strong>二维码解析功能暂时不可用。</p>
+          <p><strong>🔧 解决方案：</strong></p>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+            <li>刷新页面重新加载库文件</li>
+            <li>检查网络连接是否正常</li>
+            <li>或者直接手动输入 LPA 字符串</li>
+          </ul>
+          <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 4px solid #2196F3;">
+            <strong>💡 提示：</strong>您可以在上方输入框中手动输入 LPA 字符串，<br>
+            格式如：<code>LPA:1$smdp-address$activation-code</code>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onclick="window.location.reload();">
+            <span>🔄</span> 刷新页面
+          </button>
+          <button class="btn btn-primary" onclick="this.closest('.library-error-dialog').remove(); window.esimApp.focusInputArea();">
+            <span>✏️</span> 手动输入
+          </button>
+        </div>
+      </div>
+    `;
+    
+    // 添加样式
+    dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // 添加内部样式
+    const overlay = dialog.querySelector('.dialog-overlay');
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    `;
+    
+    const content = dialog.querySelector('.dialog-content');
+    content.style.cssText = `
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1001;
+    `;
+    
+    const header = dialog.querySelector('.dialog-header');
+    header.style.cssText = `
+      padding: 1.5rem 1.5rem 0;
+      color: var(--text-primary);
+    `;
+    
+    const body = dialog.querySelector('.dialog-body');
+    body.style.cssText = `
+      padding: 1rem 1.5rem;
+      color: var(--text-secondary);
+    `;
+    
+    const actions = dialog.querySelector('.dialog-actions');
+    actions.style.cssText = `
+      padding: 0 1.5rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    `;
+    
+    document.body.appendChild(dialog);
+    
+    // 点击遮罩关闭
+    overlay.addEventListener('click', () => {
+      dialog.remove();
+    });
+  }
+
+  /**
    * 聚焦到输入区域
    */
   focusInputArea() {
@@ -1324,8 +1536,7 @@ class EsimSwapApp {
 
       // 检查 jsQR 是否可用
       if (typeof jsQR === 'undefined') {
-        this.showNotification('二维码解析库未加载，请手动输入 LPA 字符串', 'warning');
-        this.showFallbackInput();
+        this.showLibraryErrorDialog();
         return;
       }
 
