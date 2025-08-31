@@ -601,6 +601,25 @@ class ESIMParser {
     // Create dialog
     const dialog = document.createElement('div');
     dialog.className = 'dialog-overlay';
+    
+    // Force correct positioning with inline styles
+    dialog.style.cssText = `
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 10000 !important;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      margin: 0 !important;
+      padding: 0 !important;
+    `;
     dialog.innerHTML = `
       <div class="dialog-content">
         <div class="dialog-body">
