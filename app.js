@@ -101,7 +101,7 @@ class EsimSwapApp {
         if (window.jsQR) {
           break;
         }
-      } catch (error) {image.png
+      } catch (error) {image.pngimage.png
         console.log(`尝试下一个 CDN...`);
         continue;
       }
@@ -291,76 +291,41 @@ class EsimSwapApp {
    */
   async generateQR() {
     try {
-      console.log('开始生成二维码...');
       this.showLoading('generateBtn');
       
-      let esimData;
-
-      if (this.currentMode === 'combined') {
-        const input = document.getElementById('combinedText').value.trim();
-        console.log('组合输入模式，输入内容:', input);
-        
-        if (!input) {
-          this.showNotification('请输入 eSIM 配置信息', 'warning');
-          return;
-        }
-        
-        // 简化解析逻辑，直接处理常见格式
-        if (input.includes('$')) {
-          const parts = input.split('$');
-          console.log('分割结果:', parts);
-          
-          let smdpAddress, activationCode, password = '';
-          
-          if (parts[0] === '1' && parts.length >= 3) {
-            // 格式：1$smdp$activation$password
-            smdpAddress = parts[1];
-            activationCode = parts[2];
-            password = parts[3] || '';
-          } else if (parts.length >= 2) {
-            // 格式：smdp$activation$password
-            smdpAddress = parts[0];
-            activationCode = parts[1];
-            password = parts[2] || '';
-          } else {
-            this.showNotification('输入格式错误', 'error');
-            return;
-          }
-          
-          console.log('解析结果:', { smdpAddress, activationCode, password });
-          
-          esimData = {
-            success: true,
-            data: { smdpAddress, activationCode, password }
-          };
-        } else {
-          this.showNotification('请使用 $ 分隔符格式', 'error');
-          return;
-        }
-      } else {
-        const smdpAddress = document.getElementById('smdpAddress').value.trim();
-        const activationCode = document.getElementById('activationCode').value.trim();
-        const activationPassword = document.getElementById('activationPassword').value.trim();
-        
-        if (!smdpAddress || !activationCode) {
-          this.showNotification('请填写 SM-DP+ 地址和激活码', 'warning');
-          return;
-        }
-        
-        esimData = {
-          success: true,
-          data: { smdpAddress, activationCode, password: activationPassword }
-        };
+      // 获取输入
+      const input = document.getElementById('combinedText').value.trim();
+      if (!input) {
+        this.showNotification('请输入 eSIM 配置信息', 'warning');
+        return;
       }
-
+      
+      // 简单解析
+      const parts = input.split('$');
+      let smdpAddress, activationCode, password = '';
+      
+      if (parts[0] === '1' && parts.length >= 3) {
+        smdpAddress = parts[1];
+        activationCode = parts[2];
+        password = parts[3] || '';
+      } else if (parts.length >= 2) {
+        smdpAddress = parts[0];
+        activationCode = parts[1];
+        password = parts[2] || '';
+      } else {
+        this.showNotification('格式错误，请使用 $ 分隔符', 'error');
+        return;
+      }
+      
       // 生成 LPA 字符串
-      const lpaString = this.generateLpaString(esimData.data);
-      console.log('生成的LPA字符串:', lpaString);
+      let lpaString = `LPA:1$${smdpAddress}$${activationCode}`;
+      if (password) {
+        lpaString += `$${password}`;
+      }
       
       // 生成二维码
       let qrCanvas;
       if (window.QRious) {
-        console.log('使用 QRious 库生成二维码');
         const qr = new QRious({
           element: document.createElement('canvas'),
           value: lpaString,
@@ -369,31 +334,61 @@ class EsimSwapApp {
         });
         qrCanvas = qr.canvas;
       } else {
-        console.log('使用内置简化实现生成二维码');
         qrCanvas = this.generateSimpleQR(lpaString);
       }
 
-      // 显示结果
-      const displayData = {
-        qrCode: {
-          canvas: qrCanvas,
-          dataURL: qrCanvas.toDataURL()
-        },
-        esimData: {
-          smdpAddress: esimData.data.smdpAddress,
-          activationCode: esimData.data.activationCode,
-          activationPassword: esimData.data.password,
-          lpaString: lpaString
-        }
-      };
+      // 显示二维码
+      const qrDisplay = document.getElementById('qrDisplay');
+      const qrContainer = document.getElementById('qrContainer');
       
-      console.log('准备显示结果:', displayData);
-      this.displayQRCode(displayData);
+      if (qrContainer) {
+        qrContainer.innerHTML = '';
+        qrContainer.appendChild(qrCanvas);
+      }
+      
+      if (qrDisplay) {
+        qrDisplay.style.display = 'block';
+        qrDisplay.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      // 更新显示内容
+      const lpaAddressDisplay = document.getElementById('lpaAddressDisplay');
+      const smdpDisplay = document.getElementById('smdpDisplay');
+      const activationDisplay = document.getElementById('activationDisplay');
+      const passwordDisplay = document.getElementById('passwordDisplay');
+      const passwordDisplayItem = document.getElementById('passwordDisplayItem');
+      
+      if (lpaAddressDisplay) {
+        lpaAddressDisplay.textContent = lpaString;
+      }
+      
+      if (smdpDisplay) {
+        smdpDisplay.textContent = smdpAddress;
+      }
+      
+      if (activationDisplay) {
+        activationDisplay.textContent = activationCode;
+      }
+      
+      if (passwordDisplay && passwordDisplayItem) {
+        if (password) {
+          passwordDisplay.textContent = password;
+          passwordDisplayItem.style.display = 'block';
+        } else {
+          passwordDisplayItem.style.display = 'none';
+        }
+      }
+      
+      // 存储数据
+      this.currentLPA = lpaString;
+      this.currentParsed = { smdpAddress, activationCode, activationPassword: password };
+      this.currentQRData = { qrCode: { canvas: qrCanvas } };
+      
       this.showNotification('二维码生成成功！', 'success');
 
     } catch (error) {
-      console.error('生成二维码失败:', error);
-      this.showNotification(`生成失败: ${error.message}`, 'error');
+      console.error('生成失败:', error);
+      this.showNotification('生成失败，请检查输入格式', 'error');
     } finally {
       this.hideLoading('generateBtn');
     }
