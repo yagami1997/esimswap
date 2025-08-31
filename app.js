@@ -1563,7 +1563,10 @@ class EsimSwapApp {
       
       // 重新绑定上传区域事件（确保事件不会丢失）
       console.log('正确解析后重新绑定事件');
-      this.rebindUploadEvents();
+      // 延迟执行，确保所有DOM操作完成
+      setTimeout(() => {
+        this.rebindUploadEvents();
+      }, 100);
 
     } catch (error) {
       console.error('解析二维码失败:', error);
@@ -1629,7 +1632,8 @@ class EsimSwapApp {
     const uploadArea = document.getElementById('uploadArea');
     
     if (uploadArea) {
-      console.log('开始重新创建上传区域...');
+      console.log('开始重新创建上传区域...', uploadArea);
+      console.log('当前上传区域内容:', uploadArea.innerHTML);
       
       // 重新创建上传区域的HTML内容
       uploadArea.innerHTML = `
@@ -1641,10 +1645,18 @@ class EsimSwapApp {
         <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
       `;
       
+      console.log('重新创建后的内容:', uploadArea.innerHTML);
+      
       // 重新设置拖拽事件
       this.setupDragAndDrop();
       
+      // 验证按钮是否存在
+      const uploadBtn = uploadArea.querySelector('.upload-btn');
+      console.log('重新创建的按钮:', uploadBtn);
+      
       console.log('上传区域已重新创建');
+    } else {
+      console.error('找不到uploadArea元素');
     }
   }
 
