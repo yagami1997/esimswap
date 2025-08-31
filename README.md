@@ -86,9 +86,9 @@ Your iPhone simply **refuses to recognize it** as a valid eSIM profile, leaving 
 
 ### Real-World Inspiration
 
-This project was born from frustration with carrier incompatibilities. When 1Psim QR codes failed to work with XESIM, 5ber, and even iPhone 16 (Australian version), we discovered that 9eSIM had developed effective error correction capabilities. 
+This project was born from frustration with carrier format incompatibilities encountered in real-world usage. Many eSIM QR codes provided by carriers fail to work properly across different devices and platforms due to non-standard formatting.
 
-We studied their approach and created this open-source solution to make eSIM format correction accessible to everyone facing similar issues.
+We drew inspiration from open-source eSIM adapter solutions that implement SGP.22-compliant error correction mechanisms. By studying these approaches, we developed this comprehensive tool to make standardized eSIM format correction accessible to everyone facing similar compatibility issues.
 
 ---
 
