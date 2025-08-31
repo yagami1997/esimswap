@@ -1774,10 +1774,15 @@ class ESIMParser {
     const message = this.getMessage(messageKey);
     notificationText.textContent = message;
     notification.className = `notification ${type}`;
+    notification.style.display = 'block';
     notification.classList.add('show');
     
     setTimeout(() => {
       notification.classList.remove('show');
+      // Completely hide after animation
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 300); // Wait for transition to complete
     }, 3000);
   }
 }

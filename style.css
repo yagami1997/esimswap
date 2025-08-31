@@ -498,6 +498,7 @@ body {
   transition: transform 0.3s ease;
   opacity: 0;
   visibility: hidden;
+  display: none;
 }
 
 .notification.show {
@@ -570,6 +571,11 @@ body {
   .notification {
     right: 1rem;
     left: 1rem;
+    transform: translateX(calc(100% + 1rem));
+  }
+  
+  .notification.show {
+    transform: translateX(0);
   }
 }
 
