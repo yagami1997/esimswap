@@ -101,7 +101,7 @@ class EsimSwapApp {
         if (window.jsQR) {
           break;
         }
-      } catch (error) {
+      } catch (error) {image.png
         console.log(`尝试下一个 CDN...`);
         continue;
       }
@@ -534,6 +534,17 @@ class EsimSwapApp {
   displayQRCode(data) {
     const qrDisplay = document.getElementById('qrDisplay');
     const qrContainer = document.getElementById('qrContainer');
+
+    console.log('显示二维码，元素检查:', {
+      qrDisplay: !!qrDisplay,
+      qrContainer: !!qrContainer
+    });
+
+    if (!qrDisplay || !qrContainer) {
+      console.error('找不到必要的显示元素');
+      this.showNotification('页面元素加载异常，请刷新页面', 'error');
+      return;
+    }
 
     // 清空容器
     qrContainer.innerHTML = '';
