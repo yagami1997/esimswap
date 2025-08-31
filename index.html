@@ -100,11 +100,11 @@
             <div class="card">
                 <h2>🔍 解析二维码</h2>
                 
-                <div class="upload-area" id="uploadArea" onclick="handleUploadClick()">
+                <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📷</div>
                     <p class="upload-text">
                         拖拽二维码图片到此处<br>
-                        或点击选择文件
+                        或 <button class="upload-btn" onclick="handleUploadClick()">点击选择文件</button>
                     </p>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
                 </div>
