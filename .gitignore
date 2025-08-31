@@ -1,7 +1,7 @@
-# eSIM Swap - Git 忽略文件列表
+# eSIM Swap - Git Ignore File List
 
 # =============================================================================
-# 操作系统生成的文件
+# Operating System Generated Files
 # =============================================================================
 
 # macOS
@@ -15,16 +15,16 @@ Thumbs.db
 .AppleDouble
 .LSOverride
 
-# macOS 图标文件
+# macOS icon files
 Icon?
 
-# macOS 临时文件夹
+# macOS temporary folders
 .TemporaryItems
 .fseventsd
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# macOS 目录属性
+# macOS directory attributes
 .AppleDB
 .AppleDesktop
 Network Trash Folder
@@ -42,16 +42,16 @@ ehthumbs_vista.db
 *.swo
 *~
 
-# Windows 快捷方式文件
+# Windows shortcut files
 *.lnk
 
-# Windows 文件夹配置文件
+# Windows folder config files
 [Dd]esktop.ini
 
-# Windows 回收站
+# Windows Recycle Bin
 $RECYCLE.BIN/
 
-# Windows Installer 文件
+# Windows Installer files
 *.cab
 *.msi
 *.msix
@@ -66,7 +66,7 @@ $RECYCLE.BIN/
 .nfs*
 
 # =============================================================================
-# 编辑器和 IDE 文件
+# Editor and IDE Files
 # =============================================================================
 
 # Visual Studio Code
@@ -124,49 +124,49 @@ tags
 [._]*.un~
 
 # =============================================================================
-# Node.js 和 npm
+# Node.js and npm
 # =============================================================================
 
-# 依赖目录
+# Dependencies directory
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# 运行时数据
+# Runtime data
 pids
 *.pid
 *.seed
 *.pid.lock
 
-# 覆盖率目录
+# Coverage directory
 lib-cov
 coverage/
 *.lcov
 .nyc_output
 
-# 依赖锁定文件（可选择性忽略）
+# Dependency lock files (optionally ignored)
 # package-lock.json
 # yarn.lock
 
-# 可选的 npm 缓存目录
+# Optional npm cache directory
 .npm
 
-# 可选的 eslint 缓存
+# Optional eslint cache
 .eslintcache
 
-# 可选的 REPL 历史
+# Optional REPL history
 .node_repl_history
 
-# 输出目录
+# Output directory
 out/
 dist/
 
-# Yarn Integrity 文件
+# Yarn Integrity file
 .yarn-integrity
 
-# dotenv 环境变量文件
+# dotenv environment variable files
 .env
 .env.local
 .env.development.local
@@ -174,22 +174,22 @@ dist/
 .env.production.local
 
 # =============================================================================
-# CloudFlare 相关
+# CloudFlare Related
 # =============================================================================
 
-# Wrangler 生成的文件
+# Wrangler generated files
 .wrangler/
 wrangler.toml.bak
 
-# CloudFlare 本地开发
+# CloudFlare local development
 .dev.vars
 .mf/
 
 # =============================================================================
-# 构建和部署相关
+# Build and Deployment Related
 # =============================================================================
 
-# 构建输出
+# Build output
 build/
 dist/
 out/
@@ -197,20 +197,20 @@ out/
 .vercel/
 .netlify/
 
-# 缓存目录
+# Cache directories
 .cache/
 .parcel-cache/
 .next/
 .nuxt/
 
-# 静态生成
+# Static generation
 .docusaurus/
 
 # =============================================================================
-# 日志文件
+# Log Files
 # =============================================================================
 
-# 各种日志文件
+# Various log files
 *.log
 logs
 *.log.*
@@ -220,10 +220,10 @@ yarn-error.log*
 lerna-debug.log*
 
 # =============================================================================
-# 临时文件和备份
+# Temporary Files and Backups
 # =============================================================================
 
-# 临时文件
+# Temporary files
 *.tmp
 *.temp
 *.bak
@@ -231,7 +231,7 @@ lerna-debug.log*
 *.old
 *.orig
 
-# 压缩文件
+# Compressed files
 *.7z
 *.dmg
 *.gz
@@ -242,32 +242,32 @@ lerna-debug.log*
 *.zip
 
 # =============================================================================
-# 项目特定文件
+# Project Specific Files
 # =============================================================================
 
-# 开发文档（本地使用）
+# Development documentation (local use)
 dev.md
 
-# 废弃的源代码目录
+# Deprecated source code directory
 src/
 
-# 测试覆盖率
+# Test coverage
 coverage/
 *.lcov
 
-# 文档生成
+# Documentation generation
 docs/build/
 
-# 本地配置文件
+# Local configuration files
 config.local.js
 config.local.json
 
-# 数据库文件
+# Database files
 *.db
 *.sqlite
 *.sqlite3
 
-# 密钥和证书文件
+# Key and certificate files
 *.pem
 *.key
 *.cert
@@ -276,7 +276,7 @@ config.local.json
 *.pfx
 
 # =============================================================================
-# 开发工具
+# Development Tools
 # =============================================================================
 
 # TypeScript
@@ -295,32 +295,32 @@ config.local.json
 .jest/
 
 # =============================================================================
-# 其他
+# Others
 # =============================================================================
 
-# 系统生成的缩略图
+# System generated thumbnails
 Thumbs.db
 ehthumbs.db
 
-# 文件夹配置文件
+# Folder configuration files
 .directory
 
-# 回收站文件夹
+# Trash folders
 .Trash-*
 
-# 临时挂载点
+# Temporary mount points
 .gvfs
 
-# 网络存储
+# Network storage
 .nfs*
 
-# 本地历史记录
+# Local history
 .history/
 
-# 本地环境变量
+# Local environment variables
 .local.env
 
-# 测试文件
+# Test files
 test-results/
 playwright-report/
 test-results.xml
