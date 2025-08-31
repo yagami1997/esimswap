@@ -21,13 +21,21 @@ class EsimSwapApp {
    */
   async loadExternalLibraries() {
     try {
-      // 加载 QRious 库用于生成二维码
-      await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js');
+      // 使用多个 CDN 备选方案
+      await this.loadScriptWithFallback([
+        'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js',
+        'https://unpkg.com/qrious@4.0.2/dist/qrious.min.js',
+        'https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js'
+      ]);
       
-      // 加载 jsQR 库用于解析二维码
-      await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js');
+      await this.loadScriptWithFallback([
+        'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js',
+        'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
+        'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js'
+      ]);
       
       console.log('外部库加载完成');
+      this.showNotification('库文件加载成功！', 'success');
     } catch (error) {
       console.error('加载外部库失败:', error);
       this.showNotification('库文件加载失败，部分功能可能不可用', 'warning');
@@ -45,6 +53,24 @@ class EsimSwapApp {
       script.onerror = reject;
       document.head.appendChild(script);
     });
+  }
+
+  /**
+   * 带备选方案的脚本加载
+   */
+  async loadScriptWithFallback(urls) {
+    for (let i = 0; i < urls.length; i++) {
+      try {
+        await this.loadScript(urls[i]);
+        console.log(`成功加载: ${urls[i]}`);
+        return;
+      } catch (error) {
+        console.warn(`加载失败: ${urls[i]}, 尝试下一个...`);
+        if (i === urls.length - 1) {
+          throw new Error(`所有 CDN 都加载失败: ${urls.join(', ')}`);
+        }
+      }
+    }
   }
 
   /**
