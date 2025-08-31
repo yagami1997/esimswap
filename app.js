@@ -632,104 +632,16 @@ class ESIMParser {
       </div>
     `;
 
-    // Add styles
-    if (!document.querySelector('#extraction-dialog-styles')) {
-      const style = document.createElement('style');
-      style.id = 'extraction-dialog-styles';
-      style.textContent = `
-        .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          backdrop-filter: blur(5px);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Add internal styles
+    // Add custom styles for this dialog
     const internalStyle = document.createElement('style');
     internalStyle.textContent = `
-      .dialog-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        border: 2px solid var(--primary-purple);
-      }
-      
-      .dialog-body h3 {
-        color: var(--primary-purple);
-        margin-bottom: 1rem;
-        text-align: center;
-      }
-      
       .detected-content {
         background: #f8f9fa;
         padding: 1rem;
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid var(--primary-purple);
-      }
-      
-      .code-block {
-        background: #2d3748;
-        color: #e2e8f0;
-        padding: 0.75rem;
-        border-radius: 6px;
-        font-family: monospace;
-        font-size: 0.9rem;
-        word-break: break-all;
-        margin: 0.5rem 0;
-      }
-      
-      .dialog-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-      }
-      
-      .btn-cancel, .btn-confirm {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      
-      .btn-cancel {
-        background: #e2e8f0;
-        color: #4a5568;
-      }
-      
-      .btn-cancel:hover {
-        background: #cbd5e0;
-      }
-      
-      .btn-confirm {
-        background: var(--primary-purple);
-        color: white;
-      }
-      
-      .btn-confirm:hover {
-        background: var(--secondary-purple);
-        transform: translateY(-2px);
+        font-size: 14px;
       }
     `;
     dialog.appendChild(internalStyle);
@@ -787,104 +699,16 @@ class ESIMParser {
       </div>
     `;
 
-    // Add styles (reuse previous styles)
-    if (!document.querySelector('#extraction-dialog-styles')) {
-      const style = document.createElement('style');
-      style.id = 'extraction-dialog-styles';
-      style.textContent = `
-        .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          backdrop-filter: blur(5px);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Add internal styles
+    // Add custom styles for this dialog
     const internalStyle = document.createElement('style');
     internalStyle.textContent = `
-      .dialog-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        border: 2px solid var(--primary-purple);
-      }
-      
-      .dialog-body h3 {
-        color: var(--primary-purple);
-        margin-bottom: 1rem;
-        text-align: center;
-      }
-      
       .extraction-info {
         background: #f0f8ff;
         padding: 1rem;
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid var(--primary-purple);
-      }
-      
-      .code-block {
-        background: #2d3748;
-        color: #e2e8f0;
-        padding: 0.75rem;
-        border-radius: 6px;
-        font-family: monospace;
-        font-size: 0.9rem;
-        word-break: break-all;
-        margin: 0.5rem 0;
-      }
-      
-      .dialog-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-      }
-      
-      .btn-cancel, .btn-confirm {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      
-      .btn-cancel {
-        background: #e2e8f0;
-        color: #4a5568;
-      }
-      
-      .btn-cancel:hover {
-        background: #cbd5e0;
-      }
-      
-      .btn-confirm {
-        background: var(--primary-purple);
-        color: white;
-      }
-      
-      .btn-confirm:hover {
-        background: var(--secondary-purple);
-        transform: translateY(-2px);
+        font-size: 14px;
       }
     `;
     dialog.appendChild(internalStyle);
@@ -1127,55 +951,16 @@ class ESIMParser {
       </div>
     `;
 
-    // Add styles
-    if (!document.querySelector('#manual-input-dialog-styles')) {
-      const style = document.createElement('style');
-      style.id = 'manual-input-dialog-styles';
-      style.textContent = `
-        .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          backdrop-filter: blur(5px);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Add internal styles
+    // Add custom styles for this dialog
     const internalStyle = document.createElement('style');
     internalStyle.textContent = `
-      .dialog-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        border: 2px solid var(--primary-purple);
-      }
-      
-      .dialog-body h3 {
-        color: var(--primary-purple);
-        margin-bottom: 1rem;
-        text-align: center;
-      }
-      
       .manual-input-info {
         background: #fff5f5;
         padding: 1rem;
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid #f56565;
+        font-size: 14px;
       }
       
       .format-examples {
@@ -1184,6 +969,7 @@ class ESIMParser {
         border-radius: 6px;
         margin-top: 1rem;
         border: 1px solid #e2e8f0;
+        font-size: 14px;
       }
       
       .format-examples code {
@@ -1191,35 +977,9 @@ class ESIMParser {
         color: #e2e8f0;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
-        font-size: 0.85rem;
+        font-size: 12px;
         display: inline-block;
         margin: 0.25rem 0;
-      }
-      
-      .dialog-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-      }
-      
-      .btn-confirm {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--primary-purple);
-        color: white;
-      }
-      
-      .btn-confirm:hover {
-        background: var(--secondary-purple);
-        transform: translateY(-2px);
       }
     `;
     dialog.appendChild(internalStyle);
@@ -1273,47 +1033,16 @@ class ESIMParser {
       </div>
     `;
 
-    // Add styles
-    if (!document.querySelector('#format-error-dialog-styles')) {
-      const style = document.createElement('style');
-      style.id = 'format-error-dialog-styles';
-      style.textContent = `
-        .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          backdrop-filter: blur(5px);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Add internal styles
+    // Add custom styles for this dialog
     const internalStyle = document.createElement('style');
     internalStyle.textContent = `
       .dialog-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         border: 2px solid #f56565;
+        max-width: 520px;
       }
       
       .dialog-body h3 {
         color: #f56565;
-        margin-bottom: 1rem;
-        text-align: center;
       }
       
       .error-info {
@@ -1322,17 +1051,7 @@ class ESIMParser {
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid #f56565;
-      }
-      
-      .code-block {
-        background: #2d3748;
-        color: #e2e8f0;
-        padding: 0.75rem;
-        border-radius: 6px;
-        font-family: monospace;
-        font-size: 0.9rem;
-        word-break: break-all;
-        margin: 0.5rem 0;
+        font-size: 14px;
       }
       
       .format-examples {
@@ -1341,6 +1060,7 @@ class ESIMParser {
         border-radius: 6px;
         margin: 1rem 0;
         border: 1px solid #e2e8f0;
+        font-size: 14px;
       }
       
       .format-item code {
@@ -1348,35 +1068,9 @@ class ESIMParser {
         color: #e2e8f0;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
-        font-size: 0.85rem;
+        font-size: 12px;
         display: inline-block;
         margin: 0.25rem 0;
-      }
-      
-      .dialog-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-      }
-      
-      .btn-confirm {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--primary-purple);
-        color: white;
-      }
-      
-      .btn-confirm:hover {
-        background: var(--secondary-purple);
-        transform: translateY(-2px);
       }
     `;
     dialog.appendChild(internalStyle);
@@ -1431,47 +1125,15 @@ class ESIMParser {
       </div>
     `;
 
-    // Add styles
-    if (!document.querySelector('#generation-error-dialog-styles')) {
-      const style = document.createElement('style');
-      style.id = 'generation-error-dialog-styles';
-      style.textContent = `
-        .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          backdrop-filter: blur(5px);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Add internal styles
+    // Add custom styles for this dialog
     const internalStyle = document.createElement('style');
     internalStyle.textContent = `
       .dialog-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         border: 2px solid #f59e0b;
       }
       
       .dialog-body h3 {
         color: #f59e0b;
-        margin-bottom: 1rem;
-        text-align: center;
       }
       
       .error-info {
@@ -1480,17 +1142,19 @@ class ESIMParser {
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid #f59e0b;
+        font-size: 14px;
       }
       
       .error-message {
         background: #fef2f2;
         color: #dc2626;
-        padding: 0.75rem;
+        padding: 0.6rem;
         border-radius: 6px;
-        font-family: monospace;
-        font-size: 0.9rem;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+        font-size: 13px;
         margin: 0.5rem 0;
         border: 1px solid #fecaca;
+        line-height: 1.4;
       }
       
       .format-hint {
@@ -1499,6 +1163,7 @@ class ESIMParser {
         border-radius: 6px;
         margin-top: 1rem;
         border: 1px solid #bae6fd;
+        font-size: 14px;
       }
       
       .format-hint code {
@@ -1506,45 +1171,7 @@ class ESIMParser {
         color: #e2e8f0;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
-        font-size: 0.85rem;
-      }
-      
-      .dialog-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-      }
-      
-      .btn-cancel, .btn-confirm {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      
-      .btn-cancel {
-        background: #e2e8f0;
-        color: #4a5568;
-      }
-      
-      .btn-cancel:hover {
-        background: #cbd5e0;
-      }
-      
-      .btn-confirm {
-        background: var(--primary-purple);
-        color: white;
-      }
-      
-      .btn-confirm:hover {
-        background: var(--secondary-purple);
-        transform: translateY(-2px);
+        font-size: 12px;
       }
     `;
     dialog.appendChild(internalStyle);
@@ -1597,47 +1224,15 @@ class ESIMParser {
       </div>
     `;
 
-    // Add styles
-    if (!document.querySelector('#library-error-dialog-styles')) {
-      const style = document.createElement('style');
-      style.id = 'library-error-dialog-styles';
-      style.textContent = `
-        .dialog-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          backdrop-filter: blur(5px);
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // Add internal styles
+    // Add custom styles for this dialog
     const internalStyle = document.createElement('style');
     internalStyle.textContent = `
       .dialog-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         border: 2px solid #3b82f6;
       }
       
       .dialog-body h3 {
         color: #3b82f6;
-        margin-bottom: 1rem;
-        text-align: center;
       }
       
       .library-error-info {
@@ -1646,6 +1241,7 @@ class ESIMParser {
         border-radius: 8px;
         margin: 1rem 0;
         border-left: 4px solid #3b82f6;
+        font-size: 14px;
       }
       
       .manual-input-hint {
@@ -1654,6 +1250,7 @@ class ESIMParser {
         border-radius: 6px;
         margin-top: 1rem;
         border: 1px solid #e5e7eb;
+        font-size: 14px;
       }
       
       .manual-input-hint code {
@@ -1661,26 +1258,7 @@ class ESIMParser {
         color: #e2e8f0;
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
-        font-size: 0.85rem;
-      }
-      
-      .dialog-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        margin-top: 1.5rem;
-      }
-      
-      .btn-refresh, .btn-manual {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        font-size: 12px;
       }
       
       .btn-refresh {
@@ -1690,7 +1268,7 @@ class ESIMParser {
       
       .btn-refresh:hover {
         background: #2563eb;
-        transform: translateY(-2px);
+        transform: translateY(-1px);
       }
       
       .btn-manual {
@@ -1699,8 +1277,8 @@ class ESIMParser {
       }
       
       .btn-manual:hover {
-        background: var(--secondary-purple);
-        transform: translateY(-2px);
+        background: var(--primary-purple-dark);
+        transform: translateY(-1px);
       }
     `;
     dialog.appendChild(internalStyle);
