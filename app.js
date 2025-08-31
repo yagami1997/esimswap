@@ -621,7 +621,7 @@ class ESIMParser {
           <p><strong>🔧 Solution:</strong> Do you want to extract the original information and regenerate a standard format QR code?</p>
           
           <div class="dialog-actions">
-            <button onclick="document.body.classList.remove('dialog-open'); this.closest('.dialog-overlay').remove()" class="btn-cancel">
+            <button onclick="this.closest('.dialog-overlay').remove()" class="btn-cancel">
               <span>❌</span> Cancel
             </button>
             <button onclick="window.esimParser.confirmExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
@@ -646,15 +646,11 @@ class ESIMParser {
     `;
     dialog.appendChild(internalStyle);
 
-    // Add body class to prevent scrolling
-    document.body.classList.add('dialog-open');
-    
     document.body.appendChild(dialog);
 
     // Click overlay to close
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) {
-        document.body.classList.remove('dialog-open');
         dialog.remove();
       }
     });
@@ -695,7 +691,7 @@ class ESIMParser {
             <button onclick="this.closest('.dialog-overlay').remove(); window.esimParser.showExtractionDialog(\`${detectedText.replace(/`/g, '\\`')}\`);" class="btn-cancel">
               <span>⬅️</span> Back
             </button>
-            <button onclick="window.esimParser.executeExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); document.body.classList.remove('dialog-open'); this.closest('.dialog-overlay').remove()" class="btn-confirm">
+            <button onclick="window.esimParser.executeExtraction(\`${detectedText.replace(/`/g, '\\`')}\`); this.closest('.dialog-overlay').remove()" class="btn-confirm">
               <span>🚀</span> Confirm Extraction
             </button>
           </div>
@@ -722,7 +718,6 @@ class ESIMParser {
     // Click overlay to close
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) {
-        document.body.classList.remove('dialog-open');
         dialog.remove();
       }
     });
