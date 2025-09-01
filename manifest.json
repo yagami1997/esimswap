@@ -1,0 +1,85 @@
+{
+  "name": "eSIM Configuration Parser",
+  "short_name": "eSIM Parser",
+  "description": "Multi-device adaptive eSIM QR code generator and parser with intelligent format recognition",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#6B46C1",
+  "background_color": "#F3F0FF",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["utilities", "productivity", "tools"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ctext y='0.9em' font-size='160' text-anchor='middle' x='96'%3E📱%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Ctext y='0.9em' font-size='440' text-anchor='middle' x='256'%3E📱%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Generate QR Code",
+      "short_name": "Generate",
+      "description": "Generate eSIM QR code from configuration",
+      "url": "/#generate",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ctext y='0.9em' font-size='70' text-anchor='middle' x='48'%3E🎯%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Parse QR Code",
+      "short_name": "Parse",
+      "description": "Parse eSIM configuration from QR code image",
+      "url": "/#parse",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ctext y='0.9em' font-size='70' text-anchor='middle' x='48'%3E🔍%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "features": [
+    "cross-platform",
+    "offline-capable",
+    "responsive-design",
+    "gesture-navigation",
+    "keyboard-shortcuts"
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'%3E%3Crect width='540' height='720' fill='%23F3F0FF'/%3E%3Ctext x='270' y='360' text-anchor='middle' font-size='24' fill='%236B46C1'%3EeSIM Configuration Parser%3C/text%3E%3C/svg%3E",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "platform": "narrow",
+      "label": "Mobile interface of eSIM Configuration Parser"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 800'%3E%3Crect width='1280' height='800' fill='%23F3F0FF'/%3E%3Ctext x='640' y='400' text-anchor='middle' font-size='32' fill='%236B46C1'%3EeSIM Configuration Parser - Desktop%3C/text%3E%3C/svg%3E",
+      "sizes": "1280x800",
+      "type": "image/svg+xml",
+      "platform": "wide",
+      "label": "Desktop interface of eSIM Configuration Parser"
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}
