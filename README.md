@@ -19,7 +19,7 @@
 
 ## 📋 Update Log
 
-### Beta 1.1.0 - Multi-Device Adaptive Interface (August 31, 2025 23:38 PST)
+### Beta 1.1.0 - Multi-Device Adaptive Interface (August 31, 2025 23:38 PDT)
 - 🖥️ **Intelligent Device Detection**: Automatic recognition of desktop, tablet (9-13 inch), and mobile devices
 - 📱 **Three-Tier Responsive Design**: Dynamic UI adaptation based on screen size and device capabilities
 - 🎮 **Tablet-Specific Enhancements**: Touch gestures (pinch-to-zoom, swipe navigation), floating action buttons, Apple Pencil support
@@ -30,7 +30,7 @@
 - 🎨 **UI Layout Improvements**: Better alignment and spacing for parsing results display
 - 🌐 **English Interface**: Complete internationalization with English-only UI for global accessibility
 
-### Beta 1.0.0 - Initial Release (August 30, 2025 22:58 PST)
+### Beta 1.0.0 - Initial Release (August 30, 2025 22:58 PDT)
 - 🎨 **Design & Creation**: Built with Japanese elegant design philosophy, featuring a refined purple color scheme and minimalist interface
 - 🔄 **Bidirectional Processing**: Implemented intelligent eSIM QR code generation and parsing capabilities
 - 🛠️ **Smart Error Handling**: Added automatic detection and repair of non-standard carrier formats
