@@ -1172,3 +1172,80 @@ body {
     min-height: 2rem;
   }
 }
+
+/* ===== GitHub Button Styling ===== */
+.github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.github-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, #2c3138 0%, #24292e 100%);
+}
+
+.github-btn:active {
+  transform: translateY(0);
+}
+
+.github-btn svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.github-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.github-stats {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  backdrop-filter: blur(10px);
+}
+
+/* Responsive GitHub button */
+@media (max-width: 480px) {
+  .github-btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .github-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Dark mode GitHub button */
+@media (prefers-color-scheme: dark) {
+  .github-btn {
+    background: linear-gradient(135deg, #f6f8fa 0%, #e1e4e8 100%);
+    color: #24292e;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .github-btn:hover {
+    background: linear-gradient(135deg, #e1e4e8 0%, #d1d5da 100%);
+  }
+  
+  .github-stats {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
