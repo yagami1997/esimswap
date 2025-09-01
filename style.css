@@ -117,6 +117,90 @@ body {
   text-rendering: optimizeSpeed;
 }
 
+/* High DPI Android Device Optimization (2K+ screens like X200U) */
+.android-high-dpi {
+  --base-font-size: 17px;
+  --container-padding: 1.25rem;
+  --card-gap: 1.25rem;
+  --touch-target-size: 52px;
+}
+
+.android-high-dpi .btn {
+  min-height: 52px;
+  padding: 1rem 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.android-high-dpi .input-field, 
+.android-high-dpi .textarea-field {
+  font-size: 18px; /* Prevent zoom on high DPI Android */
+  padding: 1.1rem;
+  min-height: 52px;
+  border-width: 1.5px;
+}
+
+.android-high-dpi .card {
+  padding: 1.75rem;
+  border-radius: var(--radius-2xl);
+}
+
+.android-high-dpi .main-title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.android-high-dpi .sub-title {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.android-high-dpi .upload-area {
+  padding: 2.5rem 1.5rem;
+  min-height: 200px;
+  border-width: 2.5px;
+}
+
+.android-high-dpi .upload-btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.95rem;
+  min-height: 48px;
+  border-radius: var(--radius-md);
+}
+
+.android-high-dpi .upload-icon {
+  font-size: 3.5rem;
+}
+
+.android-high-dpi .upload-text {
+  font-size: 1.15rem;
+}
+
+.android-high-dpi .copy-btn {
+  padding: 0.8rem 1.1rem;
+  font-size: 0.9rem;
+  min-height: 44px;
+}
+
+.android-high-dpi .mode-btn {
+  padding: 0.9rem 1.1rem;
+  font-size: 0.95rem;
+  min-height: 48px;
+}
+
+.android-high-dpi .display-tab {
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  min-height: 44px;
+}
+
+/* Improved text rendering for high DPI Android */
+.android-high-dpi {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
