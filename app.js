@@ -1,7 +1,219 @@
 /**
  * eSIM Configuration Parser - Pure Frontend Version
  * Kyoto Style Design - No Backend Service Required
+ * Multi-Device Adaptive System (Desktop/Tablet/Mobile)
  */
+
+/**
+ * Intelligent Device Detection and UI Adaptation System
+ * Supports automatic switching between desktop, tablet (9-13 inch), and mobile layouts
+ */
+class DeviceDetector {
+    constructor() {
+        this.deviceInfo = this.detectDevice();
+        this.currentLayout = null;
+        this.init();
+    }
+
+    detectDevice() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const pixelRatio = window.devicePixelRatio || 1;
+        
+        // Calculate physical size in inches
+        const physicalWidth = screenWidth / (96 * pixelRatio); // 96 DPI standard
+        const physicalHeight = screenHeight / (96 * pixelRatio);
+        const diagonalInches = Math.sqrt(physicalWidth * physicalWidth + physicalHeight * physicalHeight);
+
+        const device = {
+            userAgent,
+            screenWidth,
+            screenHeight,
+            pixelRatio,
+            diagonalInches,
+            orientation: window.screen?.orientation?.type || 'unknown',
+            // Device type detection
+            isIOS: /iphone|ipad|ipod/.test(userAgent),
+            isAndroid: /android/.test(userAgent),
+            isWindows: /windows/.test(userAgent),
+            isMac: /macintosh|mac os x/.test(userAgent),
+            isLinux: /linux/.test(userAgent) && !/android/.test(userAgent),
+            // Specific device detection
+            isIPhone: /iphone/.test(userAgent),
+            isIPad: /ipad/.test(userAgent) || (userAgent.includes('mac') && 'ontouchend' in document),
+            isAndroidTablet: /android/.test(userAgent) && !/mobile/.test(userAgent),
+            isAndroidPhone: /android/.test(userAgent) && /mobile/.test(userAgent),
+            // Touch support
+            isTouchDevice: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+            // Pointer precision
+            hasCoarsePointer: window.matchMedia('(pointer: coarse)').matches,
+            hasFinePointer: window.matchMedia('(pointer: fine)').matches
+        };
+
+        return device;
+    }
+
+    determineLayoutMode() {
+        const { screenWidth, screenHeight, diagonalInches, isIPhone, isIPad, isAndroidTablet, isAndroidPhone, isTouchDevice } = this.deviceInfo;
+        
+        // 1. Explicit mobile devices
+        if (isIPhone || isAndroidPhone || screenWidth < 480) {
+            return 'mobile';
+        }
+        
+        // 2. Explicit tablet devices (9-13 inches)
+        if (isIPad || isAndroidTablet || 
+            (diagonalInches >= 8 && diagonalInches <= 14 && isTouchDevice) ||
+            (screenWidth >= 768 && screenWidth <= 1024 && isTouchDevice)) {
+            return 'tablet';
+        }
+        
+        // 3. Screen size based intelligent judgment
+        if (screenWidth >= 1200) {
+            return 'desktop';
+        } else if (screenWidth >= 768 && screenWidth < 1200) {
+            // 768-1200px range needs further judgment
+            if (isTouchDevice && diagonalInches >= 8) {
+                return 'tablet';
+            } else {
+                return 'desktop'; // Small screen desktop device
+            }
+        } else if (screenWidth >= 480 && screenWidth < 768) {
+            return isTouchDevice ? 'mobile' : 'tablet';
+        }
+        
+        // 4. Default case
+        return 'mobile';
+    }
+
+    init() {
+        this.currentLayout = this.determineLayoutMode();
+        this.applyLayout(this.currentLayout);
+        this.bindResizeHandler();
+        this.logDeviceInfo();
+    }
+
+    applyLayout(layout) {
+        const body = document.body;
+        
+        // Remove all layout classes
+        body.classList.remove('layout-desktop', 'layout-tablet', 'layout-mobile');
+        
+        // Add current layout class
+        body.classList.add(`layout-${layout}`);
+        
+        // Set CSS custom properties
+        document.documentElement.style.setProperty('--current-layout', layout);
+        
+        // Apply device-specific optimizations
+        this.applyDeviceOptimizations(layout);
+        
+        console.log(`Layout applied: ${layout}`, this.deviceInfo);
+    }
+
+    applyDeviceOptimizations(layout) {
+        const root = document.documentElement;
+        
+        switch (layout) {
+            case 'mobile':
+                root.style.setProperty('--base-font-size', '16px');
+                root.style.setProperty('--container-padding', '1rem');
+                root.style.setProperty('--card-gap', '1rem');
+                root.style.setProperty('--grid-columns', '1');
+                root.style.setProperty('--touch-target-size', '48px');
+                break;
+                
+            case 'tablet':
+                root.style.setProperty('--base-font-size', '17px');
+                root.style.setProperty('--container-padding', '2rem');
+                root.style.setProperty('--card-gap', '1.5rem');
+                root.style.setProperty('--grid-columns', '2');
+                root.style.setProperty('--touch-target-size', '44px');
+                break;
+                
+            case 'desktop':
+                root.style.setProperty('--base-font-size', '16px');
+                root.style.setProperty('--container-padding', '2rem');
+                root.style.setProperty('--card-gap', '2rem');
+                root.style.setProperty('--grid-columns', '2');
+                root.style.setProperty('--touch-target-size', '40px');
+                break;
+        }
+        
+        // Special device optimizations
+        if (this.deviceInfo.isIOS) {
+            body.classList.add('ios-device');
+        }
+        if (this.deviceInfo.isAndroid) {
+            body.classList.add('android-device');
+        }
+        if (this.deviceInfo.isWindows) {
+            body.classList.add('windows-device');
+        }
+        if (this.deviceInfo.isMac) {
+            body.classList.add('mac-device');
+        }
+        if (this.deviceInfo.isLinux) {
+            body.classList.add('linux-device');
+        }
+    }
+
+    bindResizeHandler() {
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                const newLayout = this.determineLayoutMode();
+                if (newLayout !== this.currentLayout) {
+                    this.currentLayout = newLayout;
+                    this.applyLayout(newLayout);
+                    
+                    // Trigger custom event
+                    window.dispatchEvent(new CustomEvent('layoutChanged', {
+                        detail: { oldLayout: this.currentLayout, newLayout }
+                    }));
+                }
+            }, 250);
+        });
+    }
+
+    logDeviceInfo() {
+        console.group('📱 Device Detection Results');
+        console.log('Layout Mode:', this.currentLayout);
+        console.log('Screen Size:', `${this.deviceInfo.screenWidth}×${this.deviceInfo.screenHeight}`);
+        console.log('Diagonal Size:', `${this.deviceInfo.diagonalInches.toFixed(1)}" inches`);
+        console.log('Device Type:', {
+            iOS: this.deviceInfo.isIOS,
+            Android: this.deviceInfo.isAndroid,
+            Windows: this.deviceInfo.isWindows,
+            Mac: this.deviceInfo.isMac,
+            Linux: this.deviceInfo.isLinux,
+            iPad: this.deviceInfo.isIPad,
+            iPhone: this.deviceInfo.isIPhone,
+            AndroidTablet: this.deviceInfo.isAndroidTablet,
+            TouchDevice: this.deviceInfo.isTouchDevice
+        });
+        console.groupEnd();
+    }
+
+    // Public methods
+    getCurrentLayout() {
+        return this.currentLayout;
+    }
+
+    getDeviceInfo() {
+        return this.deviceInfo;
+    }
+
+    // Force layout switch (for testing)
+    forceLayout(layout) {
+        if (['mobile', 'tablet', 'desktop'].includes(layout)) {
+            this.currentLayout = layout;
+            this.applyLayout(layout);
+        }
+    }
+}
 
 class ESIMParser {
   constructor() {
@@ -1741,24 +1953,24 @@ class ESIMParser {
    */
   getMessage(key) {
     const messages = {
-      'application_ready': 'Application ready!',
-      'using_builtin_functions': 'Using built-in functions',
-      'no_content_to_copy': 'No content to copy',
-      'copied_to_clipboard': 'Copied to clipboard',
-      'enter_esim_config': 'Please enter eSIM configuration information',
+      'application_ready': 'Multi-device interface ready!',
+      'using_builtin_functions': 'Using built-in QR functions',
+      'no_content_to_copy': 'No content available to copy',
+      'copied_to_clipboard': 'Successfully copied to clipboard',
+      'enter_esim_config': 'Please enter eSIM configuration data',
       'qr_generated_success': 'QR code generated successfully!',
-      'page_element_error': 'Page element loading error, please refresh',
-      'extraction_success': '✅ Extraction successful! You can manually edit and generate QR code',
-      'upload_image_file': 'Please upload image file',
-      'file_size_limit': 'File size cannot exceed 5MB',
-      'no_qr_detected': 'No QR code detected in image, try clearer image or manual input',
+      'page_element_error': 'Interface error - please refresh the page',
+      'extraction_success': '✅ Data extracted! Review and generate QR code',
+      'upload_image_file': 'Please select a valid image file',
+      'file_size_limit': 'File size must be under 5MB',
+      'no_qr_detected': 'No QR code found - try a clearer image or manual input',
       'qr_parse_success': 'QR code parsed successfully!',
-      'qr_parse_failed': 'QR code parsing failed, ensure image is clear',
-      'no_qr_to_download': 'No QR code to download',
-      'qr_download_success': 'QR code downloaded successfully!',
-      'no_lpa_to_copy': 'No LPA string to copy',
+      'qr_parse_failed': 'QR parsing failed - ensure image is clear and contains valid QR code',
+      'no_qr_to_download': 'No QR code available for download',
+      'qr_download_success': 'QR code downloaded to your device!',
+      'no_lpa_to_copy': 'No LPA string available to copy',
       'lpa_copied': 'LPA string copied to clipboard!',
-      'results_cleared': 'All results cleared'
+      'results_cleared': 'All data and results cleared'
     };
     
     return messages[key] || key;
@@ -1814,9 +2026,377 @@ function handleFileChangeNew(event, fileInputId) {
   }
 }
 
-// Initialize application
+/**
+ * Tablet-Specific Enhancement Features
+ * Optimized for 9-13 inch tablet devices
+ */
+class TabletEnhancements {
+    constructor() {
+        this.isTabletMode = false;
+        this.gestureStartX = 0;
+        this.gestureStartY = 0;
+        this.isGesturing = false;
+        this.qrZoomScale = 1;
+        
+        this.init();
+    }
+    
+    init() {
+        // Listen for layout changes
+        window.addEventListener('layoutChanged', (e) => {
+            this.handleLayoutChange(e.detail.newLayout);
+        });
+        
+        // Initialize if already in tablet mode
+        if (window.deviceDetector?.getCurrentLayout() === 'tablet') {
+            this.enableTabletMode();
+        }
+    }
+    
+    handleLayoutChange(newLayout) {
+        if (newLayout === 'tablet') {
+            this.enableTabletMode();
+        } else {
+            this.disableTabletMode();
+        }
+    }
+    
+    enableTabletMode() {
+        if (this.isTabletMode) return;
+        
+        this.isTabletMode = true;
+        console.log('🔄 Enabling tablet mode enhancements');
+        
+        // Add tablet-specific features
+        this.setupTabletGestures();
+        this.setupFloatingActions();
+        this.setupTabletKeyboardShortcuts();
+        this.optimizeForApplePencil();
+        
+        // Show tablet hints
+        this.showTabletHints();
+    }
+    
+    disableTabletMode() {
+        if (!this.isTabletMode) return;
+        
+        this.isTabletMode = false;
+        console.log('❌ Disabling tablet mode features');
+        
+        // Cleanup tablet-specific features
+        this.removeFloatingActions();
+        this.removeTabletGestures();
+    }
+    
+    setupTabletGestures() {
+        // Multi-touch gesture support
+        let initialDistance = 0;
+        let isZooming = false;
+        
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                // Two-finger gesture start
+                initialDistance = this.getDistance(e.touches[0], e.touches[1]);
+                isZooming = true;
+            } else if (e.touches.length === 1) {
+                // Single finger gesture
+                this.gestureStartX = e.touches[0].clientX;
+                this.gestureStartY = e.touches[0].clientY;
+                this.isGesturing = true;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && isZooming) {
+                // Pinch to zoom gesture
+                e.preventDefault();
+                const currentDistance = this.getDistance(e.touches[0], e.touches[1]);
+                const scale = currentDistance / initialDistance;
+                this.handlePinchGesture(scale);
+            } else if (e.touches.length === 1 && this.isGesturing) {
+                // Swipe gesture
+                const deltaX = e.touches[0].clientX - this.gestureStartX;
+                const deltaY = e.touches[0].clientY - this.gestureStartY;
+                this.handleSwipeGesture(deltaX, deltaY);
+            }
+        }, { passive: false });
+        
+        document.addEventListener('touchend', (e) => {
+            isZooming = false;
+            this.isGesturing = false;
+        }, { passive: true });
+    }
+    
+    handlePinchGesture(scale) {
+        const qrContainer = document.querySelector('.qr-container canvas');
+        if (qrContainer && scale > 1.2) {
+            this.zoomQRCode(true);
+        } else if (qrContainer && scale < 0.8) {
+            this.zoomQRCode(false);
+        }
+    }
+    
+    handleSwipeGesture(deltaX, deltaY) {
+        const threshold = 100;
+        
+        if (Math.abs(deltaX) > threshold) {
+            if (deltaX > 0) {
+                this.switchInputMode('separated');
+            } else {
+                this.switchInputMode('combined');
+            }
+            this.showGestureHint('Swipe to switch input mode');
+        }
+        
+        if (deltaY < -threshold) {
+            this.showQuickActions();
+        }
+    }
+    
+    setupFloatingActions() {
+        this.removeFloatingActions();
+        
+        const floatingActions = document.createElement('div');
+        floatingActions.className = 'floating-actions';
+        floatingActions.innerHTML = `
+            <button class="floating-btn" data-action="gallery" title="Select from Gallery">🖼️</button>
+            <button class="floating-btn" data-action="share" title="Share">📤</button>
+            <button class="floating-btn" data-action="settings" title="Settings">⚙️</button>
+        `;
+        
+        document.body.appendChild(floatingActions);
+        
+        floatingActions.addEventListener('click', (e) => {
+            const action = e.target.closest('.floating-btn')?.dataset.action;
+            if (action) this.handleFloatingAction(action);
+        });
+    }
+    
+    handleFloatingAction(action) {
+        switch (action) {
+            case 'gallery':
+                document.getElementById('fileInput')?.click();
+                this.showGestureHint('Select image file...');
+                break;
+            case 'share':
+                this.shareQRCode();
+                break;
+            case 'settings':
+                this.showGestureHint('Settings displayed in console');
+                console.log('Tablet Settings: Gesture Navigation, Keyboard Shortcuts enabled');
+                break;
+        }
+    }
+    
+    setupTabletKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            if (!this.isTabletMode) return;
+            
+            if ((e.metaKey || e.ctrlKey) && e.key === 'g') {
+                e.preventDefault();
+                document.getElementById('generateBtn')?.click();
+            }
+            
+            if ((e.metaKey || e.ctrlKey) && e.key === 'c' && e.shiftKey) {
+                e.preventDefault();
+                window.esimParser?.copyLPA();
+            }
+            
+            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                window.esimParser?.downloadQR();
+            }
+        });
+    }
+    
+    optimizeForApplePencil() {
+        document.addEventListener('pointermove', (e) => {
+            if (e.pointerType === 'pen') {
+                document.body.classList.add('pencil-active');
+                this.showGestureHint('Apple Pencil detected - Enhanced precision mode');
+            }
+        });
+        
+        document.addEventListener('pointerleave', (e) => {
+            if (e.pointerType === 'pen') {
+                document.body.classList.remove('pencil-active');
+            }
+        });
+    }
+    
+    showTabletHints() {
+        const hints = [
+            '👆 Pinch to zoom QR code',
+            '👈 Swipe left/right to switch input modes', 
+            '👆 Swipe up for quick actions',
+            '⌨️ Keyboard shortcuts supported'
+        ];
+        
+        hints.forEach((hint, index) => {
+            setTimeout(() => this.showGestureHint(hint), index * 2000);
+        });
+    }
+    
+    showGestureHint(text) {
+        document.querySelectorAll('.gesture-hint').forEach(hint => hint.remove());
+        
+        const hint = document.createElement('div');
+        hint.className = 'gesture-hint';
+        hint.textContent = text;
+        hint.style.cssText = `
+            position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); color: white; padding: 0.75rem 1.5rem;
+            border-radius: 25px; font-size: 0.9rem; z-index: 1001;
+            pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+        `;
+        
+        document.body.appendChild(hint);
+        setTimeout(() => hint.style.opacity = '1', 50);
+        setTimeout(() => {
+            hint.style.opacity = '0';
+            setTimeout(() => hint.remove(), 300);
+        }, 2500);
+    }
+    
+    getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    zoomQRCode(zoomIn) {
+        const qrCanvas = document.querySelector('.qr-container canvas');
+        if (!qrCanvas) return;
+        
+        this.qrZoomScale = zoomIn ? this.qrZoomScale * 1.2 : this.qrZoomScale * 0.8;
+        this.qrZoomScale = Math.max(0.5, Math.min(3, this.qrZoomScale));
+        
+        qrCanvas.style.transform = `scale(${this.qrZoomScale})`;
+        qrCanvas.style.transformOrigin = 'center';
+        qrCanvas.style.transition = 'transform 0.2s ease';
+        
+        this.showGestureHint(`QR ${zoomIn ? 'zoomed in' : 'zoomed out'} to ${Math.round(this.qrZoomScale * 100)}%`);
+    }
+    
+    switchInputMode(mode) {
+        if (window.esimParser?.switchInputMode) {
+            window.esimParser.switchInputMode(mode);
+        }
+    }
+    
+    shareQRCode() {
+        if (navigator.share && window.esimParser?.currentQRData) {
+            const canvas = window.esimParser.currentQRData.qrCode.canvas;
+            canvas.toBlob(async (blob) => {
+                try {
+                    await navigator.share({
+                        title: 'eSIM QR Code',
+                        files: [new File([blob], 'esim-qr.png', { type: 'image/png' })]
+                    });
+                    this.showGestureHint('Share successful!');
+                    if ('vibrate' in navigator) navigator.vibrate([50, 100, 50]);
+                } catch (error) {
+                    this.showGestureHint('Share failed');
+                }
+            });
+        } else {
+            this.showGestureHint('Share not supported on this device');
+        }
+    }
+    
+    showQuickActions() {
+        const quickActions = [
+            { icon: '📋', title: 'Copy LPA', action: () => window.esimParser?.copyLPA() },
+            { icon: '💾', title: 'Download QR', action: () => window.esimParser?.downloadQR() },
+            { icon: '📤', title: 'Share', action: () => this.shareQRCode() },
+            { icon: '🔄', title: 'Clear', action: () => window.esimParser?.clearResults() }
+        ];
+        
+        this.showActionSheet(quickActions);
+    }
+    
+    showActionSheet(options) {
+        document.querySelector('.tablet-action-sheet')?.remove();
+        
+        const actionSheet = document.createElement('div');
+        actionSheet.className = 'tablet-action-sheet';
+        actionSheet.style.cssText = `
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg-secondary); border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            padding: 2rem; box-shadow: var(--shadow-xl); z-index: 1000;
+            transform: translateY(100%); transition: transform 0.3s ease;
+        `;
+        
+        const buttons = options.map(option => 
+            `<button class="action-sheet-btn" style="
+                width: 100%; padding: 1rem; margin-bottom: 0.75rem; border: none;
+                border-radius: 12px; background: var(--bg-tertiary); color: var(--text-primary);
+                font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+                gap: 0.75rem; transition: all 0.2s ease;
+            ">
+                <span style="font-size: 1.25rem;">${option.icon}</span>
+                ${option.title}
+            </button>`
+        ).join('');
+        
+        actionSheet.innerHTML = `
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--primary-purple); margin: 0;">Quick Actions</h3>
+            </div>
+            ${buttons}
+            <button class="action-sheet-close" style="
+                width: 100%; padding: 1rem; border: none; border-radius: 12px;
+                background: var(--accent-red); color: white; font-size: 1rem;
+                cursor: pointer; margin-top: 0.5rem;
+            ">Close</button>
+        `;
+        
+        document.body.appendChild(actionSheet);
+        setTimeout(() => actionSheet.style.transform = 'translateY(0)', 50);
+        
+        options.forEach((option, index) => {
+            const btn = actionSheet.querySelectorAll('.action-sheet-btn')[index];
+            btn.addEventListener('click', () => {
+                option.action();
+                this.closeActionSheet(actionSheet);
+            });
+        });
+        
+        actionSheet.querySelector('.action-sheet-close').addEventListener('click', () => {
+            this.closeActionSheet(actionSheet);
+        });
+        
+        actionSheet.addEventListener('click', (e) => {
+            if (e.target === actionSheet) this.closeActionSheet(actionSheet);
+        });
+    }
+    
+    closeActionSheet(actionSheet) {
+        actionSheet.style.transform = 'translateY(100%)';
+        setTimeout(() => actionSheet.remove(), 300);
+    }
+    
+    removeFloatingActions() {
+        document.querySelector('.floating-actions')?.remove();
+    }
+    
+    removeTabletGestures() {
+        document.body.classList.remove('pencil-active');
+        document.querySelectorAll('.gesture-hint').forEach(hint => hint.remove());
+    }
+}
+
+// Initialize application with device detection and tablet enhancements
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize device detection first
+  window.deviceDetector = new DeviceDetector();
+  
+  // Initialize main parser
   const parser = new ESIMParser();
   await parser.loadExternalLibraries();
   parser.bindEvents();
+  window.esimParser = parser;
+  
+  // Initialize tablet enhancements
+  window.tabletEnhancements = new TabletEnhancements();
 });

@@ -1,7 +1,8 @@
-/* Kyoto Style eSIM Parser Styles */
+/* Multi-Device eSIM Parser Styles */
+/* Responsive Design System for Desktop/Tablet/Mobile */
 
 :root {
-  /* Kyoto Purple Color Scheme - Primary Colors */
+  /* Primary Color Scheme */
   --primary-purple: #6B46C1;
   --primary-purple-light: #8B5CF6;
   --primary-purple-dark: #553C9A;
@@ -14,6 +15,7 @@
   /* Accent Colors */
   --accent-red: #EF4444;
   --accent-orange: #F59E0B;
+  --accent-green: #10B981;
   
   /* Text Colors */
   --text-primary: #1F2937;
@@ -25,12 +27,33 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   
   /* Border Radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  
+  /* Device Detection Variables (Set by JavaScript) */
+  --current-layout: desktop;
+  --base-font-size: 16px;
+  --container-padding: 2rem;
+  --card-gap: 2rem;
+  --grid-columns: 2;
+  --touch-target-size: 40px;
+  
+  /* Responsive Breakpoints */
+  --mobile-breakpoint: 480px;
+  --tablet-breakpoint: 768px;
+  --tablet-max-width: 1024px;
+  --desktop-breakpoint: 1200px;
+  
+  /* Typography Scale */
+  --font-scale-mobile: 1.0;
+  --font-scale-tablet: 1.1;
+  --font-scale-desktop: 1.0;
 }
 
 * {
@@ -39,12 +62,59 @@
   box-sizing: border-box;
 }
 
+/* ===== Cross-Platform Font Optimization ===== */
 body {
-  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Yu Gothic', 'Meiryo', sans-serif;
+  /* Universal fallback font stack */
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: var(--base-font-size);
   background: linear-gradient(135deg, var(--bg-primary) 0%, #FEFBFF 100%);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1;
+}
+
+/* Windows Device Font Optimization */
+.windows-device {
+  font-family: 'Segoe UI', 'Segoe UI Symbol', 'Segoe UI Emoji', 'Microsoft Sans Serif', 'Tahoma', 'Arial', sans-serif;
+  /* Better font rendering for Windows */
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: optimizeSpeed;
+  font-variant-ligatures: none;
+}
+
+/* macOS Device Font Optimization */
+.mac-device {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Linux Device Font Optimization */
+.linux-device {
+  font-family: 'Liberation Sans', 'Ubuntu', 'Cantarell', 'DejaVu Sans', 'Noto Sans', 'Roboto', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-ligatures: common-ligatures;
+}
+
+/* iOS Device Font Optimization */
+.ios-device {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Android Device Font Optimization */
+.android-device {
+  font-family: 'Roboto', 'Noto Sans', 'Droid Sans', 'Arial', sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeSpeed;
 }
 
 .container {
@@ -698,6 +768,301 @@ body {
   transform: translateY(0);
 }
 
+/* ===== Three-Tier Responsive Design System ===== */
+
+/* Desktop Layout (Default) */
+.layout-desktop {
+  .container {
+    max-width: 1200px;
+    padding: var(--container-padding);
+  }
+  
+  .main-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), 1fr);
+    gap: var(--card-gap);
+  }
+  
+  .card {
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+  }
+  
+  .btn {
+    min-height: var(--touch-target-size);
+    font-size: 0.95rem;
+    padding: 0.875rem 2rem;
+  }
+  
+  .header h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* Tablet Layout (9-13 inch devices) */
+.layout-tablet {
+  .container {
+    max-width: var(--tablet-max-width);
+    padding: var(--container-padding);
+  }
+  
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--card-gap);
+  }
+  
+  /* Tablet landscape: dual column layout */
+  @media (orientation: landscape) and (min-width: 900px) {
+    .main-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .card {
+    padding: 1.75rem;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .btn {
+    min-height: var(--touch-target-size);
+    padding: 1rem 1.75rem;
+    font-size: 1rem;
+    border-radius: 12px;
+  }
+  
+  /* Touch-optimized inputs for tablets */
+  .input-field, .textarea-field {
+    padding: 1rem;
+    font-size: 17px; /* Prevents zoom on iOS */
+    border-radius: 12px;
+    min-height: 48px;
+  }
+  
+  .upload-area {
+    padding: 2.5rem 2rem;
+    border-radius: var(--radius-2xl);
+  }
+  
+  .upload-btn {
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+  }
+  
+  /* Tablet-specific QR display optimization */
+  .qr-container {
+    padding: 2.5rem;
+    border-radius: var(--radius-2xl);
+  }
+  
+  .display-modes {
+    border-radius: var(--radius-2xl);
+    padding: 1.75rem;
+  }
+  
+  .copy-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    border-radius: 10px;
+  }
+  
+  /* Floating action buttons for tablets */
+  .floating-actions {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 100;
+  }
+  
+  .floating-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-purple);
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-btn:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+/* Mobile Layout */
+.layout-mobile {
+  .container {
+    padding: var(--container-padding);
+    max-width: 100%;
+  }
+  
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--card-gap);
+  }
+  
+  .card {
+    padding: 1.5rem;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .btn {
+    width: 100%;
+    min-height: var(--touch-target-size);
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+  }
+  
+  .input-field, .textarea-field {
+    padding: 1rem;
+    font-size: 17px; /* Prevents iOS zoom */
+    border-radius: 12px;
+    min-height: 48px;
+  }
+  
+  .upload-area {
+    padding: 2rem 1rem;
+    border-radius: var(--radius-2xl);
+    min-height: 150px;
+  }
+  
+  /* Mobile-specific: bottom action bar */
+  .qr-display {
+    padding-bottom: 5rem; /* Space for bottom bar */
+  }
+  
+  .mobile-bottom-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    padding: 1rem;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    z-index: 100;
+  }
+  
+  .mobile-bottom-actions .btn {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Mobile gesture area */
+  .mobile-gesture-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 100%;
+    z-index: 1000;
+    pointer-events: auto;
+  }
+}
+
+/* ===== Device Rotation Adaptation ===== */
+@media (orientation: landscape) {
+  .layout-mobile .header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .layout-tablet .upload-area {
+    padding: 1.5rem;
+  }
+}
+
+@media (orientation: portrait) {
+  .layout-tablet .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== High DPI Screen Optimization ===== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .qr-container canvas {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+  }
+}
+
+/* ===== Accessibility Optimizations ===== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Improved focus visibility for keyboard navigation */
+:focus {
+  outline: 2px solid var(--primary-purple);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ===== Dark Mode Support ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1F2937;
+    --bg-secondary: #111827;
+    --bg-tertiary: #374151;
+    --text-primary: #F9FAFB;
+    --text-secondary: #D1D5DB;
+    --text-light: #9CA3AF;
+    --border-color: #4B5563;
+  }
+  
+  body {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #0F172A 100%);
+  }
+  
+  .layout-tablet, .layout-mobile {
+    .card {
+      background: var(--bg-secondary);
+      border-color: var(--border-color);
+    }
+    
+    .input-field, .textarea-field {
+      background: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    .upload-area {
+      background: rgba(107, 70, 193, 0.1);
+      border-color: var(--primary-purple);
+    }
+  }
+}
+
+/* ===== Legacy Responsive Fallbacks ===== */
 @media (max-width: 480px) {
   .header h1 {
     font-size: 1.75rem;
