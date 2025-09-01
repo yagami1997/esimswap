@@ -1,13 +1,15 @@
 <div align="center">
 
-# 📱 eSIM Configuration Intelligent Parser
+# 📱 eSIM Configuration Parser
 
 ![eSIM Parser](https://img.shields.io/badge/eSIM-Parser-6b46c1?style=flat-square&logo=mobile&logoColor=white)
+![Multi Device](https://img.shields.io/badge/Multi--Device-Adaptive-8b5cf6?style=flat-square&logo=devices&logoColor=white)
 ![CloudFlare Pages](https://img.shields.io/badge/CloudFlare-Pages-f38020?style=flat-square&logo=cloudflare&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-f7df1e?style=flat-square&logo=javascript&logoColor=black)
+![PWA](https://img.shields.io/badge/PWA-Ready-9333ea?style=flat-square&logo=pwa&logoColor=white)
 ![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=flat-square)
 
-**Bidirectional eSIM configuration analysis - Solve irregular eSIM installation errors**
+**Multi-device adaptive eSIM QR code generator with intelligent parsing and cross-platform optimization**
 
 [🚀 Live Demo](https://esim.kyowarp.com)
 
@@ -16,6 +18,17 @@
 ---
 
 ## 📋 Update Log
+
+### Beta 1.1.0 - Multi-Device Adaptive Interface (August 31, 2025 23:38 PST)
+- 🖥️ **Intelligent Device Detection**: Automatic recognition of desktop, tablet (9-13 inch), and mobile devices
+- 📱 **Three-Tier Responsive Design**: Dynamic UI adaptation based on screen size and device capabilities
+- 🎮 **Tablet-Specific Enhancements**: Touch gestures (pinch-to-zoom, swipe navigation), floating action buttons, Apple Pencil support
+- 🔤 **Cross-Platform Font Optimization**: Improved text rendering for Windows, macOS, Linux, iOS, and Android
+- 📳 **High-DPI Android Support**: Special optimizations for 2K+ screens (tested on X200U 3168×1440)
+- ⌨️ **Keyboard Shortcuts**: Tablet external keyboard support (Ctrl+G, Ctrl+S, Ctrl+Shift+C)
+- 💾 **PWA Enhancement**: Progressive Web App manifest for app-like installation experience
+- 🎨 **UI Layout Improvements**: Better alignment and spacing for parsing results display
+- 🌐 **English Interface**: Complete internationalization with English-only UI for global accessibility
 
 ### Beta 1.0.0 - Initial Release (August 30, 2025 22:58 PST)
 - 🎨 **Design & Creation**: Built with Japanese elegant design philosophy, featuring a refined purple color scheme and minimalist interface
@@ -112,6 +125,10 @@ The **eSIM Configuration Intelligent Parser** is a comprehensive web application
 - **📊 Detailed Analysis**: Shows separated SM-DP+ address, activation code, and password
 - **🎯 Multi-Format Support**: Handles various carrier-specific formats
 - **📱 Device Compatibility**: Ensures QR codes work across all eSIM-capable devices
+- **🖥️ Adaptive Interface**: Intelligent device detection with optimized layouts for desktop, tablet, and mobile
+- **👆 Touch Gestures**: Pinch-to-zoom, swipe navigation, and floating actions for tablet devices
+- **🔤 Font Optimization**: Enhanced text rendering across Windows, macOS, Linux, iOS, and Android
+- **📳 High-DPI Support**: Special optimizations for 2K+ resolution displays
 
 ---
 
@@ -235,21 +252,25 @@ This application is deployed using **CloudFlare Pages** for optimal global perfo
 
 ```
 esimswap/
-├── index.html          # Main application page
-├── style.css           # Kyoto-inspired styling
-├── app.js              # Core application logic
+├── index.html          # Multi-device responsive main page
+├── style.css           # Adaptive styling with device optimization
+├── app.js              # Core logic with device detection & tablet enhancements
+├── manifest.json       # PWA configuration for app installation
 ├── .gitignore          # Git ignore rules
 ├── package.json        # Project metadata
-└── README.md           # This documentation
+└── README.md           # This comprehensive documentation
 ```
 
 #### Performance Features
 
 - **⚡ Global CDN**: CloudFlare's edge network
 - **🔒 SSL/TLS**: Automatic HTTPS encryption
-- **📱 Mobile Optimized**: Responsive design
-- **🚀 Fast Loading**: Optimized static assets
+- **📱 Multi-Device Optimized**: Adaptive layouts for desktop, tablet, and mobile
+- **🚀 Fast Loading**: Optimized static assets with device-specific loading
 - **🛡️ DDoS Protection**: Built-in security
+- **💾 PWA Support**: Installable as native app with offline capabilities
+- **🎯 Smart Caching**: Intelligent resource management
+- **📳 High-DPI Ready**: Optimized for retina and 2K+ displays
 
 ---
 
