@@ -24,7 +24,7 @@
 - 📱 **Three-Tier Responsive Design**: Dynamic UI adaptation based on screen size and device capabilities
 - 🎮 **Tablet-Specific Enhancements**: Touch gestures (pinch-to-zoom, swipe navigation), floating action buttons, Apple Pencil support
 - 🔤 **Cross-Platform Font Optimization**: Improved text rendering for Windows, macOS, Linux, iOS, and Android
-- 📳 **High-DPI Android Support**: Special optimizations for 2K+ screens (tested on X200U 3168×1440)
+- 📳 **High-DPI Android Support**: Special optimizations for 2K+ screens (tested on AndroidPhone，like S25 Ultra 3168×1440)
 - ⌨️ **Keyboard Shortcuts**: Tablet external keyboard support (Ctrl+G, Ctrl+S, Ctrl+Shift+C)
 - 💾 **PWA Enhancement**: Progressive Web App manifest for app-like installation experience
 - 🎨 **UI Layout Improvements**: Better alignment and spacing for parsing results display
