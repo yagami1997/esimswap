@@ -147,6 +147,12 @@ class DeviceDetector {
         }
         if (this.deviceInfo.isAndroid) {
             body.classList.add('android-device');
+            
+            // High resolution Android device optimization
+            if (this.deviceInfo.pixelRatio >= 2.5 && this.deviceInfo.screenWidth >= 1440) {
+                body.classList.add('android-high-dpi');
+                console.log('High DPI Android device detected, applying optimizations');
+            }
         }
         if (this.deviceInfo.isWindows) {
             body.classList.add('windows-device');
