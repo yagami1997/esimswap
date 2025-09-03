@@ -12,7 +12,8 @@ class DeviceDetector {
     constructor() {
         this.deviceInfo = this.detectDevice();
         this.currentLayout = null;
-        this.init();
+        // Don't call init() immediately, let the caller handle it
+        // this.init();
     }
 
     detectDevice() {
@@ -88,10 +89,16 @@ class DeviceDetector {
     }
 
     init() {
-        this.currentLayout = this.determineLayoutMode();
-        this.applyLayout(this.currentLayout);
-        this.bindResizeHandler();
-        this.logDeviceInfo();
+        try {
+            this.currentLayout = this.determineLayoutMode();
+            this.applyLayout(this.currentLayout);
+            this.bindResizeHandler();
+            this.logDeviceInfo();
+        } catch (error) {
+            console.error('DeviceDetector initialization error:', error);
+            // Set fallback layout
+            this.currentLayout = 'desktop';
+        }
     }
 
     applyLayout(layout) {
@@ -2411,15 +2418,38 @@ class TabletEnhancements {
 
 // Initialize application with device detection and tablet enhancements
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize device detection first
-  window.deviceDetector = new DeviceDetector();
-  
-  // Initialize main parser
-  const parser = new ESIMParser();
-  await parser.loadExternalLibraries();
-  parser.bindEvents();
-  window.esimParser = parser;
-  
-  // Initialize tablet enhancements
-  window.tabletEnhancements = new TabletEnhancements();
+  try {
+    console.log('🚀 Starting application initialization...');
+    
+    // Initialize device detection first
+    console.log('📱 Initializing device detector...');
+    window.deviceDetector = new DeviceDetector();
+    // Now that DOM is ready, initialize the detector
+    window.deviceDetector.init();
+    console.log('✅ Device detector initialized');
+    
+    // Initialize main parser
+    console.log('🔧 Initializing eSIM parser...');
+    const parser = new ESIMParser();
+    console.log('📚 Loading external libraries...');
+    await parser.loadExternalLibraries();
+    console.log('🔗 Binding events...');
+    parser.bindEvents();
+    window.esimParser = parser;
+    console.log('✅ eSIM parser initialized');
+    
+    // Initialize tablet enhancements
+    console.log('📱 Initializing tablet enhancements...');
+    window.tabletEnhancements = new TabletEnhancements();
+    console.log('✅ Tablet enhancements initialized');
+    
+    console.log('🎉 Application initialization completed successfully!');
+    
+  } catch (error) {
+    console.error('❌ Application initialization failed:', error);
+    // Show error notification if possible
+    if (window.esimParser && window.esimParser.showNotification) {
+      window.esimParser.showNotification('Application initialization failed: ' + error.message, 'error');
+    }
+  }
 });
