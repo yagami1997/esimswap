@@ -95,7 +95,21 @@ class DeviceDetector {
     }
 
     applyLayout(layout) {
+        // Check if document.body is available
+        if (!document.body) {
+            console.log('Document body not ready, deferring layout application');
+            // Defer layout application until DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.applyLayout(layout));
+                return;
+            }
+        }
+        
         const body = document.body;
+        if (!body) {
+            console.error('Document body still not available');
+            return;
+        }
         
         // Remove all layout classes
         body.classList.remove('layout-desktop', 'layout-tablet', 'layout-mobile');
@@ -114,6 +128,7 @@ class DeviceDetector {
 
     applyDeviceOptimizations(layout) {
         const root = document.documentElement;
+        const body = document.body;
         
         switch (layout) {
             case 'mobile':
@@ -141,27 +156,29 @@ class DeviceDetector {
                 break;
         }
         
-        // Special device optimizations
-        if (this.deviceInfo.isIOS) {
-            body.classList.add('ios-device');
-        }
-        if (this.deviceInfo.isAndroid) {
-            body.classList.add('android-device');
-            
-            // High resolution Android device optimization
-            if (this.deviceInfo.pixelRatio >= 2.5 && this.deviceInfo.screenWidth >= 1440) {
-                body.classList.add('android-high-dpi');
-                console.log('High DPI Android device detected, applying optimizations');
+        // Special device optimizations - only if body is available
+        if (body) {
+            if (this.deviceInfo.isIOS) {
+                body.classList.add('ios-device');
             }
-        }
-        if (this.deviceInfo.isWindows) {
-            body.classList.add('windows-device');
-        }
-        if (this.deviceInfo.isMac) {
-            body.classList.add('mac-device');
-        }
-        if (this.deviceInfo.isLinux) {
-            body.classList.add('linux-device');
+            if (this.deviceInfo.isAndroid) {
+                body.classList.add('android-device');
+                
+                // High resolution Android device optimization
+                if (this.deviceInfo.pixelRatio >= 2.5 && this.deviceInfo.screenWidth >= 1440) {
+                    body.classList.add('android-high-dpi');
+                    console.log('High DPI Android device detected, applying optimizations');
+                }
+            }
+            if (this.deviceInfo.isWindows) {
+                body.classList.add('windows-device');
+            }
+            if (this.deviceInfo.isMac) {
+                body.classList.add('mac-device');
+            }
+            if (this.deviceInfo.isLinux) {
+                body.classList.add('linux-device');
+            }
         }
     }
 
