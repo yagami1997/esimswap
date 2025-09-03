@@ -220,6 +220,8 @@ body {
   color: var(--primary-purple);
   margin-bottom: 0.5rem;
   text-shadow: 0 2px 4px rgba(107, 70, 193, 0.1);
+  /* Ensure emoji is visible */
+  -webkit-text-fill-color: initial;
 }
 
 .header .subtitle {
