@@ -491,10 +491,11 @@ body {
   font-weight: 700;
   color: var(--primary-purple);
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-light));
+  /* Remove gradient that makes emoji invisible */
+  /* background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background-clip: text; */
 }
 
 .sub-title {
