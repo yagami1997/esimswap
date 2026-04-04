@@ -290,8 +290,52 @@ config.local.json
 # Jest
 .jest/
 
-# Claude Code local config
+# =============================================================================
+# AI Development Tools — Local Workspaces and Configs
+# =============================================================================
+
+# Claude Code
 .claude/
+
+# Cursor
+# .cursor/ already listed above under Editor and IDE Files
+
+# Windsurf
+.windsurf/
+
+# Aider
+.aider*
+.aider.chat.history.md
+.aider.tags.cache.v3/
+
+# Continue
+.continue/
+
+# Codeium
+.codeium/
+
+# GitHub Copilot (workspace-level)
+.copilot/
+.github/copilot-instructions.md
+
+# Supermaven
+.supermaven/
+
+# Sourcegraph Cody
+.cody/
+
+# Roo Code / Roo Cline
+.roo/
+.roomodes
+
+# Plandex
+.plandex/
+
+# Mentat
+.mentat/
+
+# Tabnine
+.tabnine/
 
 # npm lock file (not needed — CF Pages doesn't build, esbuild version pinned)
 package-lock.json
