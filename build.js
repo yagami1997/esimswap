@@ -1,10 +1,9 @@
 import esbuild from 'esbuild';
-import { copyFileSync, mkdirSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync } from 'fs';
 
 const isWatch = process.argv.includes('--watch');
 
 mkdirSync('dist', { recursive: true });
-mkdirSync('tests', { recursive: true });
 
 const buildOptions = {
   entryPoints: ['src/app.js'],
@@ -16,17 +15,35 @@ const buildOptions = {
   sourcemap: isWatch ? 'inline' : false,
 };
 
-if (isWatch) {
-  const ctx = await esbuild.context(buildOptions);
-  await ctx.watch();
-  console.log('Watching for changes...');
-} else {
-  await esbuild.build(buildOptions);
-  console.log('Build complete.');
+try {
+  if (isWatch) {
+    const ctx = await esbuild.context(buildOptions);
+    await ctx.watch();
+    console.log('Watching for changes... (Ctrl+C to stop)');
+    copyStaticAssets(); // copy once at start for dev server
+  } else {
+    await esbuild.build(buildOptions);
+    console.log('Build complete.');
+    copyStaticAssets();
+  }
+} catch (err) {
+  console.error('Build failed:', err.message);
+  process.exit(1);
 }
 
-// Copy static assets to dist/
-for (const file of ['index.html', 'style.css', 'manifest.json', '_headers']) {
-  copyFileSync(file, `dist/${file}`);
+function copyStaticAssets() {
+  const required = ['index.html', 'style.css', 'manifest.json'];
+  const optional = ['_headers'];
+
+  for (const file of required) {
+    copyFileSync(file, `dist/${file}`);
+  }
+  for (const file of optional) {
+    if (existsSync(file)) {
+      copyFileSync(file, `dist/${file}`);
+    } else {
+      console.warn(`Warning: optional asset "${file}" not found, skipping.`);
+    }
+  }
+  console.log('Static assets copied.');
 }
-console.log('Static assets copied.');
