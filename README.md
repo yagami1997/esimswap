@@ -47,7 +47,7 @@ Complete rewrite from a single 80KB monolith to a modular ES module architecture
 - Last 20 scans/generations stored in localStorage — load any entry back into the generator
 
 **Design:**
-- 京紫金 color scheme — Kyoto purple `#5C2D91` + gold `#C9A84C` accents
+- **Kyoto Purple-Gold** color scheme — deep Kyoto purple `#5C2D91` + antique gold `#C9A84C` accents
 - Windows CSS compatibility: `@supports` gradient text fallback, Segoe UI Emoji, `::after` gold divider
 
 **Docs:**
