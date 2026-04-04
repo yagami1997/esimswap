@@ -199,8 +199,9 @@ const EXACT = {
   'lpa.ctm.net':           { name: 'CTM Macau',            region: 'MO' },
   'smdp.ctm.net':          { name: 'CTM Macau',            region: 'MO' },
   'esim.ctm.net':          { name: 'CTM Macau',            region: 'MO' },
-  'lpa.chinatelecom-mo.com': { name: 'China Telecom Macau', region: 'MO' },
+  'lpa.chinatelecom-mo.com':  { name: 'China Telecom Macau', region: 'MO' },
   'esim.chinatelecom-mo.com': { name: 'China Telecom Macau', region: 'MO' },
+  'ecprsp.eastcompeace.com':  { name: 'China Telecom Macau', region: 'MO' },
   'lpa.smartone.mo':       { name: 'SmarTone Macau',       region: 'MO' },
   'lpa.three.com.mo':      { name: '3 Macau',              region: 'MO' },
 
@@ -262,7 +263,8 @@ const SUFFIX_PATTERNS = [
   ['.gi-de.com',    { name: 'G+D carrier',            region: 'Global' }],
   ['.valid.com',    { name: 'Valid carrier',           region: 'Global' }],
   ['.workz.com',    { name: 'Workz carrier',          region: 'Global' }],
-  ['.bsim.cloud',   { name: 'BSIM carrier',           region: 'Global' }],
+  ['.bsim.cloud',        { name: 'BSIM carrier',             region: 'Global' }],
+  ['.eastcompeace.com',  { name: 'East ComPeace carrier',    region: 'Global' }],
   // Retail global providers
   ['.truphone.com', { name: 'Truphone',               region: 'Global' }],
   ['.airalo.com',   { name: 'Airalo',                 region: 'Global' }],
