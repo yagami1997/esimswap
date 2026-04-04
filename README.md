@@ -17,6 +17,11 @@
 
 ---
 
+> **Want to clone, run, or self-host this project?**
+> See **[DEPLOY.md](DEPLOY.md)** for the complete guide — prerequisites, local development, testing, Cloudflare Pages setup, and troubleshooting.
+
+---
+
 ## 📋 Changelog
 
 ### v2.0.0 — Full Modular Refactor (April 4, 2026 — 00:04 PDT)
