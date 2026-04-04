@@ -19,7 +19,7 @@
 
 ## 📋 Changelog
 
-### v2.0.0 — Full Modular Refactor (April 4, 2026 — 14:52 PDT)
+### v2.0.0 — Full Modular Refactor (April 4, 2026 — 00:04 PDT)
 
 Complete rewrite from a single 80KB monolith to a modular ES module architecture, bundled by esbuild for Cloudflare Pages deployment.
 
@@ -34,17 +34,17 @@ Complete rewrite from a single 80KB monolith to a modular ES module architecture
 - **37/37 Unit Tests**: Node 18+ built-in test runner, no test framework dependency
 - **esbuild Pipeline**: `npm run build` → minified `dist/app.js` in under 1s; `npm test` runs all tests
 
-### v1.1.2 — Bug Fixes (September 3, 2025 05:38 PDT)
+### v1.1.2 — Bug Fixes (September 3, 2025 05:39 PDT)
 - Fixed DOM access timing issues causing initialization failures
 - Fixed QR generation incomplete functions causing syntax errors
 - Fixed emoji rendering in titles on some browsers
 
-### v1.1.0 — Multi-Device Adaptive UI (August 31, 2025 23:38 PDT)
+### v1.1.0 — Multi-Device Adaptive UI (September 1, 2025 01:39 PDT)
 - Device detection: desktop / tablet / mobile layout switching
 - Touch gestures, floating action buttons, Apple Pencil support
 - Cross-platform font optimization (Windows, macOS, Linux, iOS, Android)
 
-### v1.0.0 — Initial Release (August 30, 2025 22:58 PDT)
+### v1.0.0 — Initial Release (August 30, 2025 19:03 PDT)
 - QR code generation and parsing
 - Smart format repair
 - Cloudflare Pages deployment
