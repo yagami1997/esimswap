@@ -7,11 +7,12 @@
   Referrer-Policy: strict-origin-when-cross-origin
 
 # Static Resource Caching
+# JS/CSS: no-cache with revalidation — browser always checks for new version on deployment
 /*.css
-  Cache-Control: public, max-age=86400
-  
+  Cache-Control: public, no-cache
+
 /*.js
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, no-cache
 
 /*.html
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, no-cache
