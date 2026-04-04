@@ -217,6 +217,8 @@ body {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem 0;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, transparent, var(--accent-gold), transparent) 1;
 }
 
 .header h1 {
@@ -263,7 +265,7 @@ body {
   color: var(--primary-purple);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid rgba(201, 168, 76, 0.35);
+  border-bottom: 2px solid rgba(201, 168, 76, 0.55);
 }
 
 /* Input Area Styles */
@@ -394,6 +396,7 @@ body {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   margin: 2rem 0;
+  border-top: 3px solid var(--accent-gold);
 }
 
 .qr-container {
@@ -1375,13 +1378,15 @@ body {
   display: flex; justify-content: center; margin-bottom: 1rem;
 }
 .carrier-badge span {
-  background: rgba(201, 168, 76, 0.1);
-  color: var(--accent-gold-dark);
-  border: 1px solid rgba(201, 168, 76, 0.4);
-  padding: 0.35rem 1rem;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(226, 196, 114, 0.1));
+  color: #7A5E1A;
+  border: 1.5px solid rgba(201, 168, 76, 0.6);
+  padding: 0.4rem 1.2rem;
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(201, 168, 76, 0.2);
 }
 
 /* ===== Advanced Options ===== */
