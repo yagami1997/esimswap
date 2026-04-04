@@ -187,14 +187,28 @@ const EXACT = {
   'lpa.circles.life':      { name: 'Circles.Life',    region: 'SG' },
 
   // ── Hong Kong ─────────────────────────────────────────────────────────────
-  'lpa.hkt.com':           { name: 'HKT (PCCW)',      region: 'HK' },
-  '3hk.lpa.io':            { name: '3 Hong Kong',     region: 'HK' },
-  'lpa.smartone.com':      { name: 'SmarTone',        region: 'HK' },
+  'lpa.hkt.com':           { name: 'HKT (PCCW)',           region: 'HK' },
+  '3hk.lpa.io':            { name: '3 Hong Kong',          region: 'HK' },
+  'lpa.smartone.com':      { name: 'SmarTone HK',          region: 'HK' },
+  'lpa.cmhk.com':          { name: 'China Mobile HK',      region: 'HK' },
+  'lpa.chinaunicom.com.hk': { name: 'China Unicom HK',    region: 'HK' },
+  'lpa.csl.com.hk':        { name: 'CSL',                  region: 'HK' },
+  'lpa.1010.com.hk':       { name: 'CITIC Telecom 1O1O',   region: 'HK' },
+
+  // ── Macau ─────────────────────────────────────────────────────────────────
+  'lpa.ctm.net':           { name: 'CTM Macau',            region: 'MO' },
+  'smdp.ctm.net':          { name: 'CTM Macau',            region: 'MO' },
+  'esim.ctm.net':          { name: 'CTM Macau',            region: 'MO' },
+  'lpa.chinatelecom-mo.com': { name: 'China Telecom Macau', region: 'MO' },
+  'esim.chinatelecom-mo.com': { name: 'China Telecom Macau', region: 'MO' },
+  'lpa.smartone.mo':       { name: 'SmarTone Macau',       region: 'MO' },
+  'lpa.three.com.mo':      { name: '3 Macau',              region: 'MO' },
 
   // ── Taiwan ────────────────────────────────────────────────────────────────
-  'lpa.cht.com.tw':        { name: 'Chunghwa Telecom', region: 'TW' },
-  'lpa.taiwanmobile.com':  { name: 'Taiwan Mobile',   region: 'TW' },
-  'lpa.fareastone.com.tw': { name: 'Far EasTone',     region: 'TW' },
+  'lpa.cht.com.tw':        { name: 'Chunghwa Telecom',     region: 'TW' },
+  'lpa.taiwanmobile.com':  { name: 'Taiwan Mobile',        region: 'TW' },
+  'lpa.fareastone.com.tw': { name: 'Far EasTone',          region: 'TW' },
+  'lpa.aptg.com.tw':       { name: 'Asia Pacific Telecom', region: 'TW' },
 
   // ── Middle East ───────────────────────────────────────────────────────────
   'lpa.etisalat.ae':       { name: 'Etisalat (e&)',   region: 'AE' },
