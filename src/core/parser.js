@@ -157,7 +157,10 @@ export function repair(raw) {
     const candidate = confirmation
       ? `LPA:1$${domain}$${activation}$${confirmation}`
       : `LPA:1$${domain}$${activation}`;
-    return { success: true, fixed: candidate, problem: 'Reorganized malformed format' };
+    const result = parse(candidate);
+    if (result.success) {
+      return { success: true, fixed: result.data.lpaString, problem: 'Reorganized malformed format' };
+    }
   }
 
   return { success: false, problem: 'Cannot extract valid eSIM data from this content' };

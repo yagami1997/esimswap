@@ -92,6 +92,16 @@ describe('parseSeparated', () => {
     assert.equal(result.success, true);
     assert.equal(result.data.smdpAddress, 'carrier.example.com');
   });
+  it('parses with non-empty confirmationCode', () => {
+    const result = parseSeparated({
+      smdpAddress: 'carrier.example.com',
+      activationCode: 'ABC12-DEF34-GHI56',
+      confirmationCode: 'MYPASS'
+    });
+    assert.equal(result.success, true);
+    assert.equal(result.data.confirmationCode, 'MYPASS');
+    assert.equal(result.data.lpaString, 'LPA:1$carrier.example.com$ABC12-DEF34-GHI56$MYPASS');
+  });
 });
 
 describe('repair', () => {
