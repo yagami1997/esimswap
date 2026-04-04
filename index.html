@@ -4,33 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>eSIM Configuration Parser - Multi-Device</title>
-    <link rel="stylesheet" href="style.css?v=20250831-15">
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
-    <meta name="description" content="Multi-device eSIM configuration parser with intelligent QR code generation. Supports desktop, tablet, and mobile devices.">
-    <meta name="keywords" content="eSIM, QR code, LPA, SM-DP+, activation code, parser, multi-device, responsive">
+    <meta name="description" content="Multi-device eSIM configuration parser with intelligent QR code generation.">
+    <meta name="keywords" content="eSIM, QR code, LPA, SM-DP+, activation code, parser, multi-device">
     <meta name="author" content="yagami1997">
-    
-    <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#6B46C1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="eSIM Parser">
     <meta name="format-detection" content="telephone=no">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="eSIM Configuration Parser - Multi-Device">
+    <meta property="og:title" content="eSIM Configuration Parser">
     <meta property="og:description" content="Intelligent eSIM parser with adaptive UI for desktop, tablet, and mobile">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://esim.kyowarp.com">
-    
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="eSIM Configuration Parser">
     <meta name="twitter:description" content="Multi-device eSIM QR code generator and parser">
 </head>
 <body>
     <div class="container">
+
         <!-- Header -->
         <header class="header">
             <div class="header-section">
@@ -42,13 +37,14 @@
             </div>
         </header>
 
-        <!-- Main Content Area -->
+        <!-- Main Grid -->
         <div class="main-grid">
-            <!-- Generate QR Code Area -->
+
+            <!-- Generate Card -->
             <div class="card">
                 <h2>📱 Generate eSIM QR Code</h2>
-                
-                <!-- Input Mode Selection -->
+
+                <!-- Input Mode -->
                 <div class="input-group">
                     <label>Input Method</label>
                     <div class="input-mode-selector">
@@ -57,78 +53,104 @@
                     </div>
                 </div>
 
-                <!-- Combined Input Mode -->
+                <!-- Combined -->
                 <div id="combinedInput" class="input-mode">
                     <div class="input-group">
-                        <label for="combinedText">eSIM Configuration Information</label>
-                        <textarea 
-                            id="combinedText" 
-                            class="textarea-field" 
-                            placeholder="Format examples:&#10;LPA:1$carrier.example.com$ABC12-DEF34-GHI56-JKL78&#10;1$carrier.example.com$ABC12-DEF34-GHI56-JKL78&#10;carrier.example.com$ABC12-DEF34-GHI56-JKL78"
-                        ></textarea>
-                        <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
-                            Supports multiple formats with intelligent parsing and validation
+                        <label for="combinedText">eSIM Configuration</label>
+                        <textarea id="combinedText" class="textarea-field"
+                            placeholder="LPA:1$carrier.example.com$ABC12-DEF34-GHI56&#10;1$carrier.example.com$ABC12-DEF34-GHI56&#10;carrier.example.com$ABC12-DEF34-GHI56"></textarea>
+                        <small style="color:var(--text-secondary);margin-top:.5rem;display:block;">
+                            Supports LPA:, 1$, and bare domain formats
                         </small>
                     </div>
                 </div>
 
-                <!-- Separated Input Mode -->
-                <div id="separatedInput" class="input-mode" style="display: none;">
+                <!-- Separated -->
+                <div id="separatedInput" class="input-mode" style="display:none;">
                     <div class="input-group">
                         <label for="smdpAddress">SM-DP+ Address</label>
-                        <input 
-                            type="text" 
-                            id="smdpAddress" 
-                            class="input-field" 
-                            placeholder="e.g.: carrier.example.com"
-                        >
+                        <input type="text" id="smdpAddress" class="input-field" placeholder="e.g. carrier.example.com">
                     </div>
                     <div class="input-group">
                         <label for="activationCode">Activation Code</label>
-                        <input 
-                            type="text" 
-                            id="activationCode" 
-                            class="input-field" 
-                            placeholder="e.g.: ABC12-DEF34-GHI56-JKL78"
-                        >
+                        <input type="text" id="activationCode" class="input-field" placeholder="e.g. ABC12-DEF34-GHI56-JKL78">
                     </div>
                     <div class="input-group">
-                        <label for="activationPassword">Activation Password (Optional)</label>
-                        <input 
-                            type="text" 
-                            id="activationPassword" 
-                            class="input-field" 
-                            placeholder="Required by some carriers"
-                        >
+                        <label for="activationPassword">Confirmation Code <span style="color:var(--text-secondary)">(optional)</span></label>
+                        <input type="text" id="activationPassword" class="input-field" placeholder="Required by some carriers">
                     </div>
                 </div>
 
                 <button id="generateBtn" class="btn btn-primary">
-                    <span>🎯</span>
-                    Generate QR Code
+                    <span>🎯</span> Generate QR Code
                 </button>
+
+                <!-- Advanced Options -->
+                <details class="advanced-options">
+                    <summary>⚙️ Advanced Options</summary>
+                    <div class="advanced-body">
+                        <div class="option-group">
+                            <label>QR Size</label>
+                            <div class="option-buttons">
+                                <button class="option-btn active" data-qr-size="300">300px</button>
+                                <button class="option-btn" data-qr-size="500">500px</button>
+                                <button class="option-btn" data-qr-size="800">800px (print)</button>
+                            </div>
+                        </div>
+                        <div class="option-group">
+                            <label>Error Correction</label>
+                            <div class="option-buttons">
+                                <button class="option-btn active" data-qr-level="M">M — Standard</button>
+                                <button class="option-btn" data-qr-level="H">H — High (for stickers)</button>
+                            </div>
+                        </div>
+                    </div>
+                </details>
             </div>
 
-            <!-- QR Code Parsing Area -->
+            <!-- Scan Card -->
             <div class="card">
                 <h2>🔍 Parse QR Code</h2>
-                
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">📷</div>
-                    <p class="upload-text">
-                        Drop QR code image here<br>
-                        or 
-                        <button class="upload-btn" onclick="handleUploadClick()">
-                            <span class="btn-icon">📁</span> 
-                            Browse
+
+                <!-- Scan Tabs -->
+                <div class="scan-tabs">
+                    <button class="scan-tab-btn active" data-scan-tab="upload">📁 Upload Image</button>
+                    <button class="scan-tab-btn" data-scan-tab="camera">📷 Camera</button>
+                </div>
+
+                <!-- Upload Panel -->
+                <div id="uploadPanel">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📷</div>
+                        <p class="upload-text">
+                            Drop QR code image here<br>or
+                            <button class="upload-btn">
+                                <span class="btn-icon">📁</span> Browse
+                            </button>
+                        </p>
+                        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+                    </div>
+                </div>
+
+                <!-- Camera Panel -->
+                <div id="cameraPanel" style="display:none;">
+                    <div class="camera-container">
+                        <video id="cameraVideo" class="camera-video" playsinline style="display:none;"></video>
+                        <div class="camera-viewfinder" id="cameraViewfinder" style="display:none;"></div>
+                    </div>
+                    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
+                        <button id="startCameraBtn" class="btn btn-primary">
+                            <span>📷</span> Start Scanning
                         </button>
-                    </p>
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileChange(event)">
+                        <button id="stopCameraBtn" class="btn btn-danger" style="display:none;">
+                            <span>⏹</span> Stop Camera
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Parse Results -->
-                <div id="parseResult" class="parse-result" style="display: none;">
-                    <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">📋 Parsing Results</h3>
+                <div id="parseResult" class="parse-result" style="display:none;">
+                    <h3 style="color:var(--primary-purple);margin-bottom:1rem;">📋 Parsing Results</h3>
                     <div class="result-item">
                         <span class="result-label">SM-DP+ Address:</span>
                         <span class="result-value" id="parsedSmdp">-</span>
@@ -138,7 +160,7 @@
                         <span class="result-value" id="parsedActivation">-</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Activation Password:</span>
+                        <span class="result-label">Confirmation Code:</span>
                         <span class="result-value" id="parsedPassword">-</span>
                     </div>
                     <div class="result-item">
@@ -149,109 +171,99 @@
             </div>
         </div>
 
-        <!-- QR Code Display Area -->
-        <div id="qrDisplay" class="qr-display" style="display: none;">
+        <!-- QR Display -->
+        <div id="qrDisplay" class="qr-display" style="display:none;">
             <h2>✨ eSIM QR Code Generated</h2>
-            <div id="qrContainer" class="qr-container">
-                <!-- QR code will be displayed here -->
+
+            <!-- Carrier Info -->
+            <div class="carrier-badge">
+                <span id="carrierInfo">Unknown carrier</span>
             </div>
+
+            <div id="qrContainer" class="qr-container"></div>
+
             <div class="qr-info">
-                <!-- Two display modes -->
-                <div class="display-modes" style="margin-top: 1rem;">
+                <!-- Display mode tabs -->
+                <div class="display-modes" style="margin-top:1rem;">
                     <div class="display-mode-tabs">
                         <button class="display-tab active" data-mode="lpa">LPA Address</button>
-                        <button class="display-tab" data-mode="separated">Individual Components</button>
+                        <button class="display-tab" data-mode="separated">Components</button>
                     </div>
-                    
-                    <!-- LPA Address Display -->
+
                     <div id="displayLPA" class="display-content active">
                         <div class="display-item">
                             <div class="display-label">🔗 LPA Address</div>
                             <div id="lpaAddressDisplay" class="info-display">-</div>
-                            <button class="copy-btn" data-copy="lpa">
-                                <span>📋</span> Copy
-                            </button>
+                            <button class="copy-btn" data-copy="lpa"><span>📋</span> Copy</button>
                         </div>
                     </div>
-                    
-                    <!-- Separated Information Display -->
+
                     <div id="displaySeparated" class="display-content">
                         <div class="display-item">
                             <div class="display-label">📋 SM-DP+ Address</div>
                             <div id="smdpDisplay" class="info-display">-</div>
-                            <button class="copy-btn" data-copy="smdp">
-                                <span>📋</span> Copy
-                            </button>
+                            <button class="copy-btn" data-copy="smdp"><span>📋</span> Copy</button>
                         </div>
                         <div class="display-item">
                             <div class="display-label">🔑 Activation Code</div>
                             <div id="activationDisplay" class="info-display">-</div>
-                            <button class="copy-btn" data-copy="activation">
-                                <span>📋</span> Copy
-                            </button>
+                            <button class="copy-btn" data-copy="activation"><span>📋</span> Copy</button>
                         </div>
-                        <div class="display-item" id="passwordDisplayItem" style="display: none;">
-                            <div class="display-label">🔐 Activation Password</div>
+                        <div class="display-item" id="passwordDisplayItem" style="display:none;">
+                            <div class="display-label">🔐 Confirmation Code</div>
                             <div id="passwordDisplay" class="info-display">-</div>
-                            <button class="copy-btn" data-copy="password">
-                                <span>📋</span> Copy
-                            </button>
+                            <button class="copy-btn" data-copy="password"><span>📋</span> Copy</button>
                         </div>
                     </div>
                 </div>
-                
-                <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <button id="downloadBtn" class="btn btn-secondary">
-                        <span>💾</span>
-                        Download QR Code
-                    </button>
-                    <button id="copyBtn" class="btn btn-secondary">
-                        <span>📋</span>
-                        Copy LPA String
-                    </button>
-                    <button id="clearBtn" class="btn btn-danger">
-                        <span>🗑️</span>
-                        Clear
-                    </button>
+
+                <!-- Action buttons -->
+                <div style="margin-top:1rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+                    <button id="downloadBtn" class="btn btn-secondary"><span>💾</span> Download QR</button>
+                    <button id="copyBtn" class="btn btn-secondary"><span>📋</span> Copy LPA</button>
+                    <button id="shareLinkBtn" class="btn btn-secondary"><span>🔗</span> Share Link</button>
+                    <button id="clearBtn" class="btn btn-danger"><span>🗑️</span> Clear</button>
                 </div>
             </div>
         </div>
 
-        <!-- Usage Instructions -->
-        <div class="card" style="margin-top: 2rem;">
+        <!-- Usage Guide -->
+        <div class="card" style="margin-top:2rem;">
             <h2>📖 Usage Guide</h2>
-            <div style="color: var(--text-secondary); line-height: 1.8;">
-                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">Supported Input Formats:</h3>
-                <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+            <div style="color:var(--text-secondary);line-height:1.8;">
+                <h3 style="color:var(--primary-purple);margin:1rem 0 .5rem;">Supported Input Formats:</h3>
+                <ul style="margin-left:2rem;margin-bottom:1rem;">
                     <li><code>LPA:1$carrier.example.com$ABC12-DEF34-GHI56-JKL78</code></li>
                     <li><code>1$carrier.example.com$ABC12-DEF34-GHI56-JKL78</code></li>
                     <li><code>carrier.example.com$ABC12-DEF34-GHI56-JKL78</code></li>
                 </ul>
-                
-                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">GSMA-Compliant Features:</h3>
-                <ul style="margin-left: 2rem;">
-                    <li>📋 <strong>Standards Compliance:</strong> Strict adherence to GSMA SGP.22 specifications</li>
-                    <li>🔧 <strong>Error Correction:</strong> Automatically detects and fixes malformed carrier eSIM data</li>
-                    <li>🎯 <strong>Intelligent Parsing:</strong> Multi-format recognition with validation feedback</li>
-                    <li>💾 <strong>QR Generation:</strong> Standards-compliant QR code output for all devices</li>
-                    <li>📱 <strong>Cross-Platform:</strong> Works seamlessly on desktop, tablet, and mobile</li>
-                </ul>
-                
-                <h3 style="color: var(--primary-purple); margin: 1rem 0 0.5rem 0;">Tablet Gestures:</h3>
-                <ul style="margin-left: 2rem;">
-                    <li>👆 Pinch to zoom QR codes</li>
-                    <li>👈 Swipe to switch input modes</li>
-                    <li>⌨️ Keyboard shortcuts (Ctrl+G, Ctrl+S, Ctrl+Shift+C)</li>
+                <h3 style="color:var(--primary-purple);margin:1rem 0 .5rem;">Features:</h3>
+                <ul style="margin-left:2rem;">
+                    <li>📷 <strong>Camera Scanning:</strong> Live QR code detection</li>
+                    <li>🔧 <strong>Auto Repair:</strong> Fixes non-standard carrier QR codes</li>
+                    <li>🔗 <strong>Share Links:</strong> Generate URLs that open pre-filled</li>
+                    <li>📜 <strong>History:</strong> Last 20 scans/generations saved locally</li>
+                    <li>🌍 <strong>Carrier ID:</strong> Recognizes major global carriers</li>
                 </ul>
             </div>
         </div>
-        
+
+        <!-- History Section -->
+        <div class="card history-card" style="margin-top:2rem;">
+            <div class="history-header">
+                <h2>📜 History <span class="history-subtitle">(local only, never uploaded)</span></h2>
+                <button id="clearHistoryBtn" class="btn btn-sm btn-danger">Clear All</button>
+            </div>
+            <div id="historyEmpty" style="color:var(--text-secondary);padding:1rem 0;">No history yet.</div>
+            <div id="historyList" class="history-list"></div>
+        </div>
+
         <!-- Footer -->
-        <footer style="text-align: center; margin-top: 3rem; padding: 2rem; color: var(--text-secondary);">
-            <p>© 2025 eSIM Parser | GSMA-Compliant • Open Source GPL3 • Multi-Device</p>
-            <div style="margin-top: 1.5rem;">
+        <footer style="text-align:center;margin-top:3rem;padding:2rem;color:var(--text-secondary);">
+            <p>© 2025 eSIM Parser | GSMA-Compliant · Open Source GPL3 · Multi-Device</p>
+            <div style="margin-top:1.5rem;">
                 <a href="https://github.com/yagami1997/esimswap" target="_blank" class="github-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:.5rem;">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
                     <span>Star on GitHub</span>
@@ -261,12 +273,11 @@
         </footer>
     </div>
 
-    <!-- Notification Component -->
+    <!-- Notification -->
     <div id="notification" class="notification">
         <span id="notificationText"></span>
     </div>
 
-    <!-- Main Application Script -->
-    <script src="app.js?v=20250831-14"></script>
+    <script src="app.js"></script>
 </body>
 </html>
