@@ -161,7 +161,6 @@ coverage/
 
 # Output directory
 out/
-dist/
 
 # Yarn Integrity file
 .yarn-integrity
@@ -191,7 +190,6 @@ wrangler.toml.bak
 
 # Build output
 build/
-dist/
 out/
 .output/
 .vercel/
@@ -245,11 +243,9 @@ lerna-debug.log*
 # Project Specific Files
 # =============================================================================
 
-# Development documentation (local use)
+# Development documentation (local use only, not published)
 dev.md
-
-# Deprecated source code directory
-src/
+docs/
 
 # Test coverage
 coverage/
