@@ -2,16 +2,21 @@
 /* Responsive Design System for Desktop/Tablet/Mobile */
 
 :root {
-  /* Primary Color Scheme */
-  --primary-purple: #6B46C1;
-  --primary-purple-light: #8B5CF6;
-  --primary-purple-dark: #553C9A;
-  
+  /* Primary Color Scheme — 京紫金 Kyoto Purple-Gold */
+  --primary-purple: #5C2D91;
+  --primary-purple-light: #7C45B8;
+  --primary-purple-dark: #3D1872;
+
+  /* Gold Accent — 紫金 */
+  --accent-gold: #C9A84C;
+  --accent-gold-light: #E2C472;
+  --accent-gold-dark: #9A7830;
+
   /* Background Colors */
-  --bg-primary: #F3F0FF;
+  --bg-primary: #F2EEFF;
   --bg-secondary: #FFFFFF;
-  --bg-tertiary: #F9FAFB;
-  
+  --bg-tertiary: #F8F5FF;
+
   /* Accent Colors */
   --accent-red: #EF4444;
   --accent-orange: #F59E0B;
@@ -67,7 +72,7 @@ body {
   /* Universal fallback font stack */
   font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: var(--base-font-size);
-  background: linear-gradient(135deg, var(--bg-primary) 0%, #FEFBFF 100%);
+  background: linear-gradient(135deg, #F2EEFF 0%, #FBF8EE 100%);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -258,7 +263,7 @@ body {
   color: var(--primary-purple);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--bg-primary);
+  border-bottom: 2px solid rgba(201, 168, 76, 0.35);
 }
 
 /* Input Area Styles */
@@ -348,15 +353,16 @@ body {
 }
 
 .btn-primary {
-  background: var(--primary-purple);
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
   color: white;
   box-shadow: var(--shadow-md);
+  border: 1px solid rgba(201, 168, 76, 0.25);
 }
 
 .btn-primary:hover {
-  background: var(--primary-purple-light);
+  background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 25px rgba(92, 45, 145, 0.35), 0 0 0 1px rgba(201, 168, 76, 0.3);
 }
 
 .btn-secondary {
@@ -491,13 +497,18 @@ body {
 .main-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary-purple);
   margin-bottom: 0.5rem;
-  /* Remove gradient that makes emoji invisible */
-  /* background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-light));
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--accent-gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text; */
+  background-clip: text;
+}
+
+/* Isolate emoji from gradient so it renders in native system color */
+.title-emoji {
+  -webkit-text-fill-color: initial;
+  color: initial;
+  display: inline-block;
 }
 
 .sub-title {
@@ -1364,13 +1375,13 @@ body {
   display: flex; justify-content: center; margin-bottom: 1rem;
 }
 .carrier-badge span {
-  background: rgba(107, 70, 193, 0.1);
-  color: var(--primary-purple);
-  border: 1px solid rgba(107, 70, 193, 0.3);
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--accent-gold-dark);
+  border: 1px solid rgba(201, 168, 76, 0.4);
   padding: 0.35rem 1rem;
   border-radius: 999px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* ===== Advanced Options ===== */
