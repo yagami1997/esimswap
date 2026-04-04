@@ -1,17 +1,22 @@
 {
   "name": "esimswap",
-  "version": "1.0.0",
-  "description": "Standards-compliant eSIM profile and QR code converter with accurate configuration output",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Standards-compliant eSIM QR code parser and generator",
   "homepage": "https://esim.kyowarp.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/yagami1997/esimswap.git"
   },
   "scripts": {
-    "dev": "npx serve public",
-    "preview": "npx serve public"
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "test": "node --test tests/*.test.js"
   },
   "keywords": ["esim", "qr-code", "lpa", "qr-generator", "qr-parser"],
   "author": "yagami1997",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
 }
