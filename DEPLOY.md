@@ -1,5 +1,7 @@
 # Deployment & Local Development Guide
 
+**Version:** v2.0.0 · **Last updated:** April 4, 2026 · 01:03 PDT
+
 > Complete guide for cloning, running locally, testing, and deploying eSIM Configuration Parser.
 
 ---
@@ -243,6 +245,7 @@ Copy the contents of `dist/` to your web root. No configuration needed.
 
 ## 11. Troubleshooting
 
+
 **`Cannot find package 'esbuild'`**
 → Run `npm install` first.
 
@@ -257,3 +260,11 @@ Copy the contents of `dist/` to your web root. No configuration needed.
 
 **Changes not appearing on Cloudflare Pages**
 → Make sure you ran `npm run build` and committed the updated `dist/` folder before pushing.
+
+---
+
+<div align="center">
+
+DEPLOY.md · v2.0.0 · April 4, 2026 · 01:03 PDT · [Back to README](README.md)
+
+</div>

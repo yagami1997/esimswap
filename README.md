@@ -212,7 +212,9 @@ esimswap/
 ├── style.css                   # Source CSS (color scheme locked)
 ├── manifest.json               # PWA manifest
 ├── build.js                    # esbuild pipeline
-└── package.json                # v2.0.0, type:module, esbuild 0.20.2
+├── package.json                # v2.0.0, type:module, esbuild 0.20.2
+├── README.md                   # Project overview and usage
+└── DEPLOY.md                   # Clone, build, test, and deployment guide
 ```
 
 **Build pipeline**: esbuild bundles `src/app.js` and all its imports into a single IIFE `dist/app.js`. Cloudflare Pages runs `npm run build` on every push to `main` and serves the `dist/` directory.
@@ -314,6 +316,8 @@ GPL-3.0 — see [LICENSE](LICENSE) for details.
 **Made for the eSIM community**
 
 © 2025–2026 eSIM Configuration Parser · GPL-3.0
+
+Last updated: April 4, 2026 · 01:03 PDT
 
 [⭐ Star](https://github.com/yagami1997/esimswap) · [🐛 Report Issue](https://github.com/yagami1997/esimswap/issues) · [🚀 Live App](https://esim.kyowarp.com)
 
