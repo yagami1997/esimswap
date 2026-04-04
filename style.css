@@ -217,8 +217,17 @@ body {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem 0;
-  border-bottom: 2px solid transparent;
-  border-image: linear-gradient(90deg, transparent, var(--accent-gold), transparent) 1;
+  position: relative;
+}
+
+/* Gold divider — pseudo-element avoids border-image + border-radius incompatibility on Windows */
+.header::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 2px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
 }
 
 .header h1 {
@@ -501,17 +510,27 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--accent-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  /* Solid color fallback for browsers/OS where background-clip:text fails */
+  color: var(--primary-purple);
 }
 
-/* Isolate emoji from gradient so it renders in native system color */
+/* Gradient text — only applied when the browser confirms support */
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .main-title {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Isolate emoji — force native color rendering on Windows (Segoe UI Emoji) and all platforms */
 .title-emoji {
+  display: inline-block;
   -webkit-text-fill-color: initial;
   color: initial;
-  display: inline-block;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
 }
 
 .sub-title {
