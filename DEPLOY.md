@@ -98,7 +98,7 @@ dist/
 npm run preview
 ```
 
-Opens a local HTTP server at **http://localhost:8306** serving the `dist/` folder.
+Opens a local HTTP server at **http://localhost:8742** serving the `dist/` folder.
 
 > **Note:** Camera scanning requires HTTPS in production. On `localhost` all browsers allow camera access without HTTPS, so local testing works normally.
 
