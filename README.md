@@ -24,20 +24,34 @@
 
 ## 📋 Changelog
 
-### v2.0.0 — Full Modular Refactor (April 4, 2026 — 00:04 PDT)
+### v2.0.0 — Full Modular Refactor (April 4, 2026 — 00:33 PDT)
 
 Complete rewrite from a single 80KB monolith to a modular ES module architecture, bundled by esbuild for Cloudflare Pages deployment.
 
+**Core:**
 - **Camera Scanning**: Live QR code detection via `getUserMedia` + `requestAnimationFrame`
 - **Modular Architecture**: `src/` split into `core/`, `ui/`, `features/` modules — bundled to a single 23KB minified `dist/app.js`
 - **Auto-Repair Engine**: Detects and corrects non-standard carrier QR formats; offers one-click fix & re-generate
-- **Carrier Identification**: Recognizes ~50 major carriers across US, EU, Asia-Pacific by SM-DP+ domain
-- **History**: Last 20 scans/generations stored in localStorage — load any entry back into the generator
 - **URL Deep Links**: Share pre-filled `?lpa=` URLs that auto-generate on open
 - **Advanced QR Options**: Choose output size (300/500/800px) and error correction level (M/H)
 - **XSS-Safe Dialog System**: All user and QR data rendered via `textContent` only — zero `innerHTML`
 - **37/37 Unit Tests**: Node 18+ built-in test runner, no test framework dependency
 - **esbuild Pipeline**: `npm run build` → minified `dist/app.js` in under 1s; `npm test` runs all tests
+
+**Carrier Database:**
+- **120+ carriers** across North America, Latin America, Europe, Asia, Middle East, Oceania, and Africa
+- Recognizes major global travel eSIM providers: Airalo, Holafly, Ubigi, Nomad, Flexiroam, Saily and more
+- SM-DP+ infrastructure suffix matching: IDEMIA, Thales/Gemalto, G+D, Valid, Workz, BSIM
+
+**History:**
+- Last 20 scans/generations stored in localStorage — load any entry back into the generator
+
+**Design:**
+- 京紫金 color scheme — Kyoto purple `#5C2D91` + gold `#C9A84C` accents
+- Windows CSS compatibility: `@supports` gradient text fallback, Segoe UI Emoji, `::after` gold divider
+
+**Docs:**
+- `DEPLOY.md` — complete guide for clone, local dev, testing, and Cloudflare Pages deployment
 
 ### v1.1.2 — Bug Fixes (September 3, 2025 05:39 PDT)
 - Fixed DOM access timing issues causing initialization failures
