@@ -293,6 +293,9 @@ config.local.json
 # Claude Code local config
 .claude/
 
+# npm lock file (not needed — CF Pages doesn't build, esbuild version pinned)
+package-lock.json
+
 # =============================================================================
 # Others
 # =============================================================================
