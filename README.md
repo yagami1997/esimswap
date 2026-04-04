@@ -255,7 +255,7 @@ npm test
 
 # Preview built output locally
 npm run preview
-# → http://localhost:3000
+# → http://localhost:8306
 ```
 
 ### Fork and Self-Host
