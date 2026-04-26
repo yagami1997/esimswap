@@ -11,7 +11,7 @@
 
 **Standards-compliant eSIM QR code parser, generator, and repair tool — multi-device, camera-capable, zero backend**
 
-[🚀 Live App](https://esim.kyowarp.com) · [🐛 Issues](https://github.com/yagami1997/esimswap/issues) · [⭐ Star](https://github.com/yagami1997/esimswap)
+[🐛 Issues](https://github.com/yagami1997/esimswap/issues) · [⭐ Star](https://github.com/yagami1997/esimswap)
 
 </div>
 
@@ -94,7 +94,7 @@ This tool detects the deviation, repairs it, and generates a standards-compliant
 | **Auto-Repair** | Adds missing `LPA:` prefix and version number; validates before offering fix |
 | **Carrier ID** | ~50 carriers identified by SM-DP+ domain with region label |
 | **History** | 20 most recent operations in localStorage; load any entry back into generator |
-| **Share Link** | Copies `https://esim.kyowarp.com?lpa=<encoded>` to clipboard |
+| **Share Link** | Copies `https://your-deployment-url/?lpa=<encoded>` to clipboard |
 | **QR Options** | Size: 300 / 500 / 800px · Error correction: M (standard) / H (print/sticker) |
 | **XSS-Safe** | All untrusted data displayed via `textContent` — no innerHTML anywhere |
 | **No Backend** | 100% client-side; nothing leaves the browser |
@@ -172,7 +172,7 @@ Every successful scan or generation is saved to your browser's localStorage (nev
 After generating a QR code, click **Share Link**. This copies a URL like:
 
 ```
-https://esim.kyowarp.com?lpa=LPA%3A1%24carrier.example.com%24ABC12-DEF34
+https://your-deployment-url/?lpa=LPA%3A1%24carrier.example.com%24ABC12-DEF34
 ```
 
 Anyone who opens this link gets the app pre-filled and auto-generates the QR code. Useful for sharing an eSIM config with a family member or support team.
@@ -319,6 +319,6 @@ GPL-3.0 — see [LICENSE](LICENSE) for details.
 
 Last updated: April 4, 2026 · 01:03 PDT
 
-[⭐ Star](https://github.com/yagami1997/esimswap) · [🐛 Report Issue](https://github.com/yagami1997/esimswap/issues) · [🚀 Live App](https://esim.kyowarp.com)
+[⭐ Star](https://github.com/yagami1997/esimswap) · [🐛 Report Issue](https://github.com/yagami1997/esimswap/issues)
 
 </div>

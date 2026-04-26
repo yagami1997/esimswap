@@ -1,9 +1,9 @@
 /**
  * Deep link generation and parsing for eSIM configuration sharing.
- * URL format: https://esim.kyowarp.com/?lpa=<url-encoded-lpa-string>
+ * URL format: <your-deployment-url>/?lpa=<url-encoded-lpa-string>
  */
 
-const BASE_URL = 'https://esim.kyowarp.com';
+const BASE_URL = typeof window !== 'undefined' ? window.location.origin : '';
 
 /**
  * Extract the LPA string from a URL search string.

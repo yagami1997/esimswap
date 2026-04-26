@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "type": "module",
   "description": "Standards-compliant eSIM QR code parser and generator",
-  "homepage": "https://esim.kyowarp.com",
+  "homepage": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/yagami1997/esimswap.git"
