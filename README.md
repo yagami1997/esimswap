@@ -305,6 +305,12 @@ This app accepts and auto-repairs these common deviations:
 
 ---
 
+## Note
+
+eSIM should feel like infrastructure, not paperwork. This project treats the LPA string as a small but important contract: parse it carefully, repair only what is obvious, and keep the whole flow local so provisioning data stays with the user.
+
+---
+
 ## 📄 License
 
 GPL-3.0 — see [LICENSE](LICENSE) for details.
