@@ -14,13 +14,13 @@ export function enforceSecurityEntry(location = window.location) {
   const currentPath = normalizePath(location.pathname);
   if (currentPath === config.entryPath) return true;
 
-  renderAccessDenied(config.entryPath);
+  renderAccessDenied();
   return false;
 }
 
 function normalizeConfig(config) {
   return {
-    enabled: config?.enabled !== false,
+    enabled: Boolean(config?.enabled),
     entryPath: normalizePath(config?.entryPath),
   };
 }
@@ -73,10 +73,14 @@ function renderAccessDenied() {
   spinner.setAttribute('aria-hidden', 'true');
 
   const redirectTitle = document.createElement('h3');
-  redirectTitle.textContent = 'Redirecting to Cloudflare';
+  redirectTitle.textContent = 'Redirecting';
 
   const redirectMessage = document.createElement('p');
-  redirectMessage.innerHTML = 'Automatically redirecting in <strong id="redirectCountdown">5</strong> seconds.';
+  redirectMessage.append('Automatically redirecting in ');
+  const countdown = document.createElement('strong');
+  countdown.id = 'redirectCountdown';
+  countdown.textContent = '5';
+  redirectMessage.append(countdown, ' seconds.');
 
   const link = document.createElement('a');
   link.className = 'btn btn-primary error-gate-button';
@@ -86,7 +90,7 @@ function renderAccessDenied() {
 
   const footer = document.createElement('footer');
   footer.className = 'error-gate-footer';
-  footer.innerHTML = 'Public errors are intentionally brief. Powered by <strong>Cloudflare</strong>.';
+  footer.textContent = 'Public errors are intentionally brief.';
 
   redirect.append(spinner, redirectTitle, redirectMessage, link);
   panel.append(brand, kicker, code, title, message, redirect, footer);

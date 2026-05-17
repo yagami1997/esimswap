@@ -1,6 +1,6 @@
 # Deployment & Local Development Guide
 
-**Version:** v2.0.0 · **Last updated:** April 4, 2026 · 01:03 PDT
+**Version:** v2.1.0 · **Last updated:** May 17, 2026 · 00:12 PDT
 
 > Complete guide for cloning, running locally, testing, and deploying eSIM Configuration Parser.
 
@@ -70,7 +70,7 @@ All 37 tests cover the parser, carrier database, history, and deep-link modules.
 npm run build
 ```
 
-This bundles `src/app.js` and all its imports into a single minified `dist/app.js`, then copies static assets into `dist/`.
+This bundles `src/app.js` and all its imports into a single minified `dist/app.js`, then copies static assets into `dist/`. The generated `dist/` directory is deployment output and is intentionally ignored by git.
 
 Expected output:
 
@@ -85,7 +85,7 @@ Static assets copied.
 dist/
 ├── app.js        ← minified bundle (~23KB)
 ├── 404.html      ← denied/invalid path page
-├── index.html
+├── <entry>       ← generated from SECURITY_ENTRY_PATH
 ├── style.css
 ├── manifest.json
 ├── _headers      ← Cloudflare security headers
@@ -153,7 +153,7 @@ esimswap/
 │   ├── carrier-db.test.js
 │   ├── history.test.js
 │   └── deep-link.test.js
-├── dist/                       ← Built output (committed, CF Pages serves this)
+├── dist/                       ← Built output (ignored, CF Pages serves this)
 ├── index.html                  ← Source HTML
 ├── style.css                   ← Source CSS
 ├── manifest.json               ← PWA manifest
@@ -192,7 +192,7 @@ Configure these in **Settings → Environment variables** before production depl
 | `SECURITY_ENTRY_PATH` | `/chosen-entry` | Public entry path; set this in deployment, not in the frontend UI |
 | `SECURITY_ENTRY_ENABLED` | `true` | Optional. Set `false` only for local/temporary unrestricted builds |
 
-The entry path is compiled into `dist/app.js`; `dist/_redirects`, `dist/404.html`, and the generated same-name entry HTML file are produced from the same value during `npm run build`.
+The entry path is compiled into the generated bundle and route files during `npm run build`. Do not commit `dist/` from a production build, because it contains deployment-specific route data.
 
 ### 8.4 Deploy
 
@@ -215,21 +215,21 @@ The workflow after any code change:
 ```bash
 # 1. Edit source files in src/, index.html, or style.css
 
-# 2. Rebuild dist/ with the configured security entry
+# 2. Rebuild locally only when you need to verify output
 SECURITY_ENTRY_PATH=/chosen-entry npm run build
 
 # 3. Run tests (optional but recommended)
 npm test
 
-# 4. Commit everything — source + built output
-git add src/ dist/ index.html style.css 404.html _headers _redirects build.js   # add whichever files you changed
+# 4. Commit source files only. Do not commit dist/.
+git add src/ index.html error.html error.js style.css _headers _redirects build.js README.md DEPLOY.md package.json package-lock.json
 git commit -m "your change description"
 
 # 5. Push — Cloudflare Pages redeploys automatically
 git push origin main
 ```
 
-> Always rebuild before committing. The `dist/` folder must match the source and configured security entry at every commit.
+> Cloudflare Pages rebuilds `dist/` from source on deploy. Keep `SECURITY_ENTRY_PATH` in Cloudflare environment variables, not in committed files.
 
 ---
 
@@ -253,7 +253,7 @@ git subtree push --prefix dist origin gh-pages
 - Output directory: `dist`
 
 **Nginx / Apache**
-Copy the contents of `dist/` to your web root and route the configured `SECURITY_ENTRY_PATH` to `index.html`.
+Copy the contents of a freshly generated local `dist/` to your web root. Do not publish or commit the generated entry path.
 Route unknown paths to `404.html`.
 
 ---
@@ -274,12 +274,12 @@ Route unknown paths to `404.html`.
 → The app loads QRious from CDN. Check your internet connection, or open browser DevTools to see if the script loaded.
 
 **Changes not appearing on Cloudflare Pages**
-→ Make sure you ran `npm run build` and committed the updated `dist/` folder before pushing.
+→ Check the Pages build log and confirm the `SECURITY_ENTRY_PATH` environment variable is configured for the target environment.
 
 ---
 
 <div align="center">
 
-DEPLOY.md · v2.0.0 · April 4, 2026 · 01:03 PDT · [Back to README](README.md)
+DEPLOY.md · v2.1.0 · May 17, 2026 · 00:12 PDT · [Back to README](README.md)
 
 </div>

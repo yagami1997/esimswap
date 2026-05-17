@@ -26,23 +26,23 @@
 
 ### v2.1.0 — Configurable Security Entry Gate (May 17, 2026 — 00:07 PDT)
 
-Added a deploy-time configurable security entry gate for Cloudflare Pages. The public app is now served only from the configured clean path, while the root domain and invalid paths render a compact purple-gold error page that redirects to Cloudflare.
+Added a deploy-time configurable security entry gate for Cloudflare Pages. The app is served from the configured clean path generated during deployment, while the root domain and invalid paths render a compact purple-gold error page that redirects away.
 
 **Security gate:**
 - **Deploy-time entry path**: `SECURITY_ENTRY_PATH=/your-entry npm run build` controls the entry path without hardcoding it in frontend UI
 - **Clean entry URL**: `/<configured-entry>` opens the tool directly; `/<configured-entry>/` canonicalizes back to `/<configured-entry>`
-- **Invalid request handling**: root and unknown paths resolve to the generated error page instead of exposing the tool
+- **Invalid request handling**: root and unknown paths resolve to the generated error page instead of serving the tool
 - **No entry disclosure**: error pages do not link back to the valid eSIM entry path
 
 **Error page:**
-- **Cloudflare-only redirect**: invalid requests count down and redirect only to `https://www.cloudflare.com/`
+- **External redirect**: invalid requests count down and redirect to an external neutral destination
 - **CSP-compatible countdown**: countdown logic moved to external `error.js` so strict `script-src` remains intact
 - **Compact purple-gold styling**: error UI follows the eSIM visual system while staying smaller and cleaner
 - **Single source template**: `error.html` is the source template; build output remains `dist/404.html` for Cloudflare Pages routing
 
 **Security headers and build:**
 - Added stricter security headers including CSP, frame protection, content sniffing protection, referrer policy, and permissions policy
-- Build now generates route gate files and cleans stale `dist` output before each build
+- Build now generates route gate files locally or in Cloudflare Pages and cleans stale `dist` output before each build
 - Updated esbuild to `0.28.0`; tests and audit pass cleanly
 
 <details>
@@ -232,8 +232,8 @@ esimswap/
 │   └── deep-link.test.js       # 4 tests
 ├── dist/                       # Built output — CF Pages serves this directory
 │   ├── app.js                  # Bundled + minified (23KB)
-│   ├── 404.html                # Invalid path / access denied page
-│   ├── __secure_entry          # Internal app entry used by generated redirects
+│   ├── 404.html                # Invalid path page
+│   ├── <configured-entry>      # Generated entry file; not committed
 │   ├── style.css
 │   ├── manifest.json
 │   ├── _headers                # CF security headers
@@ -248,11 +248,11 @@ esimswap/
 └── DEPLOY.md                   # Clone, build, test, and deployment guide
 ```
 
-**Build pipeline**: esbuild bundles `src/app.js` and all its imports into a single IIFE `dist/app.js`. Cloudflare Pages runs `npm run build` on every push to `main` and serves the `dist/` directory.
+**Build pipeline**: esbuild bundles `src/app.js` and all its imports into a single IIFE `dist/app.js`. Cloudflare Pages runs `npm run build` on every push to `main` and serves the generated `dist/` directory. `dist/` is intentionally ignored by git because it can contain deployment-specific route data.
 
-**Security entry**: production builds read the entry path from `SECURITY_ENTRY_PATH`. Example: `SECURITY_ENTRY_PATH=/your-entry npm run build`. The bundle, internal entry file, generated `dist/_redirects`, and generated `dist/404.html` use the same configured path. Set `SECURITY_ENTRY_ENABLED=false` only for unrestricted local builds.
+**Security entry**: production builds read the entry path from `SECURITY_ENTRY_PATH`. Example: `SECURITY_ENTRY_PATH=/your-entry npm run build`. The bundle, generated entry file, generated `dist/_redirects`, and generated `dist/404.html` use the same configured path. Set `SECURITY_ENTRY_ENABLED=false` only for unrestricted local builds.
 
-**Note**: The security entry is intended as a lightweight access gate for a static tool site, not as account authentication. Invalid visitors are intentionally sent to Cloudflare instead of being guided back to the correct entry path.
+**Note**: The security entry is a lightweight access gate for a static tool site, not account authentication. Do not commit generated `dist/` output from production builds, and rotate the entry path if it has ever been exposed in logs, commits, screenshots, or public discussion.
 
 ---
 
