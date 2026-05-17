@@ -2,7 +2,7 @@
 
 # 📱 eSIM Configuration Parser
 
-![Version](https://img.shields.io/badge/version-2.0.0-6b46c1?style=flat-square)
+![Version](https://img.shields.io/badge/version-2.1.0-6b46c1?style=flat-square)
 ![Build](https://img.shields.io/badge/build-passing-22c55e?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-37%2F37-22c55e?style=flat-square)
 ![CloudFlare Pages](https://img.shields.io/badge/CloudFlare-Pages-f38020?style=flat-square&logo=cloudflare&logoColor=white)
@@ -23,6 +23,30 @@
 ---
 
 ## 📋 Changelog
+
+### v2.1.0 — Configurable Security Entry Gate (May 17, 2026 — 00:07 PDT)
+
+Added a deploy-time configurable security entry gate for Cloudflare Pages. The public app is now served only from the configured clean path, while the root domain and invalid paths render a compact purple-gold error page that redirects to Cloudflare.
+
+**Security gate:**
+- **Deploy-time entry path**: `SECURITY_ENTRY_PATH=/your-entry npm run build` controls the entry path without hardcoding it in frontend UI
+- **Clean entry URL**: `/<configured-entry>` opens the tool directly; `/<configured-entry>/` canonicalizes back to `/<configured-entry>`
+- **Invalid request handling**: root and unknown paths resolve to the generated error page instead of exposing the tool
+- **No entry disclosure**: error pages do not link back to the valid eSIM entry path
+
+**Error page:**
+- **Cloudflare-only redirect**: invalid requests count down and redirect only to `https://www.cloudflare.com/`
+- **CSP-compatible countdown**: countdown logic moved to external `error.js` so strict `script-src` remains intact
+- **Compact purple-gold styling**: error UI follows the eSIM visual system while staying smaller and cleaner
+- **Single source template**: `error.html` is the source template; build output remains `dist/404.html` for Cloudflare Pages routing
+
+**Security headers and build:**
+- Added stricter security headers including CSP, frame protection, content sniffing protection, referrer policy, and permissions policy
+- Build now generates route gate files and cleans stale `dist` output before each build
+- Updated esbuild to `0.28.0`; tests and audit pass cleanly
+
+<details>
+<summary>Previous changelog</summary>
 
 ### v2.0.0 — Full Modular Refactor (April 4, 2026 — 00:33 PDT)
 
@@ -67,6 +91,8 @@ Complete rewrite from a single 80KB monolith to a modular ES module architecture
 - QR code generation and parsing
 - Smart format repair
 - Cloudflare Pages deployment
+
+</details>
 
 ---
 
@@ -217,14 +243,16 @@ esimswap/
 ├── style.css                   # Source CSS (color scheme locked)
 ├── manifest.json               # PWA manifest
 ├── build.js                    # esbuild pipeline
-├── package.json                # v2.0.0, type:module, esbuild 0.20.2
+├── package.json                # v2.1.0, type:module, esbuild 0.28.0
 ├── README.md                   # Project overview and usage
 └── DEPLOY.md                   # Clone, build, test, and deployment guide
 ```
 
 **Build pipeline**: esbuild bundles `src/app.js` and all its imports into a single IIFE `dist/app.js`. Cloudflare Pages runs `npm run build` on every push to `main` and serves the `dist/` directory.
 
-**Security entry**: production builds read the entry path from `SECURITY_ENTRY_PATH`. Example: `SECURITY_ENTRY_PATH=/uji npm run build`. The bundle, internal entry file, generated `dist/_redirects`, and generated `dist/404.html` use the same configured path. Set `SECURITY_ENTRY_ENABLED=false` only for unrestricted local builds.
+**Security entry**: production builds read the entry path from `SECURITY_ENTRY_PATH`. Example: `SECURITY_ENTRY_PATH=/your-entry npm run build`. The bundle, internal entry file, generated `dist/_redirects`, and generated `dist/404.html` use the same configured path. Set `SECURITY_ENTRY_ENABLED=false` only for unrestricted local builds.
+
+**Note**: The security entry is intended as a lightweight access gate for a static tool site, not as account authentication. Invalid visitors are intentionally sent to Cloudflare instead of being guided back to the correct entry path.
 
 ---
 
@@ -303,7 +331,7 @@ This app accepts and auto-repairs these common deviations:
 ## 🛠️ Technical Stack
 
 - **Runtime**: Vanilla ES2022, no frameworks
-- **Build**: esbuild 0.20.2 (IIFE bundle, minified)
+- **Build**: esbuild 0.28.0 (IIFE bundle, minified)
 - **QR generation**: QRious 4.0.2 (CDN, primary)
 - **QR decoding**: jsQR 1.4.0 (CDN, with 3-URL fallback)
 - **Camera**: `getUserMedia` + `requestAnimationFrame`
@@ -330,7 +358,7 @@ GPL-3.0 — see [LICENSE](LICENSE) for details.
 
 © 2025–2026 eSIM Configuration Parser · GPL-3.0
 
-Last updated: April 4, 2026 · 01:03 PDT
+Last updated: May 17, 2026 · 00:07 PDT
 
 [⭐ Star](https://github.com/yagami1997/esimswap) · [🐛 Report Issue](https://github.com/yagami1997/esimswap/issues)
 
