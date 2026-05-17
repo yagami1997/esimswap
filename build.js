@@ -49,10 +49,31 @@ try {
   process.exit(1);
 }
 
+function assertNoReservedPathCollisions() {
+  const reserved = new Set([
+    '/style.css',
+    '/manifest.json',
+    '/app.js',
+    '/index.html',
+    '/404.html',
+    '/_headers',
+    '/_redirects',
+  ]);
+  if (!securityEntryConfig.enabled) return;
+  const collide = (path) => {
+    if (reserved.has(path)) {
+      throw new Error(`Configured path "${path}" collides with a reserved build artifact. Choose a different value.`);
+    }
+  };
+  collide(securityEntryConfig.entryPath);
+  securityEntryConfig.denyPaths.forEach(collide);
+}
+
 function copyStaticAssets() {
-  const required = ['style.css', 'manifest.json', 'error.js'];
+  const required = ['style.css', 'manifest.json'];
   const optional = [];
 
+  assertNoReservedPathCollisions();
   for (const file of required) {
     copyFileSync(file, `dist/${file}`);
   }

@@ -194,6 +194,14 @@ Configure these in **Settings → Environment variables** before production depl
 
 The entry path is compiled into the generated bundle and route files during `npm run build`. Do not commit `dist/` from a production build, because it contains deployment-specific route data.
 
+#### Threat Model
+
+The security entry gate is **anti-discovery / anti-indexing**, not access control:
+
+- The entry path is embedded in the client `app.js` bundle (via esbuild `define`). Anyone who legitimately loads the app once can read the path from the bundle. Treat the path as obscurity, not a secret.
+- The client-side gate (`enforceSecurityEntry` in `src/security-gate.js`) runs in the browser. A determined visitor with DevTools can bypass it; the route-level 404 in `_redirects` is the primary defense and only delivers the entry HTML on the configured path.
+- If you need real authentication or per-user authorization, put the deployment behind **Cloudflare Access** (or equivalent), not behind this gate.
+
 ### 8.4 Deploy
 
 Click **Save and Deploy**. Cloudflare will deploy in under 30 seconds.
@@ -222,7 +230,7 @@ SECURITY_ENTRY_PATH=/chosen-entry npm run build
 npm test
 
 # 4. Commit source files only. Do not commit dist/.
-git add src/ index.html error.html error.js style.css _headers _redirects build.js README.md DEPLOY.md package.json package-lock.json
+git add src/ index.html error.html style.css _headers _redirects build.js README.md DEPLOY.md package.json package-lock.json
 git commit -m "your change description"
 
 # 5. Push — Cloudflare Pages redeploys automatically

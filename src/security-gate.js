@@ -7,6 +7,8 @@ const SECURITY_ENTRY_CONFIG = typeof __SECURITY_ENTRY_CONFIG__ !== 'undefined'
   ? __SECURITY_ENTRY_CONFIG__
   : DEFAULT_SECURITY_ENTRY_CONFIG;
 
+const REDIRECT_URL = 'https://www.cloudflare.com/';
+
 export function enforceSecurityEntry(location = window.location) {
   const config = normalizeConfig(SECURITY_ENTRY_CONFIG);
   if (!config.enabled) return true;
@@ -33,9 +35,6 @@ function normalizePath(pathname) {
 }
 
 function renderAccessDenied() {
-  const cloudflareUrl = 'https://www.cloudflare.com/';
-  let remaining = 5;
-
   document.title = '403 Access Denied';
   document.body.className = 'error-gate-body';
   document.body.innerHTML = '';
@@ -67,56 +66,22 @@ function renderAccessDenied() {
 
   const redirect = document.createElement('section');
   redirect.className = 'error-gate-redirect';
-
-  const spinner = document.createElement('div');
-  spinner.className = 'error-gate-spinner';
-  spinner.setAttribute('aria-hidden', 'true');
-
-  const redirectTitle = document.createElement('h3');
-  redirectTitle.textContent = 'Redirecting';
-
-  const redirectMessage = document.createElement('p');
-  redirectMessage.append('Automatically redirecting in ');
-  const countdown = document.createElement('strong');
-  countdown.id = 'redirectCountdown';
-  countdown.textContent = '5';
-  redirectMessage.append(countdown, ' seconds.');
+  redirect.setAttribute('aria-label', 'Continue');
 
   const link = document.createElement('a');
+  link.id = 'continueLink';
   link.className = 'btn btn-primary error-gate-button';
-  link.href = cloudflareUrl;
-  link.rel = 'nofollow';
-  link.textContent = 'Go now';
+  link.href = REDIRECT_URL;
+  link.rel = 'nofollow noopener';
+  link.textContent = 'Continue';
+
+  redirect.append(link);
 
   const footer = document.createElement('footer');
   footer.className = 'error-gate-footer';
   footer.textContent = 'Public errors are intentionally brief.';
 
-  redirect.append(spinner, redirectTitle, redirectMessage, link);
   panel.append(brand, kicker, code, title, message, redirect, footer);
   main.appendChild(panel);
   document.body.appendChild(main);
-
-  if (window.startCloudflareCountdown) {
-    window.startCloudflareCountdown();
-    return;
-  }
-
-  const script = document.createElement('script');
-  script.src = '/error.js';
-  script.onload = () => window.startCloudflareCountdown?.();
-  script.onerror = () => {
-    function tick() {
-      const value = document.getElementById('redirectCountdown');
-      if (value) value.textContent = String(remaining);
-      if (remaining <= 0) {
-        window.location.replace(cloudflareUrl);
-        return;
-      }
-      remaining -= 1;
-      window.setTimeout(tick, 1000);
-    }
-    tick();
-  };
-  document.head.appendChild(script);
 }

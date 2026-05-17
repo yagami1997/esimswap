@@ -6,7 +6,6 @@
     <meta name="robots" content="noindex, nofollow">
     <title>__ERROR_CODE__ __ERROR_TITLE__</title>
     <link rel="stylesheet" href="/style.css">
-    <script src="/error.js" defer></script>
 </head>
 <body class="error-gate-body">
     <main class="error-gate">
@@ -17,14 +16,8 @@
             <h2>__ERROR_TITLE__</h2>
             <p class="error-gate-copy">__ERROR_MESSAGE__</p>
 
-            <section class="error-gate-redirect" aria-label="Redirect notice">
-                <div class="error-gate-spinner" aria-hidden="true"></div>
-                <h3>Redirecting</h3>
-                <p>Automatically redirecting in <strong id="redirectCountdown">5</strong> seconds.</p>
-                <a id="cloudflareRedirect" class="btn btn-primary error-gate-button" href="https://www.cloudflare.com/" rel="nofollow">Go now</a>
-                <noscript>
-                    <p class="error-gate-noscript">JavaScript is disabled. Use the button to continue.</p>
-                </noscript>
+            <section class="error-gate-redirect" aria-label="Continue">
+                <a id="continueLink" class="btn btn-primary error-gate-button" href="https://www.cloudflare.com/" rel="nofollow noopener">Continue</a>
             </section>
 
             <footer class="error-gate-footer">

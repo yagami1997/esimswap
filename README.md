@@ -26,24 +26,28 @@
 
 ### v2.1.0 — Configurable Security Entry Gate (May 17, 2026 — 00:07 PDT)
 
-Added a deploy-time configurable security entry gate for Cloudflare Pages. The app is served from the configured clean path generated during deployment, while the root domain and invalid paths render a compact purple-gold error page that redirects away.
+Added a deploy-time configurable entry gate for Cloudflare Pages. The app is only served from the path configured at build time; root and all other paths return a static error page. The gate is generated fresh on each Cloudflare Pages build from `SECURITY_ENTRY_PATH` and `SECURITY_DENY_PATHS` env vars — nothing in the repo encodes the chosen path.
 
-**Security gate:**
-- **Deploy-time entry path**: `SECURITY_ENTRY_PATH=/your-entry npm run build` controls the entry path without hardcoding it in frontend UI
-- **Clean entry URL**: `/<configured-entry>` opens the tool directly; `/<configured-entry>/` canonicalizes back to `/<configured-entry>`
-- **Invalid request handling**: root and unknown paths resolve to the generated error page instead of serving the tool
-- **No entry disclosure**: error pages do not link back to the valid eSIM entry path
+**Entry gate (build-time generated):**
+- `SECURITY_ENTRY_PATH=/your-entry npm run build` writes the app HTML directly to `dist/<your-entry>` and emits a matching `_redirects` rule. `/<your-entry>/` 308-canonicalizes to `/<your-entry>`.
+- `SECURITY_DENY_PATHS=/foo,/bar` (optional, comma-separated) explicitly maps additional honeypot-style paths to the 404 page.
+- Root `/` and all unconfigured paths fall through to `dist/404.html`.
+- The error page does not link back to the valid entry path.
+- Build refuses to start if the chosen entry or deny path collides with a reserved artifact (`/app.js`, `/index.html`, `/style.css`, `/manifest.json`, `/404.html`, `/_headers`, `/_redirects`).
+- `dist/` is `.gitignore`'d so the chosen path never enters version control. Cloudflare Pages rebuilds from source on each deploy using its env vars.
+
+**Threat model — read this before relying on the gate:**
+The entry gate is **anti-discovery / anti-indexing only, not access control.** The entry path is compiled into `dist/app.js` via esbuild `define`, so anyone who legitimately loads the app once can recover the path from the bundle. The client-side `enforceSecurityEntry` check is a courtesy redraw — a visitor with DevTools can bypass it; the route-level 404 in `_redirects` is the primary defense and only ever serves the entry HTML on the configured path. If you need real authentication or per-user authorization, put the deployment behind **Cloudflare Access** or equivalent.
 
 **Error page:**
-- **External redirect**: invalid requests count down and redirect to an external neutral destination
-- **CSP-compatible countdown**: countdown logic moved to external `error.js` so strict `script-src` remains intact
-- **Compact purple-gold styling**: error UI follows the eSIM visual system while staying smaller and cleaner
-- **Single source template**: `error.html` is the source template; build output remains `dist/404.html` for Cloudflare Pages routing
+- Static error template with a single **Continue** button to a neutral external destination — no auto-redirect, no inline script, no countdown.
+- Compact purple-gold styling consistent with the eSIM visual system.
+- `error.html` is the single source template; `build.js` renders it to `dist/404.html` (and to each `SECURITY_DENY_PATHS` entry).
 
 **Security headers and build:**
-- Added stricter security headers including CSP, frame protection, content sniffing protection, referrer policy, and permissions policy
-- Build now generates route gate files locally or in Cloudflare Pages and cleans stale `dist` output before each build
-- Updated esbuild to `0.28.0`; tests and audit pass cleanly
+- Stricter CSP, frame protection, content sniffing protection, referrer policy, and permissions policy in `_headers`.
+- Build cleans `dist/` before each run and emits `_headers`/`_redirects` deterministically from env vars.
+- Updated esbuild to `0.28.0`; 37/37 tests pass.
 
 <details>
 <summary>Previous changelog</summary>
