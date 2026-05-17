@@ -1,10 +1,13 @@
 # CloudFlare Pages Security Headers Configuration
 
 /*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; manifest-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), geolocation=(), microphone=()
+  Cross-Origin-Opener-Policy: same-origin
 
 # Static Resource Caching
 # JS/CSS: no-cache with revalidation — browser always checks for new version on deployment
@@ -16,3 +19,12 @@
 
 /*.html
   Cache-Control: public, no-cache
+
+/__secure_entry
+  Content-Type: text/html; charset=utf-8
+
+/uji
+  Content-Type: text/html; charset=utf-8
+
+/Solana
+  Content-Type: text/html; charset=utf-8

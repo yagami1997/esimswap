@@ -84,10 +84,12 @@ Static assets copied.
 ```
 dist/
 ├── app.js        ← minified bundle (~23KB)
+├── 404.html      ← denied/invalid path page
 ├── index.html
 ├── style.css
 ├── manifest.json
-└── _headers      ← Cloudflare security headers
+├── _headers      ← Cloudflare security headers
+└── _redirects    ← Cloudflare route gate
 ```
 
 ---
@@ -109,6 +111,8 @@ Test the following manually:
 - [ ] Switch to Camera tab and scan a QR code
 - [ ] Paste a non-standard string (e.g. `1$carrier.com$CODE`) — auto-repair dialog should appear
 - [ ] Click Share Link — URL with `?lpa=` should be copied to clipboard
+- [ ] Open the path configured by `SECURITY_ENTRY_PATH` — app should load
+- [ ] Open `/` or a random path — access denied page should render
 - [ ] Open the copied URL — app should auto-generate QR on load
 - [ ] Generate a QR, refresh page — check History section shows the entry
 
@@ -175,19 +179,28 @@ esimswap/
 | Setting | Value |
 |---|---|
 | Framework preset | None |
-| Build command | *(leave empty)* |
+| Build command | `npm run build` |
 | Build output directory | `dist` |
 | Root directory | `/` |
 
-> The `dist/` folder is committed to the repository, so Cloudflare Pages does **not** need to run a build command — it serves `dist/` directly.
+### 8.3 Security Entry Environment Variables
 
-### 8.3 Deploy
+Configure these in **Settings → Environment variables** before production deployment:
+
+| Variable | Value | Notes |
+|---|---|---|
+| `SECURITY_ENTRY_PATH` | `/chosen-entry` | Public entry path; set this in deployment, not in the frontend UI |
+| `SECURITY_ENTRY_ENABLED` | `true` | Optional. Set `false` only for local/temporary unrestricted builds |
+
+The entry path is compiled into `dist/app.js`; `dist/_redirects`, `dist/404.html`, and the generated same-name entry HTML file are produced from the same value during `npm run build`.
+
+### 8.4 Deploy
 
 Click **Save and Deploy**. Cloudflare will deploy in under 30 seconds.
 
 Every subsequent push to the `main` branch triggers an automatic redeployment.
 
-### 8.4 Custom Domain (Optional)
+### 8.5 Custom Domain (Optional)
 
 1. In your Pages project, go to **Custom Domains**
 2. Add your domain and follow the DNS instructions
@@ -202,21 +215,21 @@ The workflow after any code change:
 ```bash
 # 1. Edit source files in src/, index.html, or style.css
 
-# 2. Rebuild dist/
-npm run build
+# 2. Rebuild dist/ with the configured security entry
+SECURITY_ENTRY_PATH=/chosen-entry npm run build
 
 # 3. Run tests (optional but recommended)
 npm test
 
 # 4. Commit everything — source + built output
-git add src/ dist/ index.html style.css   # add whichever files you changed
+git add src/ dist/ index.html style.css 404.html _headers _redirects build.js   # add whichever files you changed
 git commit -m "your change description"
 
 # 5. Push — Cloudflare Pages redeploys automatically
 git push origin main
 ```
 
-> Always run `npm run build` before committing. The `dist/` folder must match the source at every commit.
+> Always rebuild before committing. The `dist/` folder must match the source and configured security entry at every commit.
 
 ---
 
@@ -231,15 +244,17 @@ git subtree push --prefix dist origin gh-pages
 ```
 
 **Netlify**
-- Build command: *(leave empty)*
+- Build command: `npm run build`
 - Publish directory: `dist`
 
 **Vercel**
 - Framework: Other
+- Build command: `npm run build`
 - Output directory: `dist`
 
 **Nginx / Apache**
-Copy the contents of `dist/` to your web root. No configuration needed.
+Copy the contents of `dist/` to your web root and route the configured `SECURITY_ENTRY_PATH` to `index.html`.
+Route unknown paths to `404.html`.
 
 ---
 

@@ -7,6 +7,7 @@ import { DeviceDetector } from './ui/device.js';
 import { lookup as lookupCarrier } from './features/carrier-db.js';
 import { History } from './features/history.js';
 import { parseDeepLink, copyDeepLink } from './features/deep-link.js';
+import { enforceSecurityEntry } from './security-gate.js';
 
 // ─── State ──────────────────────────────────────────────────────────────────
 let currentLPA = null;
@@ -379,6 +380,8 @@ function setupDragDrop() {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
+  if (!enforceSecurityEntry()) return;
+
   // Device detection
   const detector = new DeviceDetector();
   detector.init();

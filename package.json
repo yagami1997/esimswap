@@ -18,6 +18,6 @@
   "author": "yagami1997",
   "license": "GPL-3.0",
   "devDependencies": {
-    "esbuild": "0.20.2"
+    "esbuild": "0.28.0"
   }
 }

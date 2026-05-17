@@ -26,7 +26,8 @@ export function parseDeepLink(search = '') {
  * @returns {string}
  */
 export function generateDeepLink(lpaString, baseUrl = BASE_URL) {
-  return `${baseUrl}/?lpa=${encodeURIComponent(lpaString)}`;
+  const path = typeof window !== 'undefined' ? window.location.pathname : '/';
+  return `${baseUrl}${path}?lpa=${encodeURIComponent(lpaString)}`;
 }
 
 /**

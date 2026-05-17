@@ -94,7 +94,7 @@ This tool detects the deviation, repairs it, and generates a standards-compliant
 | **Auto-Repair** | Adds missing `LPA:` prefix and version number; validates before offering fix |
 | **Carrier ID** | ~50 carriers identified by SM-DP+ domain with region label |
 | **History** | 20 most recent operations in localStorage; load any entry back into generator |
-| **Share Link** | Copies `https://your-deployment-url/?lpa=<encoded>` to clipboard |
+| **Share Link** | Copies `https://your-deployment-url/<security-entry>?lpa=<encoded>` to clipboard |
 | **QR Options** | Size: 300 / 500 / 800px · Error correction: M (standard) / H (print/sticker) |
 | **XSS-Safe** | All untrusted data displayed via `textContent` — no innerHTML anywhere |
 | **No Backend** | 100% client-side; nothing leaves the browser |
@@ -172,8 +172,10 @@ Every successful scan or generation is saved to your browser's localStorage (nev
 After generating a QR code, click **Share Link**. This copies a URL like:
 
 ```
-https://your-deployment-url/?lpa=LPA%3A1%24carrier.example.com%24ABC12-DEF34
+https://your-deployment-url/<security-entry>?lpa=LPA%3A1%24carrier.example.com%24ABC12-DEF34
 ```
+
+When the security entry gate is enabled, share links are generated from the current entry path.
 
 Anyone who opens this link gets the app pre-filled and auto-generates the QR code. Useful for sharing an eSIM config with a family member or support team.
 
@@ -204,11 +206,14 @@ esimswap/
 │   └── deep-link.test.js       # 4 tests
 ├── dist/                       # Built output — CF Pages serves this directory
 │   ├── app.js                  # Bundled + minified (23KB)
-│   ├── index.html
+│   ├── 404.html                # Invalid path / access denied page
+│   ├── __secure_entry          # Internal app entry used by generated redirects
 │   ├── style.css
 │   ├── manifest.json
-│   └── _headers                # CF security headers
+│   ├── _headers                # CF security headers
+│   └── _redirects              # CF route gate
 ├── index.html                  # Source HTML
+├── error.html                  # Source error-page template
 ├── style.css                   # Source CSS (color scheme locked)
 ├── manifest.json               # PWA manifest
 ├── build.js                    # esbuild pipeline
@@ -218,6 +223,8 @@ esimswap/
 ```
 
 **Build pipeline**: esbuild bundles `src/app.js` and all its imports into a single IIFE `dist/app.js`. Cloudflare Pages runs `npm run build` on every push to `main` and serves the `dist/` directory.
+
+**Security entry**: production builds read the entry path from `SECURITY_ENTRY_PATH`. Example: `SECURITY_ENTRY_PATH=/uji npm run build`. The bundle, internal entry file, generated `dist/_redirects`, and generated `dist/404.html` use the same configured path. Set `SECURITY_ENTRY_ENABLED=false` only for unrestricted local builds.
 
 ---
 
